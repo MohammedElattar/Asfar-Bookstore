@@ -1,0 +1,41 @@
+@use "../../styles/variables.scss" as *;
+#footer {
+  text-align: center;
+  background-color: rgb(218, 218, 218);
+  a {
+    color: $green;
+    text-decoration: none;
+    font-size: 18px;
+  }
+  .social {
+    padding: 20px 0;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+  }
+  .social a {
+    width: 60px;
+    height: 60px;
+    border-radius: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #fff;
+    font-size: 30px;
+  }
+  .copy-right {
+    background-image: linear-gradient(90deg, #f7be29 0%, #078480 89%);
+    color: #fff;
+    padding: 20px;
+    direction: ltr;
+  }
+  .customer-service {
+    border: 1px dotted #000;
+    border-radius: 10px;
+    padding: 20px;
+    width: 600px;
+    max-width: 100%;
+    margin: 20px auto;
+    color: $green;
+  }
+}

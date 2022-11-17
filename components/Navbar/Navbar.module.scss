@@ -16,6 +16,8 @@
   border: none;
   outline: none;
   font-size: 22px;
+  width: 30px;
+  text-align: center;
 }
 
 .searchBook {
@@ -26,8 +28,49 @@
   padding: 10px;
   border-radius: 5px;
   transition: 0.3s;
+  text-decoration: none;
+  color: $green;
   &:hover {
     color: #fff !important;
     background-color: $green;
+  }
+}
+
+.menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  transform: scaleY(0);
+  transform-origin: top;
+  transition: 0.3s;
+  a {
+    display: block;
+    background-color: rgba(0, 0, 0, 0.8);
+    color: #fff;
+    text-align: center;
+    padding: 15px;
+    text-decoration: none;
+  }
+  &.active {
+    transform: scale(1);
+  }
+}
+
+@include tablet {
+  .searchBook {
+    font-size: 12px;
+    padding: 5px;
+    gap: 0;
+  }
+  .logo {
+    img {
+      width: 100px;
+      height: auto;
+    }
   }
 }

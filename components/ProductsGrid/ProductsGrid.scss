@@ -1,0 +1,33 @@
+.product {
+  img {
+    width: 100%;
+    aspect-ratio: 3 / 4;
+    height: auto !important;
+    object-fit: cover;
+  }
+  .info {
+    padding: 10px 0;
+    .product-title {
+      color: $green;
+      font-size: 20px;
+    }
+    .product-price {
+      color: rgb(14, 173, 41);
+    }
+    .product-seller {
+      font-style: italic;
+      span {
+        color: $green;
+        font-weight: 600;
+      }
+    }
+    .add-to-cart {
+      color: rgba(0, 0, 0, 0.7);
+      background-color: rgba(0, 0, 0, 0.1);
+      border: none;
+      font-weight: bold;
+      padding: 10px 15px;
+      border-radius: 5px;
+    }
+  }
+}

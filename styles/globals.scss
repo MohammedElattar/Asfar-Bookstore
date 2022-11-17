@@ -1,5 +1,8 @@
 @use "./variables.scss" as *;
-
+@import "../components/Button/Button.scss";
+@import "index.scss";
+@import "../components/Footer/Footer.scss";
+@import "../components/ProductsGrid/ProductsGrid.scss";
 * {
   box-sizing: border-box;
   margin: 0;
@@ -50,33 +53,5 @@ html {
     height: 5px;
     background-color: $yellow;
     border-radius: 10px;
-  }
-}
-
-.main-btn {
-  display: block;
-  width: fit-content;
-
-  border: 2px solid $green;
-  border-radius: 5px;
-  padding: 15px;
-  color: $green;
-  cursor: pointer;
-  transition: 0.3s;
-  text-decoration: none;
-  &:hover {
-    color: #fff;
-    background-color: $green;
-  }
-  .icon {
-    display: inline-flex;
-    color: #fff;
-    background-color: $green;
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    justify-content: center;
-    align-items: center;
-    margin-right: 5px;
   }
 }

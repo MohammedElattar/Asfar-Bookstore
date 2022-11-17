@@ -1,6 +1,16 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-}
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "assets.asfar.io",
+        port: "/uploads/**",
+      },
+    ],
+    domains: ["assets.asfar.io"],
+  },
+};
 
-module.exports = nextConfig
+module.exports = nextConfig;

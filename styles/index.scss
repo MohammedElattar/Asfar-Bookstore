@@ -1,0 +1,96 @@
+@use "../styles/variables.scss" as *;
+
+.landingButton {
+  color: #fff;
+  display: inline-flex;
+  gap: 5px;
+  padding: 10px 15px;
+  border-radius: 1000px;
+  background-image: linear-gradient(135deg, #f7be29, #e78311);
+  text-decoration: none;
+  align-items: center;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+  &:hover {
+    color: #fff;
+  }
+}
+
+.home-landing {
+  height: calc(100vh - 80px);
+  position: relative;
+  img {
+    width: 300px;
+    max-width: 100%;
+    height: auto;
+    aspect-ratio: 6 / 9;
+  }
+  @include tablet {
+    height: auto;
+  }
+}
+
+.box {
+  background-color: rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  padding: 20px 10px !important;
+  height: 150px;
+  justify-content: space-between;
+  border-radius: 5px;
+  svg {
+    font-size: 50px;
+    color: $yellow;
+  }
+  a {
+    text-decoration: none;
+    font-size: 25px;
+    color: rgba(0, 0, 0, 0.4);
+  }
+  a:hover {
+    color: $green;
+    svg {
+      color: $green;
+    }
+  }
+}
+
+.usedBookStore {
+  background-image: url("/images/book-1210027_1280.jpg");
+  background-attachment: fixed;
+  z-index: 1;
+  position: relative;
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: rgba(5, 82, 80, 0.8);
+    z-index: -1;
+  }
+}
+.usedBooksStore .main-btn {
+  border-color: $yellow;
+  color: $yellow;
+  .icon {
+    background-color: $yellow;
+  }
+}
+.usedBooksStore .main-btn:hover {
+  background-color: $yellow;
+  color: #fff;
+}
+
+@include tablet {
+  .home-landing {
+    .text {
+      .gap-5 {
+        gap: 0 !important;
+        lottie-player {
+          width: 100px !important;
+          height: 100px !important;
+        }
+      }
+    }
+  }
+}
