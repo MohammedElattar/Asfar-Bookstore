@@ -1,0 +1,20 @@
+$green: #055250;
+$yellow: #f7be29;
+$black: #21243d;
+$pink: #cc2e72;
+
+@mixin laptop {
+  @media screen and (max-width: 992px) {
+    @content;
+  }
+}
+@mixin tablet {
+  @media screen and (max-width: 768px) {
+    @content;
+  }
+}
+@mixin mobile {
+  @media screen and (max-width: 578px) {
+    @content;
+  }
+}

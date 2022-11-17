@@ -1,0 +1,82 @@
+@use "./variables.scss" as *;
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: "Tajawal", sans-serif;
+}
+
+.text-primary {
+  color: $green !important;
+}
+.text-secondary {
+  color: $yellow !important;
+}
+.text-dark {
+  color: $black !important;
+}
+.text-danger {
+  color: $pink !important;
+}
+
+html {
+  direction: rtl;
+}
+
+.font {
+  font-family: inherit;
+}
+
+@media screen and (min-width: 1200px) {
+  .container {
+    width: 1140px !important;
+  }
+}
+
+.title {
+  width: fit-content;
+  margin: 0 auto;
+  padding: 10px;
+  color: $green;
+  position: relative;
+  margin-bottom: 30px;
+  &::before {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 5px;
+    background-color: $yellow;
+    border-radius: 10px;
+  }
+}
+
+.main-btn {
+  display: block;
+  width: fit-content;
+
+  border: 2px solid $green;
+  border-radius: 5px;
+  padding: 15px;
+  color: $green;
+  cursor: pointer;
+  transition: 0.3s;
+  text-decoration: none;
+  &:hover {
+    color: #fff;
+    background-color: $green;
+  }
+  .icon {
+    display: inline-flex;
+    color: #fff;
+    background-color: $green;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    justify-content: center;
+    align-items: center;
+    margin-right: 5px;
+  }
+}

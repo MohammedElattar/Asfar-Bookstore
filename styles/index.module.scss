@@ -1,0 +1,45 @@
+@use "../styles/variables.scss" as *;
+
+.landingButton {
+  color: #fff;
+  display: inline-flex;
+  gap: 5px;
+  padding: 10px 15px;
+  border-radius: 1000px;
+  background-image: linear-gradient(135deg, #f7be29, #e78311);
+  text-decoration: none;
+  align-items: center;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+  &:hover {
+    color: #fff;
+  }
+}
+
+.landing {
+  height: calc(100vh - 80px + 100px);
+  position: relative;
+  @include tablet {
+    height: auto;
+  }
+}
+
+.box {
+  background-color: rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  padding: 20px 10px !important;
+  svg {
+    font-size: 50px;
+    color: $yellow;
+  }
+  a {
+    text-decoration: none;
+    font-size: 25px;
+    color: rgba(0, 0, 0, 0.4);
+  }
+  a:hover {
+    color: $green;
+    svg {
+      color: $green;
+    }
+  }
+}

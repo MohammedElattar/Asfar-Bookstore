@@ -1,0 +1,33 @@
+@use "../../styles/variables.scss" as *;
+.navbar {
+  position: relative;
+  z-index: 50;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+.container {
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.toggleMenu {
+  background-color: transparent;
+  border: none;
+  outline: none;
+  font-size: 22px;
+}
+
+.searchBook {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid $green;
+  padding: 10px;
+  border-radius: 5px;
+  transition: 0.3s;
+  &:hover {
+    color: #fff !important;
+    background-color: $green;
+  }
+}
