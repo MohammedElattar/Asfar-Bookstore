@@ -1,13 +1,13 @@
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import PropTypes from 'prop-types'
-import {Children} from 'react'
 
-function ActiveLink({children, href,  ...props}) {
-    const {pathname} = useRouter();
-    
+function ActiveLink({ children, href, ...props }) {
+  const router = useRouter();
+
+
   return (
-    <Link href={href}>
+    <Link href={href} className={`${router.asPath === href ? 'active' : ""} ${props.className || ""}`}>
+      {children}
     </Link>
   )
 }

@@ -15,13 +15,17 @@ function ProductsGrid({ products, price }) {
                 height={350}
               />
             ) : (
-              <div
+              <Image
+                src='https://assets.asfar.io/uploads/2022/01/19092920/woocommerce-placeholder-300x300.png'
+                alt={post_title}
+                width={200}
+                height={350}
                 style={{
                   width: "100%",
                   aspectRatio: "3/4",
                   backgroundColor: "rgba(0, 0, 0, 0.3)",
                 }}
-              ></div>
+              />
             )}
           </div>
           <div className="info d-flex flex-column justify-content-between">
