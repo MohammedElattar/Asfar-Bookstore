@@ -30,7 +30,7 @@ function Navbar() {
           </button>
         )}
 
-        <div className={styles.logo}>
+        <Link href='/' className={styles.logo}>
           <Image
             src="/images/asfar-logo.png"
             width={130}
@@ -38,8 +38,8 @@ function Navbar() {
             alt="logo"
             priority
           />
-        </div>
-        <Link href="/search-book" className={styles.searchBook}>
+        </Link>
+        <Link href="/products/1" className={styles.searchBook}>
           <FaSearch />
           ابحث عن كتاب
         </Link>

@@ -10,7 +10,7 @@ import CounterBox from "../components/CounterBox/CounterBox";
 import ProductsGrid from "../components/ProductsGrid/ProductsGrid";
 import Button from "../components/Button/Button";
 import randomId from "../utils/randomId";
-import data from "../utils/products.json";
+import data from "../products/page1.json";
 import Footer from "../components/Footer/Footer";
 
 export default function Home({ products }) {
@@ -201,7 +201,7 @@ function RecentlyArrived({ products }) {
     <div className="py-5">
       <h1 className="title">وصل حديثًا</h1>
       <div className="container products-grid">
-        <ProductsGrid products={products} />
+        <ProductsGrid products={products} price />
       </div>
     </div>
   );
@@ -211,15 +211,15 @@ function MostSalled({ products }) {
     <div className="py-5">
       <h1 className="title">الأكثر مبيعًا</h1>
       <div className="container products-grid">
-        <ProductsGrid products={products} />
+        <ProductsGrid products={products} price />
       </div>
     </div>
   );
 }
 
 export async function getStaticProps() {
-  const data = await import("../utils/products.json");
-  const products = data.default.results[0].hits.map((p) => ({
+  const data = await import("../products/page1.json");
+  const products = data.default.map((p) => ({
     ...p,
     id: randomId(),
   }));

@@ -1,0 +1,125 @@
+@use "variables.scss" as *;
+
+.search-container {
+  background-color: $green;
+}
+.search {
+  display: flex;
+  width: 100%;
+  background-color: #fff;
+  align-items: center;
+  border-radius: 5px;
+  overflow: hidden;
+  .search-input {
+    flex-grow: 1;
+    input {
+      width: 100%;
+      padding: 15px;
+      font-size: 20px;
+      border: none;
+      outline: none;
+    }
+  }
+  button {
+    border: none;
+    outline: none;
+    background-color: transparent;
+    transition: 0.2s;
+    margin-right: 10px;
+    width: 20px;
+    height: 20px;
+    border-radius: 3px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+    &:hover {
+      background-color: $pink;
+      color: #fff;
+    }
+  }
+}
+
+.search-products-result {
+  gap: 20px;
+  .sort-wrapper {
+    width: 280px !important;
+    padding-top: 20px;
+  }
+
+  .products {
+    width: calc(100% - 280px);
+    padding: 30px 0;
+  }
+  .message {
+    background-color: rgba(201, 170, 35, 0.6);
+    color: #000;
+    padding: 5px;
+    border-radius: 5px;
+    font-size: 13px;
+  }
+  .heading {
+    font-weight: bold;
+    margin-bottom: 15px;
+    font-size: 23px;
+  }
+  .wrapper {
+    margin-bottom: 20px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid rgb(226, 226, 226);
+  }
+  .search-input {
+    margin: 20px 0;
+    input {
+      background-color: #eee;
+      padding: 8px;
+      border: none;
+      outline: none;
+      width: 100%;
+      border-radius: 5px;
+    }
+  }
+  .field {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 7px;
+    span {
+      background-color: rgba(0, 0, 0, 0.2);
+      margin-right: 10px;
+      padding: 0px 10px;
+      font-size: 14px;
+      border-radius: 100px;
+    }
+  }
+  .fields {
+    max-height: 400px;
+    overflow: auto;
+  }
+  .sort-btn {
+    color: #fff;
+    background-color: $green;
+    border: none;
+    outline: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+  }
+  .pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    a {
+      color: #fff;
+      width: 40px;
+      height: 40px;
+      background-color: $green;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      border-radius: 5px;
+      font-size: 18px;
+    }
+  }
+}

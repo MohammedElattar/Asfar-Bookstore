@@ -5,5 +5,5 @@ export default function randomId(length = 8) {
   const symbols = "/*-.|}]{{?/>.<,)(_=+";
   const mix = [...nums, ...upper, ...lower, ...symbols];
   const shuffled = mix.sort(() => Math.random() - 0.5);
-  return shuffled.slice(0, length);
+  return shuffled.slice(0, length).join('');
 }
