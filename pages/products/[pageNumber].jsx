@@ -358,8 +358,17 @@ export async function getServerSideProps(context) {
             });
         }
 
+        if (!pageNumber) {
+            products = (await allProducts).map(e => e.value?.default).flat();
+        }
+
         if (searchString) {
-            products = (await allProducts).map(e => e.value?.default).flat().filter((e) => e.post_title.includes(searchString));
+            products = products.filter((e) => e.post_title.includes(searchString))
+        }
+
+        if (writters.split(',').length) {
+
+            products = products.filter((e) => e.post_title.includes(searchString))
         }
 
         return {
