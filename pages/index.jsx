@@ -5,18 +5,17 @@ import Link from "next/link";
 import Image from "next/image";
 import { BiArrowBack } from "react-icons/bi";
 import { FaBook, FaCcMastercard, FaSearch, FaTruck } from "react-icons/fa";
-import Seperator from "../components/Seperator/Seperator";
 import CounterBox from "../components/CounterBox/CounterBox";
 import ProductsGrid from "../components/ProductsGrid/ProductsGrid";
 import Button from "../components/Button/Button";
-import randomId from "../utils/randomId";
-import data from "../products/page1.json";
 import Footer from "../components/Footer/Footer";
 
 export default function Home({ products }) {
   useEffect(() => {
     import("@lottiefiles/lottie-player");
-    console.log(data);
+
+
+
   }, []);
 
   return (
@@ -91,7 +90,6 @@ function Landing() {
 function HelpingTools() {
   return (
     <div className="py-5 position-relative">
-      <Seperator />
       <h1 className="title">أدوات مساعدة</h1>
       <div className="container">
         <div className="row">
@@ -219,10 +217,7 @@ function MostSalled({ products }) {
 
 export async function getStaticProps() {
   const data = await import("../products/page1.json");
-  const products = data.default.map((p) => ({
-    ...p,
-    id: randomId(),
-  }));
+  const products = data.default
 
   return {
     props: {

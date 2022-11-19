@@ -55,10 +55,10 @@ function Navbar() {
           <Link href={"/order-services"}>الدعم الفني للطلبات</Link>
         </li>
         <li>
-          <Link href={"/signup"}>عضو جديد؟ سجل الآن!</Link>
+          <Link href='/signup'>عضو جديد؟ سجل الآن!</Link>
         </li>
         <li>
-          <Link href={"/signin"}>سجل الدخول</Link>
+          <Link href='/login'>سجل الدخول</Link>
         </li>
       </ul>
     </div>

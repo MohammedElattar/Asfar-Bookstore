@@ -69,17 +69,6 @@
     z-index: -1;
   }
 }
-.usedBooksStore .main-btn {
-  border-color: $yellow;
-  color: $yellow;
-  .icon {
-    background-color: $yellow;
-  }
-}
-.usedBooksStore .main-btn:hover {
-  background-color: $yellow;
-  color: #fff;
-}
 
 @include tablet {
   .home-landing {

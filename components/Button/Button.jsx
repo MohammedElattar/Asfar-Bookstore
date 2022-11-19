@@ -1,13 +1,13 @@
 import { FaArrowLeft } from "react-icons/fa";
 import Link from "next/link";
 
-function Button({ children, centered, color, className, href }) {
+function Button({ children, centered, color, className, href, ...props }) {
   return (
     <Link
       href={href}
-      className={`button ${centered ? "center" : ""} ${
-        color === "#f7be29" ? "yellow" : ""
-      } ${className}`}
+      className={`button ${centered ? "center" : ""} ${color === "#f7be29" ? "yellow" : ""
+        } ${className}`}
+      {...props}
     >
       <div>
         {children}

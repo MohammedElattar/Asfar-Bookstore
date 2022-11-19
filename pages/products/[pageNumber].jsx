@@ -6,16 +6,19 @@ import ActiveLink from "../../components/ActiveLink";
 import Footer from "../../components/Footer/Footer";
 import Navbar from "../../components/Navbar/Navbar";
 import ProductsGrid from "../../components/ProductsGrid/ProductsGrid";
+import useQueryInput from '../../hooks/useQueryInput.js';
 
 export default function FindProduct({
     products,
     publishers,
     writters,
     categories,
-    query,
-    error,
+    error
 }) {
-    useEffect(() => { }, []);
+    useEffect(() => {
+        console.log(products)
+        console.log(error)
+    }, []);
 
     return (
         <>
@@ -47,11 +50,22 @@ function Search() {
     };
     const search = (text) => {
         if (text) {
-            router.query.q = text;
-            router.push(router);
+            router.push({
+                pathname: router.pathname,
+                query: { ...router.query, q: text }
+            },
+                undefined,
+                { scroll: false }
+            )
         } else {
-            delete router.query.q;
-            router.push(router);
+            delete router.query.q
+            router.push({
+                pathname: router.pathname,
+                query: { ...router.query }
+            },
+                undefined,
+                { scroll: false }
+            )
         }
     };
     const handleChange = (e) => {
@@ -104,26 +118,7 @@ function ProductsWrapper({ products }) {
 function Writters({ writters }) {
     const [text, setText] = useState("");
     const [expanded, setExpanded] = useState(false);
-    const [checked, setChecked] = useState([]);
-    const router = useRouter();
-
-    const handleInputChange = (e, text) => {
-        if (e.target.checked) {
-            setChecked((s) => [...s, text]);
-        } else {
-            setChecked((s) => s.filter((e) => e !== text));
-        }
-    };
-
-    useEffect(() => {
-        if (checked.length) {
-            router.query.writters = checked.toString();
-            router.push(router);
-        } else {
-            delete router.query.writters;
-            router.push(router);
-        }
-    }, [checked.toString()]);
+    const { handleInputChange } = useQueryInput('writters')
 
     return (
         <div className="wrapper">
@@ -170,6 +165,7 @@ function Writters({ writters }) {
 function Publishers({ publishers }) {
     const [text, setText] = useState("");
     const [expanded, setExpanded] = useState(false);
+    const { handleInputChange } = useQueryInput('publishers')
     return (
         <div className="wrapper">
             <h3 className="heading">الناشرين</h3>
@@ -188,7 +184,7 @@ function Publishers({ publishers }) {
                     .slice(0, expanded ? publishers.length : 8)
                     .map((pub) => (
                         <div className="field" key={pub.name}>
-                            <input type="checkbox" id={pub.name} />
+                            <input type="checkbox" id={pub.name} onChange={(e) => handleInputChange(e, pub.name)} />
                             <label htmlFor={pub.name}>
                                 {pub.name}
                                 <span>{pub.number}</span>
@@ -210,6 +206,7 @@ function Publishers({ publishers }) {
 function Categories({ categories }) {
     const [text, setText] = useState("");
     const [expanded, setExpanded] = useState(false);
+    const { handleInputChange } = useQueryInput('categories')
     return (
         <div className="wrapper">
             <h3 className="heading">التصنيفات</h3>
@@ -228,7 +225,7 @@ function Categories({ categories }) {
                     .slice(0, expanded ? categories.length : 8)
                     .map((category) => (
                         <div className="field" key={category.name}>
-                            <input type="checkbox" id={category.name} />
+                            <input type="checkbox" id={category.name} onChange={(e) => handleInputChange(e, category.name)} />
                             <label htmlFor={category.name}>
                                 {category.name}
                                 <span>{category.number}</span>
@@ -249,6 +246,7 @@ function Categories({ categories }) {
 
 function Status() {
     const [text, setText] = useState("");
+    const { handleInputChange } = useQueryInput('status')
     return (
         <div>
             <h3 className="heading">الحالة</h3>
@@ -263,14 +261,14 @@ function Status() {
             </div>
             <div className="fields">
                 <div className="field">
-                    <input type="checkbox" id="s1" />
+                    <input type="checkbox" id="s1" onChange={(e) => handleInputChange(e, 'جديد')} />
                     <label htmlFor="s1">
                         جديد
                         <span>8619</span>
                     </label>
                 </div>
                 <div className="field">
-                    <input type="checkbox" id="s2" />
+                    <input type="checkbox" id="s2" onChange={(e) => handleInputChange(e, 'مستعمل')} />
                     <label htmlFor="s2">
                         مستعمل
                         <span>222</span>
@@ -282,6 +280,7 @@ function Status() {
 }
 
 function SortingTools({ publishers, writters, categories }) {
+
     return (
         <div className="sort-wrapper">
             <Writters writters={writters} />
@@ -292,22 +291,6 @@ function SortingTools({ publishers, writters, categories }) {
     );
 }
 
-// export async function getStaticPaths() {
-//     return {
-//         paths: [
-//             { params: { pageNumber: "1" } },
-//             { params: { pageNumber: "2" } },
-//             { params: { pageNumber: "3" } },
-//             { params: { pageNumber: "4" } },
-//             { params: { pageNumber: "5" } },
-//             { params: { pageNumber: "6" } },
-//             { params: { pageNumber: "7" } },
-//             { params: { pageNumber: "8" } },
-//             { params: { pageNumber: "9" } },
-//         ],
-//         fallback: false,
-//     };
-// }
 
 export async function getServerSideProps(context) {
     const pageNumber = context.params.pageNumber;
@@ -315,12 +298,14 @@ export async function getServerSideProps(context) {
     const queryObject = url.parse(context.req.url, true).query;
     const searchString = queryObject.q;
     const writtersString = queryObject.writters;
+    const publishersString = queryObject.publishers
 
     try {
         const productsPromise = import(`../../products/page${pageNumber}.json`);
         const publishersObjectPromise = import("../../products/publishers.json");
         const writtersObjectPromise = import("../../products/writters.json");
         const categoriesObjectPromise = import("../../products/categories.json");
+        const props = {}
 
         let allProducts =
             Promise.allSettled([
@@ -335,21 +320,30 @@ export async function getServerSideProps(context) {
                 import("../../products/page9.json"),
             ])
 
-        let products = (await productsPromise).default;
         const publishersObject = await publishersObjectPromise;
         const writtersObject = await writtersObjectPromise;
         const categoriesObject = await categoriesObjectPromise;
 
+        props.products = (await productsPromise).default
+
+
+        //
         const publishersArray = [];
         for (let pub in publishersObject.default) {
             publishersArray.push({ name: pub, number: publishersObject[pub] });
         }
+        props.publishers = publishersArray.sort((a, b) => b.number - a.number)
+        //
 
+        //
         const writtersArray = [];
         for (let writter in writtersObject.default) {
             writtersArray.push({ name: writter, number: writtersObject[writter] });
         }
+        props.writters = writtersArray.sort((a, b) => b.number - a.number)
+        //
 
+        //
         const categoriesArray = [];
         for (let category in categoriesObject.default) {
             categoriesArray.push({
@@ -357,28 +351,30 @@ export async function getServerSideProps(context) {
                 number: categoriesObject[category],
             });
         }
+        props.categories = categoriesArray.sort((a, b) => b.number - a.number)
+        //
 
-        if (!pageNumber) {
-            products = (await allProducts).map(e => e.value?.default).flat();
+        if (!pageNumber || searchString) {
+            props.products = (await allProducts).map(e => e.value?.default).flat();
         }
 
         if (searchString) {
-            products = products.filter((e) => e.post_title.includes(searchString))
+            props.products = props.products.filter((e) => e.post_title.includes(searchString))
         }
 
-        if (writters.split(',').length) {
-
-            products = products.filter((e) => e.post_title.includes(searchString))
+        const queryWrittersArray = writtersString?.split(',').filter(e => e) || [];
+        if (queryWrittersArray.length) {
+            props.products = props.products.filter((e) => queryWrittersArray.includes(e.post_author?.display_name))
         }
+
+        const queryPublishersArray = publishersString?.split(',').filter(e => e) || [];
+        if (queryPublishersArray.length) {
+            props.products = props.products.filter((e) => queryPublishersArray.includes(e?.taxonomies?.wcpv_product_vendors[0]))
+        }
+
 
         return {
-            props: {
-                products: products,
-                publishers: publishersArray.sort((a, b) => b.number - a.number),
-                writters: writtersArray.sort((a, b) => b.number - a.number),
-                categories: categoriesArray.sort((a, b) => b.number - a.number),
-                query: queryObject,
-            },
+            props
         };
     } catch (err) {
         return {

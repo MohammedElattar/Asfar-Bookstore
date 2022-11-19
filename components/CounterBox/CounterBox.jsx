@@ -11,8 +11,6 @@ function CounterBox({ title, target }) {
       if (valid) return
       const boxOffset = boxRef.current.offsetTop;
       const fullScrollY = window.scrollY + window.innerHeight;
-      // console.log(`full scroll`, fullScrollY)
-      // console.log('box top', boxOffset)
       if (boxOffset < fullScrollY) {
         setValid(true)
       }
@@ -24,7 +22,6 @@ function CounterBox({ title, target }) {
 
   }, [setValid, valid])
 
-  console.log(`count`, count)
 
   return (
     <div className={styles.box} ref={boxRef}>
