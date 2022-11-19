@@ -1,0 +1,25 @@
+.inputControl {
+  &.error {
+    label {
+      color: red;
+    }
+    input {
+      border-color: red;
+    }
+  }
+  label {
+    display: block;
+    margin-bottom: 5px;
+    font-size: 20px;
+  }
+  input {
+    width: 100%;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    outline: none;
+  }
+  .helperText {
+    color: red;
+  }
+}

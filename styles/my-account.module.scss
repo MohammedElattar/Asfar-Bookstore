@@ -1,0 +1,16 @@
+@use "../styles//variables.scss" as *;
+.wrapper {
+  .outlet {
+    padding: 25px;
+    width: calc(100% - 250px);
+  }
+}
+
+@include laptop {
+  .wrapper {
+    .outlet {
+      padding: 20px 0 0;
+      width: 100%;
+    }
+  }
+}

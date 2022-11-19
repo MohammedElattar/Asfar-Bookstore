@@ -1,20 +1,21 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 function useInput() {
   const [props, setProps] = useState({
     error: false,
     helperText: "",
     value: "",
+
+    onChange(e) {
+      setProps((prevProps) => ({
+        ...prevProps,
+        value: e.target.value,
+        error: false,
+        helperText: "",
+      }));
+    },
   });
 
-  const changeHandler = (e) => {
-    setProps((prevProps) => ({
-      ...prevProps,
-      value: e.target.value,
-      error: false,
-      helperText: "",
-    }));
-  };
   const setError = (error, helperText) => {
     if (!error) {
       setProps((prevProps) => ({ ...prevProps, error: false, helperText: "" }));
@@ -23,7 +24,7 @@ function useInput() {
     }
   };
 
-  return [props, changeHandler, setError];
+  return [props, setError];
 }
 
 export default useInput;

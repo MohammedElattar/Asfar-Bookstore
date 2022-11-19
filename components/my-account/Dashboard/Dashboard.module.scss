@@ -1,0 +1,26 @@
+@use "../../../styles/variables.scss" as *;
+
+.wrapper {
+  border: 1px dotted #000;
+  border-radius: 5px;
+  padding: 20px;
+  p {
+    font-size: 15px;
+    color: #444;
+    button {
+      background-color: transparent;
+      border: none;
+      outline: none;
+      font-size: inherit;
+      color: $green;
+    }
+    b {
+      color: #000;
+    }
+    a {
+      text-decoration: none;
+      color: $green;
+      font-weight: 500;
+    }
+  }
+}

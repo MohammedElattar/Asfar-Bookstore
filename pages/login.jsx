@@ -7,13 +7,18 @@ import { formWrapper, formContainer, submit, heading, formButtonLoading, inputCo
 import { useDispatch } from 'react-redux'
 import { userSlice } from '../app/userSlice';
 import { useRouter } from 'next/router';
+import InputControl from '../components/InputControl/InputControl';
+import FormLoadingButton from '../components/FormLoadingButton/FormLoadingButton';
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { auth } from '../utils/firebase';
 function Login() {
-    const [emailProps, emailChange, setEmailError] = useInput();
-    const [passwordProps, passwordChange, setPasswordError] = useInput();
+    const [emailProps, setEmailError] = useInput();
+    const [passwordProps, setPasswordError] = useInput();
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(false)
-    const dispatch = useDispatch()
     const router = useRouter()
+
+
 
     const validateInputs = () => {
         let valid = true;
@@ -47,20 +52,10 @@ function Login() {
         setLoading(true)
 
         try {
-
-            let email = emailProps.value;
-            let password = passwordProps.value;
-
-            const response = await axios.post('/api/login', { email, password })
-            const user = response.data.user;
+            const cred = await signInWithEmailAndPassword(auth, emailProps.value, passwordProps.value);
+            console.log(`cred =>`, cred);
             setError(false)
-            console.log(`request response =>`, response)
-            dispatch(userSlice.actions.loginSuccess(user))
-            // navigate
-            router.push({
-                pathname: '/my-account',
-                query: {}
-            }, undefined, {})
+            router.push('/')
         } catch (err) {
             console.error(err)
             setError(true)
@@ -82,20 +77,12 @@ function Login() {
                     <div className={formWrapper}>
                         <form onSubmit={handleSubmit}>
                             <h3 className={heading}>تسجيل دخول</h3>
-                            <div className={`${inputControl} ${emailProps.error ? inputControlError : ''}`}>
-                                <label htmlFor="nameInput">البريد الالكتروني</label>
-                                <input type="text" id='nameInput' onChange={emailChange} />
-                                {emailProps.error ? <p className={helperText}>{emailProps.helperText}</p> : null}
-                            </div>
-                            <div className={`${inputControl} ${passwordProps.error ? inputControlError : ''}`}>
-                                <label htmlFor="nameInput">كلمة السر</label>
-                                <input type="text" id='nameInput' onChange={passwordChange} />
-                                {passwordProps.error ? <p className={helperText}>{passwordProps.helperText}</p> : null}
-                            </div>
+                            <InputControl props={emailProps} label='البريد الالكتروني' />
+                            <InputControl props={passwordProps} label='كلمة السر' />
                             {
-                                !!error && <p className='my-2 text-danger'>حدث خطأ اثناء محاولة انشاء حساب الرجاء اعادة المحاولة</p>
+                                !!error && <p className='my-2 text-danger'>حدث خطأ اثناء محاولة تسجيل الدخول الرجاء اعادة المحاولة</p>
                             }
-                            <button type="submit" className={submit}>{loading ? <span className={formButtonLoading}></span> : 'تسجيل'}</button>
+                            <FormLoadingButton text='تسجيل' loading={loading} />
                         </form>
                     </div>
                 </div>

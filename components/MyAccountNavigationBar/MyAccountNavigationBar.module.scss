@@ -1,0 +1,31 @@
+@use "../../styles/variables.scss" as *;
+
+.bar {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex-grow: 1;
+  padding-left: 25px;
+  a,
+  button {
+    color: $black;
+    background-color: rgb(233, 233, 233);
+    padding: 10px;
+    display: block;
+    text-decoration: none;
+    border: none;
+    outline: none;
+    text-align: right;
+
+    &.active {
+      color: $green;
+      background-color: rgb(212, 212, 212);
+    }
+  }
+}
+
+@include laptop {
+  .bar {
+    padding: 0;
+  }
+}

@@ -1,17 +1,29 @@
 import Image from "next/image";
 import Link from "next/link";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FaSearch, FaBars } from "react-icons/fa";
 import styles from "./Navbar.module.scss";
 import { IoClose } from "react-icons/io5";
+import { useAuthState } from 'react-firebase-hooks/auth'
+import { auth } from '../../utils/firebase';
+import { signOut } from 'firebase/auth';
+import { useRouter } from 'next/router';
+
+
 function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
+  const [authUser, loading] = useAuthState(auth)
+  const [user, setUser] = useState(null)
   const open = () => {
     setIsOpen(true);
   };
   const close = () => {
     setIsOpen(false);
   };
+  useEffect(() => {
+
+    setUser(authUser)
+  }, [authUser])
   return (
     <div className={styles.navbar}>
       <div className={styles.container + " container"}>
@@ -44,25 +56,73 @@ function Navbar() {
           ابحث عن كتاب
         </Link>
       </div>
-      <ul className={`${styles.menu} ${isOpen ? styles.active : ""}`}>
-        <li>
-          <Link href={"/"}>الصفحة الرئيسية</Link>
-        </li>
-        <li>
-          <Link href={"/cart"}>سلة المشتريات</Link>
-        </li>
-        <li>
-          <Link href={"/order-services"}>الدعم الفني للطلبات</Link>
-        </li>
-        <li>
-          <Link href='/signup'>عضو جديد؟ سجل الآن!</Link>
-        </li>
-        <li>
-          <Link href='/login'>سجل الدخول</Link>
-        </li>
-      </ul>
+      {
+        user ? <MenuWithUser isOpen={isOpen} close={close} user={user} /> : <MenuWithoutUser isOpen={isOpen} />
+      }
     </div>
   );
+}
+
+function MenuWithUser({ isOpen, user, close }) {
+
+  const router = useRouter()
+
+
+  const signout = () => {
+    signOut(auth);
+    close()
+    router.reload()
+  }
+
+  return (
+    <ul className={`${styles.menu} ${isOpen ? styles.active : ""}`}>
+      <li>
+        <Link href="/">الصفحة الرئيسية</Link>
+      </li>
+      <li>
+        <Link href="/hello">مرحبًا {user?.displayName}</Link>
+      </li>
+      <li>
+        <Link href="/cart">سلة المشتريات</Link>
+      </li>
+      <li>
+        <Link href='/my-account'>حسابي</Link>
+      </li>
+      <li>
+        <Link href="/order-services">الدعم الفني للطلبات</Link>
+      </li>
+      <li>
+        <Link href='/my-account/orders'>الطلبات</Link>
+      </li>
+      <li>
+        <Link href='/my-account/edit-address'>عناويني</Link>
+      </li>
+      <li>
+        <Link href='/signout' onClick={signout}>سجل الخروج</Link>
+      </li>
+    </ul>
+  )
+}
+function MenuWithoutUser({ isOpen }) {
+  return (
+    <ul className={`${styles.menu} ${isOpen ? styles.active : ""}`}>
+      <li>
+        <Link href="/">الصفحة الرئيسية</Link>
+      </li>
+      <li>
+        <Link href="/cart">سلة المشتريات</Link>
+      </li>
+      <li>
+        <Link href="/order-services">الدعم الفني للطلبات</Link>
+      </li>
+      <li>
+        <Link href='/signup'>عضو جديد؟ سجل الآن!</Link>
+      </li>
+      <li>
+        <Link href='/login'>سجل الدخول</Link>
+      </li>
+    </ul>
+  )
 }
 
 export default Navbar;

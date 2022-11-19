@@ -9,19 +9,21 @@ import CounterBox from "../components/CounterBox/CounterBox";
 import ProductsGrid from "../components/ProductsGrid/ProductsGrid";
 import Button from "../components/Button/Button";
 import Footer from "../components/Footer/Footer";
-
+import { useAuthState } from 'react-firebase-hooks/auth'
+import { auth } from '../utils/firebase'
 export default function Home({ products }) {
+  const cred = useAuthState(auth)
   useEffect(() => {
     import("@lottiefiles/lottie-player");
 
 
-
   }, []);
+  console.log(cred)
 
   return (
     <>
       <Head>
-        <title>Asfar Bookstore</title>
+        <title>أسفار - كل كتبك عندنا</title>
       </Head>
 
       <Navbar />

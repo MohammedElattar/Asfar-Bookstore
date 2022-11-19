@@ -1,16 +1,18 @@
-import axios from 'axios';
 import Head from "next/head";
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 import Navbar from '../components/Navbar/Navbar';
 import useInput from "../hooks/useInput";
-import { formWrapper, formContainer, submit, heading, formButtonLoading, inputControl, error as inputControlError, helperText } from '../styles/form.module.scss'
+import { formWrapper, formContainer, heading } from '../styles/form.module.scss'
 import { useDispatch } from 'react-redux'
-import { userSlice } from '../app/userSlice';
+import InputControl from '../components/InputControl/InputControl';
+import FormLoadingButton from '../components/FormLoadingButton/FormLoadingButton';
+import { auth } from '../utils/firebase';
+import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
 function Signup() {
-    const [nameProps, nameChange, setNameError] = useInput();
-    const [emailProps, emailChange, setEmailError] = useInput();
-    const [passwordProps, passwordChange, setPasswordError] = useInput();
+    const [nameProps, setNameError] = useInput();
+    const [emailProps, setEmailError] = useInput();
+    const [passwordProps, setPasswordError] = useInput();
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(false)
     const dispatch = useDispatch()
@@ -51,31 +53,25 @@ function Signup() {
 
         setLoading(true)
 
-
         try {
-
             let name = nameProps.value;
             let password = passwordProps.value;
             let email = emailProps.value;
-            console.log(`reach`)
 
-            const response = await axios.post('/api/signup', { name, password, email })
-            const user = response.data.user
-            console.log(`request response =>`, response)
+            const cred = await createUserWithEmailAndPassword(auth, email, password);
+            await updateProfile(cred.user, {
+                displayName: name,
+            });
+
             setError(false)
-            dispatch(userSlice.actions.loginSuccess(user))
-            // navigate
-            router.push({
-                pathname: '/my-account',
-                query: {}
-            }, undefined, {})
-
+            router.push('/')
         } catch (err) {
             console.error(err)
             setError(true)
         } finally {
             setLoading(false)
         }
+
     };
 
     return (
@@ -91,25 +87,13 @@ function Signup() {
                     <div className={formWrapper}>
                         <form onSubmit={handleSubmit}>
                             <h3 className={heading}>انشاء حساب</h3>
-                            <div className={`${inputControl} ${nameProps.error ? inputControlError : ''}`}>
-                                <label htmlFor="nameInput">الاسم</label>
-                                <input type="text" id='nameInput' onChange={nameChange} />
-                                {nameProps.error ? <p className={helperText}>{nameProps.helperText}</p> : null}
-                            </div>
-                            <div className={`${inputControl} ${emailProps.error ? inputControlError : ''}`}>
-                                <label htmlFor="nameInput">البريد الالكتروني</label>
-                                <input type="text" id='nameInput' onChange={emailChange} />
-                                {emailProps.error ? <p className={helperText}>{emailProps.helperText}</p> : null}
-                            </div>
-                            <div className={`${inputControl} ${passwordProps.error ? inputControlError : ''}`}>
-                                <label htmlFor="nameInput">كلمة السر</label>
-                                <input type="text" id='nameInput' onChange={passwordChange} />
-                                {passwordProps.error ? <p className={helperText}>{passwordProps.helperText}</p> : null}
-                            </div>
+                            <InputControl props={nameProps} label='الاسم' />
+                            <InputControl props={emailProps} label='البريد الالكتروني' />
+                            <InputControl props={passwordProps} label='كلمة السر' />
                             {
                                 !!error && <p className='my-2 text-danger'>حدث خطأ اثناء محاولة انشاء حساب الرجاء اعادة المحاولة</p>
                             }
-                            <button type="submit" className={submit}>{loading ? <span className={formButtonLoading}></span> : 'انشاء'}</button>
+                            <FormLoadingButton loading={loading} text='انشاء حساب' />
                         </form>
                     </div>
                 </div>
