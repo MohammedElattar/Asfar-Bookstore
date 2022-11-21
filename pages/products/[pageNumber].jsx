@@ -5,20 +5,25 @@ import { FaSearch } from "react-icons/fa";
 import ActiveLink from "../../components/ActiveLink";
 import Footer from "../../components/Footer/Footer";
 import Navbar from "../../components/Navbar/Navbar";
+import Pagination from '../../components/Pagination/Pagination';
 import ProductsGrid from "../../components/ProductsGrid/ProductsGrid";
 import useQueryInput from '../../hooks/useQueryInput.js';
+import { getCategories } from '../../json/categories';
+import { getAll, getPage } from '../../json/products';
+import { getPublishers } from '../../json/publishers';
+import { getWritters } from '../../json/writters';
+
 
 export default function FindProduct({
-    products,
     publishers,
     writters,
     categories,
-    error
+    products
 }) {
-    useEffect(() => {
-        console.log(products)
-        console.log(error)
-    }, []);
+
+
+    // useEffect(() => {
+    // }, []);
 
     return (
         <>
@@ -41,8 +46,8 @@ export default function FindProduct({
 }
 
 function Search() {
-    const [text, setText] = useState("");
     const router = useRouter();
+    const [text, setText] = useState(router.query?.q || '');
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -100,17 +105,7 @@ function ProductsWrapper({ products }) {
             <div className="content">
                 <ProductsGrid products={products} />
             </div>
-            <div className="pagination">
-                <ActiveLink href="/products/1">1</ActiveLink>
-                <ActiveLink href="/products/2">2</ActiveLink>
-                <ActiveLink href="/products/3">3</ActiveLink>
-                <ActiveLink href="/products/4">4</ActiveLink>
-                <ActiveLink href="/products/5">5</ActiveLink>
-                <ActiveLink href="/products/6">6</ActiveLink>
-                <ActiveLink href="/products/7">7</ActiveLink>
-                <ActiveLink href="/products/8">8</ActiveLink>
-                <ActiveLink href="/products/9">9</ActiveLink>
-            </div>
+            <Pagination max={50} />
         </div>
     );
 }
@@ -293,83 +288,35 @@ function SortingTools({ publishers, writters, categories }) {
 
 
 export async function getServerSideProps(context) {
-    const pageNumber = context.params.pageNumber;
     const url = (await import("url")).default;
     const queryObject = url.parse(context.req.url, true).query;
+    const page = queryObject.pageNumber
     const searchString = queryObject.q;
-    const writtersString = queryObject.writters;
-    const publishersString = queryObject.publishers
+    const writtersArray = queryObject.writters?.split(',').filter(e => e) || []
+    const publishersArray = queryObject.publishers?.split(',').filter(e => e) || []
+
 
     try {
-        const productsPromise = import(`../../products/page${pageNumber}.json`);
-        const publishersObjectPromise = import("../../products/publishers.json");
-        const writtersObjectPromise = import("../../products/writters.json");
-        const categoriesObjectPromise = import("../../products/categories.json");
         const props = {}
 
-        let allProducts =
-            Promise.allSettled([
-                import("../../products/page1.json"),
-                import("../../products/page2.json"),
-                import("../../products/page3.json"),
-                import("../../products/page4.json"),
-                import("../../products/page5.json"),
-                import("../../products/page6.json"),
-                import("../../products/page7.json"),
-                import("../../products/page8.json"),
-                import("../../products/page9.json"),
-            ])
+        props.publishers = getPublishers()
+        props.writters = getWritters()
+        props.categories = getCategories()
 
-        const publishersObject = await publishersObjectPromise;
-        const writtersObject = await writtersObjectPromise;
-        const categoriesObject = await categoriesObjectPromise;
-
-        props.products = (await productsPromise).default
-
-
-        //
-        const publishersArray = [];
-        for (let pub in publishersObject.default) {
-            publishersArray.push({ name: pub, number: publishersObject[pub] });
-        }
-        props.publishers = publishersArray.sort((a, b) => b.number - a.number)
-        //
-
-        //
-        const writtersArray = [];
-        for (let writter in writtersObject.default) {
-            writtersArray.push({ name: writter, number: writtersObject[writter] });
-        }
-        props.writters = writtersArray.sort((a, b) => b.number - a.number)
-        //
-
-        //
-        const categoriesArray = [];
-        for (let category in categoriesObject.default) {
-            categoriesArray.push({
-                name: category,
-                number: categoriesObject[category],
-            });
-        }
-        props.categories = categoriesArray.sort((a, b) => b.number - a.number)
-        //
-
-        if (!pageNumber || searchString) {
-            props.products = (await allProducts).map(e => e.value?.default).flat();
-        }
-
-        if (searchString) {
-            props.products = props.products.filter((e) => e.post_title.includes(searchString))
-        }
-
-        const queryWrittersArray = writtersString?.split(',').filter(e => e) || [];
-        if (queryWrittersArray.length) {
-            props.products = props.products.filter((e) => queryWrittersArray.includes(e.post_author?.display_name))
-        }
-
-        const queryPublishersArray = publishersString?.split(',').filter(e => e) || [];
-        if (queryPublishersArray.length) {
-            props.products = props.products.filter((e) => queryPublishersArray.includes(e?.taxonomies?.wcpv_product_vendors[0]))
+        if (searchString || writtersArray.length || publishersArray.length) {
+            const all = getAll();
+            const filtered = all.filter(e => searchString ? e.title.includes(searchString) : true)
+                .filter(e => writtersArray.length ? writtersArray.includes(e.writter?.at(0)) : true)
+                .filter(e => publishersArray.length ? (publishersArray.includes(e.publisher?.at(0)) || publishersArray.includes(e.vendors?.at(0))) : true)
+            props.products = filtered
+        } else {
+            const pageProducts = getPage(page);
+            if (!pageProducts) {
+                return {
+                    notFound: true
+                }
+            }
+            props.products = pageProducts
         }
 
 
@@ -377,10 +324,9 @@ export async function getServerSideProps(context) {
             props
         };
     } catch (err) {
+        console.error(err)
         return {
-            props: {
-                error: err.message,
-            },
-        };
+            props: {}
+        }
     }
 }

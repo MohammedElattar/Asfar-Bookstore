@@ -8,22 +8,18 @@ import { useAuthState } from 'react-firebase-hooks/auth'
 import { auth } from '../../utils/firebase';
 import { signOut } from 'firebase/auth';
 import { useRouter } from 'next/router';
+import { useSelector } from 'react-redux';
 
 
 function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
-  const [authUser, loading] = useAuthState(auth)
-  const [user, setUser] = useState(null)
+  const user = useSelector(state => state.user.user)
   const open = () => {
     setIsOpen(true);
   };
   const close = () => {
     setIsOpen(false);
   };
-  useEffect(() => {
-
-    setUser(authUser)
-  }, [authUser])
   return (
     <div className={styles.navbar}>
       <div className={styles.container + " container"}>
@@ -80,7 +76,7 @@ function MenuWithUser({ isOpen, user, close }) {
         <Link href="/">الصفحة الرئيسية</Link>
       </li>
       <li>
-        <Link href="/hello">مرحبًا {user?.displayName}</Link>
+        <Link href="/my-account">مرحبًا {user?.name}</Link>
       </li>
       <li>
         <Link href="/cart">سلة المشتريات</Link>

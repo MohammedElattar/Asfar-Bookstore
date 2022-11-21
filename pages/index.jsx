@@ -9,16 +9,13 @@ import CounterBox from "../components/CounterBox/CounterBox";
 import ProductsGrid from "../components/ProductsGrid/ProductsGrid";
 import Button from "../components/Button/Button";
 import Footer from "../components/Footer/Footer";
-import { useAuthState } from 'react-firebase-hooks/auth'
-import { auth } from '../utils/firebase'
+import { db } from '../utils/firebase'
+import { collection, getDocs } from 'firebase/firestore';
+
 export default function Home({ products }) {
-  const cred = useAuthState(auth)
   useEffect(() => {
     import("@lottiefiles/lottie-player");
-
-
   }, []);
-  console.log(cred)
 
   return (
     <>
@@ -218,12 +215,12 @@ function MostSalled({ products }) {
 }
 
 export async function getStaticProps() {
-  const data = await import("../products/page1.json");
-  const products = data.default
+  const snapshot = await getDocs(collection(db, '/books'))
+  const books = snapshot.docs.map(e => ({ ...e.data(), id: e.id }))
 
   return {
     props: {
-      products,
+      products: books,
     },
   };
 }

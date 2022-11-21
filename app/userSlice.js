@@ -7,7 +7,14 @@ export const userSlice = createSlice({
   },
   reducers: {
     setUser(state, action) {
-      state.user = action.payload;
+      if (action.payload) {
+        state.user = {
+          name: action.payload?.displayName,
+          uid: action.payload?.uid,
+        };
+      } else {
+        state.user = null;
+      }
     },
   },
 });

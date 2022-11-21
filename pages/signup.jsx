@@ -64,7 +64,7 @@ function Signup() {
             });
 
             setError(false)
-            router.push('/')
+            router.push('/my-account')
         } catch (err) {
             console.error(err)
             setError(true)

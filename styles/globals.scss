@@ -2,7 +2,6 @@
 @import "../components/Button/Button.scss";
 @import "index.scss";
 @import "../components/Footer/Footer.scss";
-@import "../components/ProductsGrid/ProductsGrid.scss";
 @import "./find-product.scss";
 * {
   box-sizing: border-box;
@@ -57,14 +56,13 @@ html {
   }
 }
 
-// .main-btn {
-//   border-color: $yellow;
-//   color: $yellow;
-//   .icon {
-//     background-color: $yellow;
-//   }
-// }
-// .main-btn:hover {
-//   background-color: $yellow;
-//   color: #fff;
-// }
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+  background-color: #ccc;
+  cursor: pointer;
+}
+::-webkit-scrollbar-thumb {
+  background-color: $green;
+  border-radius: 1000px;
+}

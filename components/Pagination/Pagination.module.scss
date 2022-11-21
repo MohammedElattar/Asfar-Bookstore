@@ -1,0 +1,31 @@
+@use "../../styles/variables.scss" as *;
+
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  a {
+    color: $black;
+    width: 40px;
+    height: 40px;
+    background-color: #eee;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    font-size: 18px;
+    &.active {
+      background-color: $green;
+      color: #fff;
+    }
+  }
+  a:last-child {
+    border-radius: 5px 0 0 5px;
+  }
+  a:first-child {
+    border-radius: 0 5px 5px 0;
+  }
+  a:not(:last-child) {
+    border-left: 1px solid #ccc;
+  }
+}

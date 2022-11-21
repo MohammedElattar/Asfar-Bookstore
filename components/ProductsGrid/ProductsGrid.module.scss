@@ -1,3 +1,5 @@
+@use "../../styles/variables.scss" as *;
+
 .product {
   display: grid;
   grid-template-columns: 1fr;
@@ -9,25 +11,26 @@
     aspect-ratio: 3 / 4;
     height: auto !important;
     object-fit: cover;
+    border-radius: 5px;
   }
   .info {
     padding: 10px 0;
-    .product-title {
+    .productTitle {
       color: $green;
       font-size: 16px;
       font-weight: bold;
     }
-    .product-price {
+    .productPrice {
       color: rgb(14, 173, 41);
     }
-    .product-seller {
+    .productSeller {
       font-style: italic;
       span {
         color: $green;
         font-weight: 500;
       }
     }
-    .add-to-cart {
+    .addToCart {
       color: rgba(0, 0, 0, 0.7);
       background-color: rgba(0, 0, 0, 0.1);
       border: none;

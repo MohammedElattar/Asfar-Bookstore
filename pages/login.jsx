@@ -55,7 +55,7 @@ function Login() {
             const cred = await signInWithEmailAndPassword(auth, emailProps.value, passwordProps.value);
             console.log(`cred =>`, cred);
             setError(false)
-            router.push('/')
+            router.push('/my-account')
         } catch (err) {
             console.error(err)
             setError(true)

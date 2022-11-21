@@ -1,48 +1,45 @@
 import Image from "next/image";
 import Link from 'next/link';
-
+import s from './ProductsGrid.module.scss'
 function ProductsGrid({ products, price }) {
   return (
-    <div className="row products-grid">
-      {products?.map(({ post_id, post_title, taxonomies, images }) => (
-        <Link href={`/products/product/${post_id}`} className="product col-12 col-md-6 col-lg-3 p-3" key={post_id}>
-          <div className="img">
-            {images?.thumbnail?.url ? (
+    <div className="row">
+      {products?.map(({ id, title, publisher, img, vendors, index }) => (
+        <Link href={`/products/product/${id}`} className={`${s.product} col-12 col-md-6 col-lg-3 p-3`} key={id || index}>
+          <div className={s.img}>
+            {img ? (
               <Image
-                src={images?.thumbnail?.url?.replace("150x150", "330x452")}
-                alt={post_title}
+                src={img}
+                alt={title}
                 width={200}
                 height={350}
+                priority
               />
             ) : (
               <Image
                 src='https://assets.asfar.io/uploads/2022/01/19092920/woocommerce-placeholder-300x300.png'
-                alt={post_title}
+                alt={title}
                 width={200}
                 height={350}
-                style={{
-                  width: "100%",
-                  aspectRatio: "3/4",
-                  backgroundColor: "rgba(0, 0, 0, 0.3)",
-                }}
+                priority
               />
             )}
           </div>
-          <div className="info d-flex flex-column justify-content-between">
+          <div className={`${s.info} d-flex flex-column justify-content-between`}>
             <div>
-              <h3 className="product-title">{post_title}</h3>
+              <h3 className={s.productTitle}>{title}</h3>
               {
-                price ? <span className="product-price">40EGP</span> : null
+                price ? <span className={s.productPrice}>40EGP</span> : null
               }
-              <p className="product-seller">
+              <p className={s.productSeller}>
                 البائع:
                 <span>
-                  {taxonomies?.pa_publisher?.at(0) ||
-                    taxonomies?.wcpv_product_vendors?.at(0)}
+                  {publisher?.at(0) ||
+                    vendors?.at(0)}
                 </span>
               </p>
             </div>
-            <button className="add-to-cart">إضافة إلى السلة</button>
+            <button className={s.addToCart}>إضافة إلى السلة</button>
           </div>
         </Link>
       ))}
