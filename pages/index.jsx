@@ -9,8 +9,9 @@ import CounterBox from "../components/CounterBox/CounterBox";
 import ProductsGrid from "../components/ProductsGrid/ProductsGrid";
 import Button from "../components/Button/Button";
 import Footer from "../components/Footer/Footer";
-import { db } from '../utils/firebase'
-import { collection, getDocs } from 'firebase/firestore';
+import { db } from "../utils/firebase";
+import { collection, getDocs } from "firebase/firestore";
+import { getPage } from "../json/products";
 
 export default function Home({ products }) {
   useEffect(() => {
@@ -198,7 +199,7 @@ function RecentlyArrived({ products }) {
     <div className="py-5">
       <h1 className="title">وصل حديثًا</h1>
       <div className="container products-grid">
-        <ProductsGrid products={products} price />
+        <ProductsGrid products={products} />
       </div>
     </div>
   );
@@ -208,19 +209,18 @@ function MostSalled({ products }) {
     <div className="py-5">
       <h1 className="title">الأكثر مبيعًا</h1>
       <div className="container products-grid">
-        <ProductsGrid products={products} price />
+        <ProductsGrid products={products} />
       </div>
     </div>
   );
 }
 
 export async function getStaticProps() {
-  const snapshot = await getDocs(collection(db, '/books'))
-  const books = snapshot.docs.map(e => ({ ...e.data(), id: e.id }))
+  const products = getPage(5);
 
   return {
     props: {
-      products: books,
+      products,
     },
   };
 }

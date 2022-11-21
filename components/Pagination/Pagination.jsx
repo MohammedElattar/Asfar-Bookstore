@@ -1,6 +1,8 @@
 import s from './Pagination.module.scss'
 import ActiveLink from '../ActiveLink'
 import { useRouter } from 'next/router'
+import Link from 'next/link';
+import { BiArrowToLeft, BiArrowToRight } from 'react-icons/bi';
 
 function Pagination({ max }) {
     const router = useRouter();
@@ -26,9 +28,15 @@ function Pagination({ max }) {
 
     return (
         <div className={s.pagination}>
+            {
+                pageNumber > 1 ? <Link href='/products/0'><BiArrowToRight /></Link> : null
+            }
             {before}
             <ActiveLink href={`/products/${pageNumber}`} activeClassName={s.active}>{pageNumber}</ActiveLink>
             {after}
+            {
+                pageNumber < max ? <Link href={`/products/${max}`}><BiArrowToLeft /></Link> : null
+            }
         </div>
     )
 }
