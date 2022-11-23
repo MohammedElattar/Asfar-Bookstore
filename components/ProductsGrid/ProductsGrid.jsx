@@ -12,14 +12,13 @@ function ProductsGrid({ products }) {
         >
           <div className={s.img}>
             {img ? (
-              <Image src={img} alt={title} width={200} height={350} priority />
+              <Image src={img} alt={title} width={200} height={350} />
             ) : (
               <Image
                 src="https://assets.asfar.io/uploads/2022/01/19092920/woocommerce-placeholder-300x300.png"
                 alt={title}
                 width={200}
                 height={350}
-                priority
               />
             )}
           </div>

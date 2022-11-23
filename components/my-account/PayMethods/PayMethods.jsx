@@ -1,8 +1,7 @@
-import Message from "../../Message/Message";
-import s from "./Downloads.module.scss";
 import { FaRegWindowMaximize } from "react-icons/fa";
-
-function Downloads() {
+import Message from "../../Message/Message";
+import s from "./PayMethods.module.scss";
+function PayMethods() {
   return (
     <Message
       icon={
@@ -11,9 +10,8 @@ function Downloads() {
         </div>
       }
       text="لا توجد عناصر متاحة قابلة للتنزيل حاليًا."
-      button={{ text: "تصفُّح المنتجات", href: "/products/1" }}
     />
   );
 }
 
-export default Downloads;
+export default PayMethods;

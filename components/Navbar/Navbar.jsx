@@ -1,19 +1,17 @@
 import Image from "next/image";
 import Link from "next/link";
-import React, { useEffect, useState } from "react";
+import { useState } from "react";
 import { FaSearch, FaBars } from "react-icons/fa";
 import styles from "./Navbar.module.scss";
 import { IoClose } from "react-icons/io5";
-import { useAuthState } from 'react-firebase-hooks/auth'
-import { auth } from '../../utils/firebase';
-import { signOut } from 'firebase/auth';
-import { useRouter } from 'next/router';
-import { useSelector } from 'react-redux';
-
+import { auth } from "../../utils/firebase";
+import { signOut } from "firebase/auth";
+import { useRouter } from "next/router";
+import { useSelector } from "react-redux";
 
 function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
-  const user = useSelector(state => state.user.user)
+  const user = useSelector((state) => state.user.user);
   const open = () => {
     setIsOpen(true);
   };
@@ -38,7 +36,7 @@ function Navbar() {
           </button>
         )}
 
-        <Link href='/' className={styles.logo}>
+        <Link href="/" className={styles.logo}>
           <Image
             src="/images/asfar-logo.png"
             width={130}
@@ -52,26 +50,29 @@ function Navbar() {
           ابحث عن كتاب
         </Link>
       </div>
-      {
-        user ? <MenuWithUser isOpen={isOpen} close={close} user={user} /> : <MenuWithoutUser isOpen={isOpen} />
-      }
+      {user ? (
+        <MenuWithUser isOpen={isOpen} close={close} user={user} />
+      ) : (
+        <MenuWithoutUser isOpen={isOpen} close={close} />
+      )}
     </div>
   );
 }
 
 function MenuWithUser({ isOpen, user, close }) {
-
-  const router = useRouter()
-
+  const router = useRouter();
 
   const signout = () => {
     signOut(auth);
-    close()
-    router.reload()
-  }
+    close();
+    router.reload();
+  };
 
   return (
-    <ul className={`${styles.menu} ${isOpen ? styles.active : ""}`}>
+    <ul
+      className={`${styles.menu} ${isOpen ? styles.active : ""}`}
+      onClick={close}
+    >
       <li>
         <Link href="/">الصفحة الرئيسية</Link>
       </li>
@@ -82,26 +83,31 @@ function MenuWithUser({ isOpen, user, close }) {
         <Link href="/cart">سلة المشتريات</Link>
       </li>
       <li>
-        <Link href='/my-account'>حسابي</Link>
+        <Link href="/my-account">حسابي</Link>
       </li>
       <li>
         <Link href="/order-services">الدعم الفني للطلبات</Link>
       </li>
       <li>
-        <Link href='/my-account/orders'>الطلبات</Link>
+        <Link href="/my-account/orders">الطلبات</Link>
       </li>
       <li>
-        <Link href='/my-account/edit-address'>عناويني</Link>
+        <Link href="/my-account/edit-address">عناويني</Link>
       </li>
       <li>
-        <Link href='/signout' onClick={signout}>سجل الخروج</Link>
+        <Link href="/signout" onClick={signout}>
+          سجل الخروج
+        </Link>
       </li>
     </ul>
-  )
+  );
 }
-function MenuWithoutUser({ isOpen }) {
+function MenuWithoutUser({ isOpen, close }) {
   return (
-    <ul className={`${styles.menu} ${isOpen ? styles.active : ""}`}>
+    <ul
+      className={`${styles.menu} ${isOpen ? styles.active : ""}`}
+      onClick={close}
+    >
       <li>
         <Link href="/">الصفحة الرئيسية</Link>
       </li>
@@ -112,13 +118,13 @@ function MenuWithoutUser({ isOpen }) {
         <Link href="/order-services">الدعم الفني للطلبات</Link>
       </li>
       <li>
-        <Link href='/signup'>عضو جديد؟ سجل الآن!</Link>
+        <Link href="/signup">عضو جديد؟ سجل الآن!</Link>
       </li>
       <li>
-        <Link href='/login'>سجل الدخول</Link>
+        <Link href="/login">سجل الدخول</Link>
       </li>
     </ul>
-  )
+  );
 }
 
 export default Navbar;

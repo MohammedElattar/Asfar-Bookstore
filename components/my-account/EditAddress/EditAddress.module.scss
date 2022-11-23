@@ -1,0 +1,51 @@
+.subtitle {
+  color: #777;
+  margin: 0;
+}
+.title {
+  font-size: 25px;
+}
+.wrapper {
+  border: 1px solid #ccc;
+  padding: 10px;
+  border-radius: 5px;
+  margin-top: 20px;
+  .addAddress {
+    border: none;
+    background-color: transparent;
+    outline: none;
+    font-size: 14px;
+    color: #055250;
+  }
+  .noAddress {
+    color: #777;
+    font-style: italic;
+    margin-top: 20px;
+  }
+}
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding-top: 20px;
+  label {
+    font-size: 16px !important;
+    font-weight: 500;
+    color: #777;
+  }
+  .changePasswordTitle {
+    font-weight: bold;
+    font-size: 18px;
+    margin: 20px 0;
+  }
+  .submitBtn {
+    background-color: #40abcc;
+    background-image: none;
+    // padding: 5px 15px;
+    font-size: 16px;
+    &:hover {
+      background-color: #3691ad;
+      transform: none;
+    }
+  }
+}

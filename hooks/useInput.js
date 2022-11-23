@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 
-function useInput() {
+function useInput(defaultValue = "") {
   const [props, setProps] = useState({
     error: false,
     helperText: "",
-    value: "",
+    value: defaultValue,
 
     onChange(e) {
       setProps((prevProps) => ({

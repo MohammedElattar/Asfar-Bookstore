@@ -1,0 +1,25 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  label {
+    font-size: 16px !important;
+    font-weight: 500;
+    color: #777;
+  }
+  .changePasswordTitle {
+    font-weight: bold;
+    font-size: 18px;
+    margin: 20px 0;
+  }
+  .submitBtn {
+    background-color: #40abcc;
+    background-image: none;
+    // padding: 5px 15px;
+    font-size: 16px;
+    &:hover {
+      background-color: #3691ad;
+      transform: none;
+    }
+  }
+}

@@ -12,13 +12,14 @@ const additionInfo = [
   { key: "الوزن", value: "0.5 kg" },
   { key: "ISBN", value: "123456789123456" },
   { key: "عدد الصفحات", value: "250" },
-  { key: "الناشر", value: "..." },
-  { key: "الكاتب", value: "..." },
+  { key: "الناشر", value: "غير معروف" },
+  { key: "الكاتب", value: "غير معروف" },
 ];
 
 export default function ProductPage({ product }) {
   let zoom = useRef(typeof window !== "undefined" ? mediumZoom() : null);
   const [qty, setQty] = useState(1);
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     const value = e.target.value;
@@ -35,8 +36,6 @@ export default function ProductPage({ product }) {
       <Head>
         <title>{product.title}</title>
       </Head>
-
-      <Navbar />
 
       {/* <div className={s.container}> */}
       <div className="container d-flex gap-4 flex-column flex-md-row py-5">
@@ -67,6 +66,7 @@ export default function ProductPage({ product }) {
             <FormLoadingButton
               text={`إضافة إلى السلة`}
               className={s.addToCart}
+              loading={loading}
             />
           </div>
           {vendor || publisher ? (
@@ -93,8 +93,6 @@ export default function ProductPage({ product }) {
           ))}
         </div>
       </div>
-
-      <Footer />
     </>
   );
 }

@@ -1,6 +1,4 @@
 import Head from "next/head";
-import Navbar from "../components/Navbar/Navbar";
-import { useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { BiArrowBack } from "react-icons/bi";
@@ -8,34 +6,21 @@ import { FaBook, FaCcMastercard, FaSearch, FaTruck } from "react-icons/fa";
 import CounterBox from "../components/CounterBox/CounterBox";
 import ProductsGrid from "../components/ProductsGrid/ProductsGrid";
 import Button from "../components/Button/Button";
-import Footer from "../components/Footer/Footer";
-import { db } from "../utils/firebase";
-import { collection, getDocs } from "firebase/firestore";
 import { getPage } from "../json/products";
 
 export default function Home({ products }) {
-  useEffect(() => {
-    import("@lottiefiles/lottie-player");
-  }, []);
-
   return (
     <>
       <Head>
         <title>أسفار - كل كتبك عندنا</title>
       </Head>
-
-      <Navbar />
-
-      <main>
-        <Landing />
-        <HelpingTools />
-        <Partners />
-        <UsedBooksStore />
-        <Program />
-        <RecentlyArrived products={products?.slice(0, 8)} />
-        <MostSalled products={products.slice(8, 16)} />
-        <Footer />
-      </main>
+      <Landing />
+      <HelpingTools />
+      <Partners />
+      <UsedBooksStore />
+      <Program />
+      <RecentlyArrived products={products?.slice(0, 8)} />
+      <MostSalled products={products.slice(8, 16)} />
     </>
   );
 }
@@ -64,13 +49,6 @@ function Landing() {
         <div className={"text-white text"}>
           <div className="d-flex align-items-end gap-5">
             <h4>جميع الإصدارات</h4>
-            <lottie-player
-              autoplay
-              loop
-              mode="normal"
-              src={"/micky-animation.json"}
-              style={{ width: "200px" }}
-            ></lottie-player>
           </div>
           <h1 className="fw-bold fs-1">نهضة مصر للصحافة</h1>
           <p className="my-4 fs-5">

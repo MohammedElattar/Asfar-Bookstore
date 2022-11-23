@@ -55,6 +55,13 @@ html {
     border-radius: 10px;
   }
 }
+button,
+a {
+  cursor: pointer;
+  text-decoration: none;
+  border: none;
+  outline: none;
+}
 
 ::-webkit-scrollbar {
   width: 10px;

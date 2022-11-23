@@ -1,11 +1,17 @@
 @use "../../styles/variables.scss" as *;
 
+.navigationBarWrapper {
+  position: relative;
+  padding-left: 25px;
+  flex-grow: 1;
+}
+
 .bar {
+  position: sticky;
+  top: 20px;
   display: flex;
   flex-direction: column;
   gap: 2px;
-  flex-grow: 1;
-  padding-left: 25px;
   a,
   button {
     color: $black;
