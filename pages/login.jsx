@@ -13,13 +13,11 @@ import {
   error as inputControlError,
   helperText,
 } from "../styles/form.module.scss";
-import { useDispatch } from "react-redux";
-import { userSlice } from "../app/userSlice";
 import { useRouter } from "next/router";
 import InputControl from "../components/InputControl/InputControl";
 import FormLoadingButton from "../components/FormLoadingButton/FormLoadingButton";
 import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../utils/firebase";
+import { auth } from "../utils/firebase.js";
 import Link from "next/link";
 function Login() {
   const [emailProps, setEmailError, setEmailProps] = useInput();

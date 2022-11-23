@@ -16,7 +16,7 @@
     border: none;
     font-size: 30px;
   }
-  .cart {
+  .cartButton {
     background-color: #fff;
     border: 1px solid #888;
     color: #555;
@@ -26,5 +26,47 @@
     background-color: #25d366;
     border: 1px solid #25d366;
     font-size: 40px;
+  }
+}
+
+.cart {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  right: 100vw;
+  width: 400px;
+  background-color: #fff;
+  z-index: 50;
+  padding: 20px;
+  transition: right 0.4s, opacity 0.2s;
+  opacity: 0;
+  &.cartActive {
+    opacity: 1;
+    right: calc(100vw - 417px);
+  }
+  header {
+    display: flex;
+    align-items: center;
+    justify-content: end;
+    button {
+      background-color: transparent;
+      font-size: 35px;
+    }
+  }
+}
+.overlay {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  z-index: 45;
+  z-index: -1;
+  opacity: 0;
+  transition: 0.3s;
+  &.overlayActive {
+    z-index: 1;
+    opacity: 1;
   }
 }

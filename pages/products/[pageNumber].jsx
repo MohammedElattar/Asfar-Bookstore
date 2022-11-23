@@ -98,11 +98,19 @@ function Search() {
 function ProductsWrapper({ products }) {
   return (
     <div className={s.products}>
-      <header>37,140نتيجة</header>
-      <div className={s.content}>
-        <ProductsGrid products={products} />
-      </div>
-      <Pagination max={50} />
+      {/* <header>37,140نتيجة</header> */}
+      {products?.length ? (
+        <>
+          <div className={s.content}>
+            <ProductsGrid products={products} />
+          </div>
+          <Pagination max={50} />
+        </>
+      ) : (
+        <p className="text-center fs-2" style={{ color: "#777" }}>
+          لا توجد نتائج
+        </p>
+      )}
     </div>
   );
 }

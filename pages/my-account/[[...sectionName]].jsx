@@ -2,7 +2,6 @@ import { signOut } from "firebase/auth";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useSelector } from "react-redux";
-import Footer from "../../components/Footer/Footer";
 import Dashboard from "../../components/my-account/Dashboard/Dashboard";
 import Downloads from "../../components/my-account/Downloads/Downloads";
 import EditAccount from "../../components/my-account/EditAccount/EditAccount";
@@ -10,9 +9,8 @@ import EditAddress from "../../components/my-account/EditAddress/EditAddress";
 import Orders from "../../components/my-account/Orders/Orders";
 import PayMethods from "../../components/my-account/PayMethods/PayMethods";
 import MyAccountNavigationBar from "../../components/MyAccountNavigationBar/MyAccountNavigationBar";
-import Navbar from "../../components/Navbar/Navbar";
 import s from "../../styles/my-account.module.scss";
-import { auth } from "../../utils/firebase";
+import { auth } from "../../utils/firebase.js";
 
 function MyAccount() {
   const router = useRouter();

@@ -5,7 +5,7 @@ import { Provider } from "react-redux";
 import { useEffect } from "react";
 import store from "../app/store";
 import { onAuthStateChanged } from "firebase/auth";
-import { auth } from "../utils/firebase";
+import { auth } from "../utils/firebase.js";
 import { userSlice } from "../app/userSlice";
 import Layout from "../components/Layout/Layout";
 function MyApp({ Component, pageProps }) {

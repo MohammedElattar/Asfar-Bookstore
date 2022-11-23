@@ -11,7 +11,7 @@ import {
 import { useDispatch } from "react-redux";
 import InputControl from "../components/InputControl/InputControl";
 import FormLoadingButton from "../components/FormLoadingButton/FormLoadingButton";
-import { auth } from "../utils/firebase";
+import { auth } from "../utils/firebase.js";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import Link from "next/link";
 function Signup() {
