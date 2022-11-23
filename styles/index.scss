@@ -69,17 +69,3 @@
     z-index: -1;
   }
 }
-
-@include tablet {
-  .home-landing {
-    .text {
-      .gap-5 {
-        gap: 0 !important;
-        lottie-player {
-          width: 100px !important;
-          height: 100px !important;
-        }
-      }
-    }
-  }
-}
