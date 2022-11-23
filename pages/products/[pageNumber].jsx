@@ -1,10 +1,7 @@
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
-import { FaSearch } from "react-icons/fa";
-import ActiveLink from "../../components/ActiveLink";
-import Footer from "../../components/Footer/Footer";
-import Navbar from "../../components/Navbar/Navbar";
+import { useState } from "react";
+import { FaFilter, FaSearch } from "react-icons/fa";
 import Pagination from "../../components/Pagination/Pagination";
 import ProductsGrid from "../../components/ProductsGrid/ProductsGrid";
 import useQueryInput from "../../hooks/useQueryInput.js";
@@ -12,6 +9,9 @@ import { getCategories } from "../../json/categories";
 import { getAll, getPage } from "../../json/products";
 import { getPublishers } from "../../json/publishers";
 import { getWritters } from "../../json/writters";
+import s from "../../styles/find-product.module.scss";
+import url from "url";
+import useMediaQuery from "../../hooks/useMediaQuery";
 
 export default function FindProduct({
   publishers,
@@ -28,7 +28,7 @@ export default function FindProduct({
         <title>ابحث عن كتاب... – أسفار</title>
       </Head>
       <Search />
-      <div className="container search-products-result d-flex">
+      <div className={`container ${s["search-products-result"]} d-flex`}>
         <SortingTools
           publishers={publishers}
           writters={writters}
@@ -75,13 +75,13 @@ function Search() {
     search(e.target.value);
   };
   return (
-    <div className="py-5 search-container">
+    <div className={`py-5 ${s["search-container"]}`}>
       <div className="container">
-        <form onSubmit={handleSubmit} className="search">
+        <form onSubmit={handleSubmit} className={s.search}>
           <button type="submit">
             <FaSearch />
           </button>
-          <div className="search-input">
+          <div className={s["search-input"]}>
             <input
               type="text"
               placeholder="ابحث عن كتاب، كاتب، دار نشر..."
@@ -97,9 +97,9 @@ function Search() {
 
 function ProductsWrapper({ products }) {
   return (
-    <div className="products">
+    <div className={s.products}>
       <header>37,140نتيجة</header>
-      <div className="content">
+      <div className={s.content}>
         <ProductsGrid products={products} />
       </div>
       <Pagination max={50} />
@@ -113,10 +113,10 @@ function Writters({ writters }) {
   const { handleInputChange } = useQueryInput("writters");
 
   return (
-    <div className="wrapper">
-      <h3 className="heading">الكتّاب</h3>
-      <div className="message">استخدم صندوق البحث لعرض المزيد من الكتاب</div>
-      <div className="search-input">
+    <div className={s.wrapper}>
+      <h3 className={s.heading}>الكتّاب</h3>
+      <div className={s.message}>استخدم صندوق البحث لعرض المزيد من الكتاب</div>
+      <div className={s["search-input"]}>
         <input
           type="text"
           placeholder="ابحث…"
@@ -124,12 +124,12 @@ function Writters({ writters }) {
           onChange={(e) => setText(e.target.value)}
         />
       </div>
-      <div className="fields">
+      <div className={s["fields"]}>
         {writters
           ?.filter((e) => (text ? e.name.includes(text) : true))
           .slice(0, expanded ? writters.length : 8)
           .map((writter) => (
-            <div className="field" key={writter.name}>
+            <div className={s["field"]} key={writter.name}>
               <input
                 type="checkbox"
                 id={writter.name}
@@ -145,7 +145,7 @@ function Writters({ writters }) {
 
       <button
         type="button"
-        className="sort-btn"
+        className={s["sort-btn"]}
         onClick={() => setExpanded((e) => !e)}
       >
         {expanded ? "اقل" : "المزيد"}
@@ -159,10 +159,12 @@ function Publishers({ publishers }) {
   const [expanded, setExpanded] = useState(false);
   const { handleInputChange } = useQueryInput("publishers");
   return (
-    <div className="wrapper">
-      <h3 className="heading">الناشرين</h3>
-      <div className="message">استخدم صندوق البحث لعرض المزيد من الناشرين</div>
-      <div className="search-input">
+    <div className={s.wrapper}>
+      <h3 className={s.heading}>الناشرين</h3>
+      <div className={s.message}>
+        استخدم صندوق البحث لعرض المزيد من الناشرين
+      </div>
+      <div className={s["search-input"]}>
         <input
           type="text"
           placeholder="ابحث…"
@@ -170,12 +172,12 @@ function Publishers({ publishers }) {
           onChange={(e) => setText(e.target.value)}
         />
       </div>
-      <div className="fields">
+      <div className={s.fields}>
         {publishers
           ?.filter((e) => (text ? e.name.includes(text) : true))
           .slice(0, expanded ? publishers.length : 8)
           .map((pub) => (
-            <div className="field" key={pub.name}>
+            <div className={s.field} key={pub.name}>
               <input
                 type="checkbox"
                 id={pub.name}
@@ -189,7 +191,7 @@ function Publishers({ publishers }) {
           ))}
       </div>
       <button
-        className="sort-btn"
+        className={s["sort-btn"]}
         type="button"
         onClick={() => setExpanded((e) => !e)}
       >
@@ -204,10 +206,12 @@ function Categories({ categories }) {
   const [expanded, setExpanded] = useState(false);
   const { handleInputChange } = useQueryInput("categories");
   return (
-    <div className="wrapper">
-      <h3 className="heading">التصنيفات</h3>
-      <div className="message">استخدم صندوق البحث لعرض المزيد من التصنيفات</div>
-      <div className="search-input">
+    <div className={s.wrapper}>
+      <h3 className={s.heading}>التصنيفات</h3>
+      <div className={s.message}>
+        استخدم صندوق البحث لعرض المزيد من التصنيفات
+      </div>
+      <div className={s["search-input"]}>
         <input
           type="text"
           placeholder="ابحث…"
@@ -215,12 +219,12 @@ function Categories({ categories }) {
           onChange={(e) => setText(e.target.value)}
         />
       </div>
-      <div className="fields">
+      <div className={s["fields"]}>
         {categories
           ?.filter((e) => (text ? e.name.includes(text) : true))
           .slice(0, expanded ? categories.length : 8)
           .map((category) => (
-            <div className="field" key={category.name}>
+            <div className={s["field"]} key={category.name}>
               <input
                 type="checkbox"
                 id={category.name}
@@ -234,7 +238,7 @@ function Categories({ categories }) {
           ))}
       </div>
       <button
-        className="sort-btn"
+        className={s["sort-btn"]}
         type="button"
         onClick={() => setExpanded((e) => !e)}
       >
@@ -248,10 +252,10 @@ function Status() {
   const [text, setText] = useState("");
   const { handleInputChange } = useQueryInput("status");
   return (
-    <div>
-      <h3 className="heading">الحالة</h3>
+    <div className={s.wrapper}>
+      <h3 className={s.heading}>الحالة</h3>
 
-      <div className="search-input">
+      <div className={s["search-input"]}>
         <input
           type="text"
           placeholder="ابحث…"
@@ -259,8 +263,8 @@ function Status() {
           onChange={(e) => setText(e.target.value)}
         />
       </div>
-      <div className="fields">
-        <div className="field">
+      <div className={s["fields"]}>
+        <div className={s["field"]}>
           <input
             type="checkbox"
             id="s1"
@@ -271,7 +275,7 @@ function Status() {
             <span>8619</span>
           </label>
         </div>
-        <div className="field">
+        <div className={s["field"]}>
           <input
             type="checkbox"
             id="s2"
@@ -288,18 +292,35 @@ function Status() {
 }
 
 function SortingTools({ publishers, writters, categories }) {
+  const [isActive, setActive] = useState(false);
+  const isSmallDevice = useMediaQuery("(max-width: 992px)");
   return (
-    <div className="sort-wrapper">
-      <Writters writters={writters} />
-      <Publishers publishers={publishers} />
-      <Categories categories={categories} />
-      <Status />
-    </div>
+    <>
+      <div className={`${s["sort-wrapper"]} ${isActive ? s.active : ""}`}>
+        <Writters writters={writters} />
+        <Publishers publishers={publishers} />
+        <Categories categories={categories} />
+        <Status />
+      </div>
+      {isSmallDevice && (
+        <button
+          type="button"
+          className={`${s.filterButton} ${isActive ? "" : s.buttonActive}`}
+          onClick={() => setActive(true)}
+        >
+          <FaFilter />
+          تصفية النتائج
+        </button>
+      )}
+      <div
+        className={`${s.overlay} ${isActive ? s.overlayActive : ""}`}
+        onClick={() => setActive(false)}
+      ></div>
+    </>
   );
 }
 
 export async function getServerSideProps(context) {
-  const url = (await import("url")).default;
   const queryObject = url.parse(context.req.url, true).query;
   const page = queryObject.pageNumber;
   const searchString = queryObject.q;

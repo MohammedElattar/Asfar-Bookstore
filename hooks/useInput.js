@@ -24,7 +24,7 @@ function useInput(defaultValue = "") {
     }
   };
 
-  return [props, setError];
+  return [props, setError, setProps];
 }
 
 export default useInput;

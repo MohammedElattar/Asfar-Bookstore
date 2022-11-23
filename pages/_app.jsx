@@ -11,7 +11,16 @@ import Layout from "../components/Layout/Layout";
 function MyApp({ Component, pageProps }) {
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
-      store.dispatch(userSlice.actions.setUser(user));
+      if (user) {
+        store.dispatch(
+          userSlice.actions.setUser({
+            name: user.displayName,
+            uid: user.uid,
+          })
+        );
+      } else {
+        store.dispatch(userSlice.actions.setUser(null));
+      }
     });
   }, []);
 

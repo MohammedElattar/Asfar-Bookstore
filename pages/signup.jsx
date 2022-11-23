@@ -13,6 +13,7 @@ import InputControl from "../components/InputControl/InputControl";
 import FormLoadingButton from "../components/FormLoadingButton/FormLoadingButton";
 import { auth } from "../utils/firebase";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
+import Link from "next/link";
 function Signup() {
   const [nameProps, setNameError] = useInput();
   const [emailProps, setEmailError] = useInput();
@@ -88,13 +89,23 @@ function Signup() {
               <h3 className={heading}>انشاء حساب</h3>
               <InputControl props={nameProps} label="الاسم" />
               <InputControl props={emailProps} label="البريد الالكتروني" />
-              <InputControl props={passwordProps} label="كلمة السر" />
+              <InputControl
+                props={passwordProps}
+                type="password"
+                label="كلمة السر"
+              />
               {!!error && (
                 <p className="my-2 text-danger">
                   حدث خطأ اثناء محاولة انشاء حساب الرجاء اعادة المحاولة
                 </p>
               )}
               <FormLoadingButton loading={loading} text="انشاء حساب" />
+              <p>
+                لديك حساب بالفعل!
+                <Link href="/login" className="text-decoration-underline me-1">
+                  تسجيل دخول
+                </Link>
+              </p>
             </form>
           </div>
         </div>

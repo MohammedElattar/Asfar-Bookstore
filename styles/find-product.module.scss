@@ -43,13 +43,18 @@
 .search-products-result {
   gap: 20px;
   .sort-wrapper {
-    width: 280px !important;
+    width: 280px;
     padding-top: 20px;
   }
 
   .products {
     width: calc(100% - 280px);
     padding: 30px 0;
+    header {
+      border-bottom: 1px solid #ccc;
+      font-weight: bold;
+      padding-bottom: 20px;
+    }
   }
   .message {
     background-color: rgba(201, 170, 35, 0.6);
@@ -106,5 +111,61 @@
     outline: none;
     padding: 5px 10px;
     border-radius: 5px;
+  }
+}
+
+@include laptop {
+  .sort-wrapper {
+    position: fixed;
+    top: 80px;
+    width: 80vw !important;
+    bottom: 0;
+    right: -100%;
+    background-color: #fff;
+    z-index: 20;
+    padding: 30px;
+    transition: 0.5s;
+    &.active {
+      right: 0;
+    }
+  }
+  .filterButton {
+    position: fixed;
+    bottom: 20px;
+    background-color: $green;
+    left: 50%;
+    transform: translateX(-50%);
+    color: #fff;
+    font-size: 16px;
+    padding: 10px 15px;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    z-index: -1;
+    opacity: 0;
+    transition: 0.3s;
+    &.buttonActive {
+      z-index: 5;
+      opacity: 1;
+    }
+  }
+  .overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.3);
+    z-index: -1;
+    opacity: 0;
+    transition: 0.3s;
+    &.overlayActive {
+      z-index: 10;
+      opacity: 1;
+    }
+  }
+  .products {
+    width: 100% !important;
   }
 }

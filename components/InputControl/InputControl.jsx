@@ -6,6 +6,7 @@ function InputControl({
   required = false,
   placeholder = "",
   select,
+  type = "text",
   options,
   ...otherProps
 }) {
@@ -26,11 +27,12 @@ function InputControl({
       )}
       {!select ? (
         <input
-          type="text"
+          type={type}
           id="nameInput"
           onChange={props.onChange}
           value={props.value}
           placeholder={placeholder}
+          style={{ fontSize: "18px" }}
         />
       ) : (
         <select value={props.value} onChange={props.onChange}>

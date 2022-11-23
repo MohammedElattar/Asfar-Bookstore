@@ -20,9 +20,10 @@ import InputControl from "../components/InputControl/InputControl";
 import FormLoadingButton from "../components/FormLoadingButton/FormLoadingButton";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../utils/firebase";
+import Link from "next/link";
 function Login() {
-  const [emailProps, setEmailError] = useInput();
-  const [passwordProps, setPasswordError] = useInput();
+  const [emailProps, setEmailError, setEmailProps] = useInput();
+  const [passwordProps, setPasswordError, setPasswordProps] = useInput();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
   const router = useRouter();
@@ -85,13 +86,39 @@ function Login() {
             <form onSubmit={handleSubmit}>
               <h3 className={heading}>تسجيل دخول</h3>
               <InputControl props={emailProps} label="البريد الالكتروني" />
-              <InputControl props={passwordProps} label="كلمة السر" />
+              <InputControl
+                props={passwordProps}
+                type="password"
+                label="كلمة السر"
+              />
               {!!error && (
                 <p className="my-2 text-danger">
                   حدث خطأ اثناء محاولة تسجيل الدخول الرجاء اعادة المحاولة
                 </p>
               )}
+              <button
+                type="button"
+                className="ms-auto bg-transparent fs-6"
+                onClick={() => {
+                  setEmailProps((prev) => ({
+                    ...prev,
+                    value: "demo@demo.com",
+                  }));
+                  setPasswordProps((prev) => ({
+                    ...prev,
+                    value: "demo123",
+                  }));
+                }}
+              >
+                تجريبي
+              </button>
               <FormLoadingButton text="تسجيل" loading={loading} />
+              <p>
+                ليس لديك حساب؟
+                <Link href="/signup" className="text-decoration-underline">
+                  انشاء حساب
+                </Link>
+              </p>
             </form>
           </div>
         </div>
