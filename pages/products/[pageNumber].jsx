@@ -6,7 +6,7 @@ import Pagination from "../../components/Pagination/Pagination";
 import ProductsGrid from "../../components/ProductsGrid/ProductsGrid";
 import useQueryInput from "../../hooks/useQueryInput.js";
 import { getCategories } from "../../json/categories";
-import { getAll, getPage } from "../../json/products";
+import { getAll, getPage, getPagesPaths } from "../../json/products";
 import { getPublishers } from "../../json/publishers";
 import { getWritters } from "../../json/writters";
 import s from "../../styles/find-product.module.scss";
@@ -328,52 +328,77 @@ function SortingTools({ publishers, writters, categories }) {
   );
 }
 
-export async function getServerSideProps(context) {
-  const queryObject = url.parse(context.req.url, true).query;
-  const page = queryObject.pageNumber;
-  const searchString = queryObject.q;
-  const writtersArray = queryObject.writters?.split(",").filter((e) => e) || [];
-  const publishersArray =
-    queryObject.publishers?.split(",").filter((e) => e) || [];
+export async function getStaticPaths() {
+  const paths = getPagesPaths();
 
-  try {
-    const props = {};
-
-    props.publishers = getPublishers();
-    props.writters = getWritters();
-    props.categories = getCategories();
-
-    if (searchString || writtersArray.length || publishersArray.length) {
-      const all = getAll();
-      const filtered = all
-        .filter((e) => (searchString ? e.title.includes(searchString) : true))
-        .filter((e) =>
-          writtersArray.length ? writtersArray.includes(e.writter?.at(0)) : true
-        )
-        .filter((e) =>
-          publishersArray.length
-            ? publishersArray.includes(e.publisher?.at(0)) ||
-              publishersArray.includes(e.vendors?.at(0))
-            : true
-        );
-      props.products = filtered;
-    } else {
-      const pageProducts = getPage(page);
-      if (!pageProducts) {
-        return {
-          notFound: true,
-        };
-      }
-      props.products = pageProducts;
-    }
-
-    return {
-      props,
-    };
-  } catch (err) {
-    console.error(err);
-    return {
-      props: {},
-    };
-  }
+  return {
+    paths,
+    fallback: false,
+  };
 }
+
+export async function getStaticProps(context) {
+  const { pageNumber } = context.params;
+  const pageProducts = getPage(pageNumber);
+  const writters = getWritters();
+  const publishers = getPublishers();
+  const categories = getCategories();
+  return {
+    props: {
+      products: pageProducts,
+      writters,
+      publishers,
+      categories,
+    },
+  };
+}
+
+// export async function getServerSideProps(context) {
+//   const queryObject = url.parse(context.req.url, true).query;
+//   const page = queryObject.pageNumber;
+//   const searchString = queryObject.q;
+//   const writtersArray = queryObject.writters?.split(",").filter((e) => e) || [];
+//   const publishersArray =
+//     queryObject.publishers?.split(",").filter((e) => e) || [];
+
+//   try {
+//     const props = {};
+
+//     props.publishers = getPublishers();
+//     props.writters = getWritters();
+//     props.categories = getCategories();
+
+//     if (searchString || writtersArray.length || publishersArray.length) {
+//       const all = getAll();
+//       const filtered = all
+//         .filter((e) => (searchString ? e.title.includes(searchString) : true))
+//         .filter((e) =>
+//           writtersArray.length ? writtersArray.includes(e.writter?.at(0)) : true
+//         )
+//         .filter((e) =>
+//           publishersArray.length
+//             ? publishersArray.includes(e.publisher?.at(0)) ||
+//               publishersArray.includes(e.vendors?.at(0))
+//             : true
+//         );
+//       props.products = filtered.slice(0, 20);
+//     } else {
+//       const pageProducts = getPage(page);
+//       if (!pageProducts) {
+//         return {
+//           notFound: true,
+//         };
+//       }
+//       props.products = pageProducts;
+//     }
+
+//     return {
+//       props,
+//     };
+//   } catch (err) {
+//     console.error(err);
+//     return {
+//       notFound: true,
+//     };
+//   }
+// }

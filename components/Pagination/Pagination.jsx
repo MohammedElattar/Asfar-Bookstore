@@ -32,7 +32,7 @@ function Pagination({ max }) {
   return (
     <div className={s.pagination}>
       {pageNumber > 1 ? (
-        <Link href="/products/0">
+        <Link href="/products/1">
           <BiArrowToRight />
         </Link>
       ) : null}
