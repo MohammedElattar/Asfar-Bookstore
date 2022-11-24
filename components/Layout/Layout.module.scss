@@ -1,3 +1,4 @@
+@use "../../styles/variables.scss" as *;
 .btns {
   position: fixed;
   bottom: 20px;
@@ -68,5 +69,19 @@
   &.overlayActive {
     z-index: 1;
     opacity: 1;
+  }
+}
+
+@include tablet {
+  .btns {
+    gap: 5px;
+    button {
+      width: 40px;
+      height: 40px;
+      font-size: 20px;
+    }
+    .whatsapp {
+      font-size: 23px;
+    }
   }
 }

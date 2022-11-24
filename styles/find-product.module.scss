@@ -125,6 +125,7 @@
     z-index: 20;
     padding: 30px;
     transition: 0.5s;
+    overflow: scroll;
     &.active {
       right: 0;
     }
