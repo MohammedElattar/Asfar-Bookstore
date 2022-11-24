@@ -72,7 +72,7 @@ function Search() {
   };
   const handleChange = (e) => {
     setText(e.target.value);
-    search(e.target.value);
+    // search(e.target.value);
   };
   return (
     <div className={`py-5 ${s["search-container"]}`}>

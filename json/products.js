@@ -1,7 +1,4 @@
 import products from "./products.json";
-import writters from "./writters";
-import publishers from "./publishers";
-import categories from "./categories";
 export const getPage = (page) => {
   return products.slice((page - 1) * 20, page * 20);
 };
@@ -20,14 +17,4 @@ export const getPagesPaths = () => {
 
 export const getProduct = (title) => {
   return products.find((e) => e.titleEn === title);
-};
-
-export const getWritters = () => {
-  return writters;
-};
-export const getCategories = () => {
-  return categories;
-};
-export const getPublishers = () => {
-  return publishers;
 };

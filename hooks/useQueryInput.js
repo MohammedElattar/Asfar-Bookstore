@@ -13,28 +13,28 @@ function useQueryInput(query) {
     }
   };
 
-  useEffect(() => {
-    if (checked.length) {
-      router.push(
-        {
-          pathname: router.pathname,
-          query: { ...router.query, [query]: checked.toString() },
-        },
-        undefined,
-        { scroll: false }
-      );
-    } else {
-      delete router.query[query];
-      router.push(
-        {
-          pathname: router.pathname,
-          query: { ...router.query },
-        },
-        undefined,
-        { scroll: false }
-      );
-    }
-  }, [checked.length]);
+  // useEffect(() => {
+  //   if (checked.length) {
+  //     router.push(
+  //       {
+  //         pathname: router.pathname,
+  //         query: { ...router.query, [query]: checked.toString() },
+  //       },
+  //       undefined,
+  //       { scroll: false }
+  //     );
+  //   } else {
+  //     delete router.query[query];
+  //     router.push(
+  //       {
+  //         pathname: router.pathname,
+  //         query: { ...router.query },
+  //       },
+  //       undefined,
+  //       { scroll: false }
+  //     );
+  //   }
+  // }, [checked.length]);
 
   return {
     handleInputChange,
