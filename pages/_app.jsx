@@ -3,10 +3,10 @@ import "bootstrap/dist/css/bootstrap-grid.min.css";
 import "bootstrap/dist/css/bootstrap-utilities.min.css";
 import { Provider } from "react-redux";
 import { useEffect } from "react";
-import store from "../app/store";
+import store from "../redux/store";
+import { userSlice } from "../redux/userSlice";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "../utils/firebase.js";
-import { userSlice } from "../app/userSlice";
 import Layout from "../components/Layout/Layout";
 function MyApp({ Component, pageProps }) {
   useEffect(() => {

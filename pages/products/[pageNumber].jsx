@@ -1,78 +1,76 @@
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import { FaFilter, FaSearch } from "react-icons/fa";
 import Pagination from "../../components/Pagination/Pagination";
 import ProductsGrid from "../../components/ProductsGrid/ProductsGrid";
 import useQueryInput from "../../hooks/useQueryInput.js";
 import { getCategories } from "../../json/categories";
-import { getAll, getPage, getPagesPaths } from "../../json/products";
+import { getPage, getPagesPaths } from "../../json/products";
 import { getPublishers } from "../../json/publishers";
 import { getWritters } from "../../json/writters";
 import s from "../../styles/find-product.module.scss";
-import url from "url";
 import useMediaQuery from "../../hooks/useMediaQuery";
+
+const Context = createContext();
 
 export default function FindProduct({
   publishers,
   writters,
   categories,
-  products,
+  products: pageProducts,
 }) {
-  // useEffect(() => {
-  // }, []);
+  const [searchText, setSearchText] = useState("");
+
+  const [products, setProducts] = useState([]);
+
+  const searchForProducts = async () => {
+    const res = await fetch(`/api/search?q=${searchText}`);
+    const data = await res.json();
+    setProducts(data.products);
+  };
+
+  useEffect(() => {
+    if (searchText.trim()) {
+      searchForProducts();
+    } else {
+      setProducts(pageProducts);
+    }
+    // eslint-disable-next-line
+  }, [searchText]);
+
+  const contextValue = {
+    searchText,
+    setSearchText,
+    products,
+    setProducts,
+  };
 
   return (
     <>
       <Head>
         <title>ابحث عن كتاب... – أسفار</title>
       </Head>
-      <Search />
-      <div className={`container ${s["search-products-result"]} d-flex`}>
-        <SortingTools
-          publishers={publishers}
-          writters={writters}
-          categories={categories}
-        />
-        <ProductsWrapper products={products} />
-      </div>
+      <Context.Provider value={contextValue}>
+        <Search />
+        <div className={`container ${s["search-products-result"]} d-flex`}>
+          <SortingTools
+            publishers={publishers}
+            writters={writters}
+            categories={categories}
+          />
+          <ProductsWrapper />
+        </div>
+      </Context.Provider>
     </>
   );
 }
 
 function Search() {
-  const router = useRouter();
-  const [text, setText] = useState(router.query?.q || "");
+  const { searchText, setSearchText } = useContext(Context);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    search(text);
-  };
-  const search = (text) => {
-    if (text) {
-      router.push(
-        {
-          pathname: router.pathname,
-          query: { ...router.query, q: text },
-        },
-        undefined,
-        { scroll: false }
-      );
-    } else {
-      delete router.query.q;
-      router.push(
-        {
-          pathname: router.pathname,
-          query: { ...router.query },
-        },
-        undefined,
-        { scroll: false }
-      );
-    }
-  };
-  const handleChange = (e) => {
-    setText(e.target.value);
-    // search(e.target.value);
   };
   return (
     <div className={`py-5 ${s["search-container"]}`}>
@@ -85,8 +83,8 @@ function Search() {
             <input
               type="text"
               placeholder="ابحث عن كتاب، كاتب، دار نشر..."
-              value={text}
-              onChange={handleChange}
+              value={searchText}
+              onChange={(e) => setSearchText(e.target.value)}
             />
           </div>
         </form>
@@ -95,7 +93,9 @@ function Search() {
   );
 }
 
-function ProductsWrapper({ products }) {
+function ProductsWrapper() {
+  const { products } = useContext(Context);
+
   return (
     <div className={s.products}>
       {/* <header>37,140نتيجة</header> */}
@@ -298,6 +298,54 @@ function Status() {
     </div>
   );
 }
+function SortSection({ title, message, data }) {
+  const [text, setText] = useState("");
+  const [expanded, setExpanded] = useState(false);
+  // const { handleInputChange } = useQueryInput("categories");
+  const handleInputChange = () => {};
+  return (
+    <div className={s.wrapper}>
+      <h3 className={s.heading}>{title}</h3>
+      {!!message && <div className={s.message}>{message}</div>}
+      <div className={s["search-input"]}>
+        <input
+          type="text"
+          placeholder="ابحث…"
+          value={text}
+          onChange={(e) => setText(e.target.value)}
+        />
+      </div>
+      <div className={s["fields"]}>
+        {data
+          ?.filter((e) => (text ? e.name.includes(text) : true))
+          .slice(0, expanded ? data.length : 8)
+          .map(({ name, number }) => (
+            <div className={s["field"]} key={name}>
+              <input
+                type="checkbox"
+                id={name}
+                onChange={(e) => handleInputChange(e, name)}
+              />
+              <label htmlFor={name}>
+                {name}
+                <span>{number}</span>
+              </label>
+            </div>
+          ))}
+      </div>
+
+      {data.length > 8 && (
+        <button
+          className={s["sort-btn"]}
+          type="button"
+          onClick={() => setExpanded((e) => !e)}
+        >
+          {expanded ? "اقل" : "المزيد"}
+        </button>
+      )}
+    </div>
+  );
+}
 
 function SortingTools({ publishers, writters, categories }) {
   const [isActive, setActive] = useState(false);
@@ -305,10 +353,28 @@ function SortingTools({ publishers, writters, categories }) {
   return (
     <>
       <div className={`${s["sort-wrapper"]} ${isActive ? s.active : ""}`}>
-        <Writters writters={writters} />
-        <Publishers publishers={publishers} />
-        <Categories categories={categories} />
-        <Status />
+        <SortSection
+          data={writters}
+          title="الكتّاب"
+          message="استخدم صندوق البحث لعرض المزيد من الكتاب"
+        />
+        <SortSection
+          data={publishers}
+          title="الناشرين"
+          message="استخدم صندوق البحث لعرض المزيد من الناشرين"
+        />
+        <SortSection
+          data={categories}
+          title="التصنيفات"
+          message="استخدم صندوق البحث لعرض المزيد من التصنيفات"
+        />
+        <SortSection
+          data={[
+            { name: "جديد", number: 786 },
+            { name: "مستعمل", number: 120 },
+          ]}
+          title="الحالة"
+        />
       </div>
       {isSmallDevice && (
         <button
