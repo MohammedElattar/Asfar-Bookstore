@@ -21,8 +21,8 @@ export default function FindProduct({
   products: pageProducts,
 }) {
   const [searchText, setSearchText] = useState("");
-
-  const [products, setProducts] = useState([]);
+  const router = useRouter();
+  const [products, setProducts] = useState(pageProducts);
 
   const searchForProducts = async () => {
     const res = await fetch(`/api/search?q=${searchText}`);
@@ -37,7 +37,7 @@ export default function FindProduct({
       setProducts(pageProducts);
     }
     // eslint-disable-next-line
-  }, [searchText]);
+  }, [searchText, router.query.pageNumber]);
 
   const contextValue = {
     searchText,
