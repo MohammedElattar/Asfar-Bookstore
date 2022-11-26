@@ -2,7 +2,7 @@
 
 ## Client Side
 
-#### Requirements
+### Client ide requirements
 
 - `Node.js` installed on your system , download from [HERE](https://nodejs.org/dist/v18.12.1/node-v18.12.1-x64.msi)
 - First, run the development server:
@@ -21,7 +21,7 @@ yarn dev
 
 ## Server side
 
-#### Requirements
+### Server side requirements
 
 - `Xampp` installed on your machine , download it from [HERE](https://sourceforge.net/projects/xampp/files/XAMPP%20Windows/7.4.33/xampp-windows-x64-7.4.33-0-VC15-installer.exe)
 - `Composer` installed on your machine , download it from [HERE](https://getcomposer.org/Composer-Setup.exe)
