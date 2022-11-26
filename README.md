@@ -2,7 +2,7 @@
 
 ## Client Side
 
-### Client ide requirements
+### Client side requirements
 
 - `Node.js` installed on your system , download from [HERE](https://nodejs.org/dist/v18.12.1/node-v18.12.1-x64.msi)
 - First, run the development server:
