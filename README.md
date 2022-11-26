@@ -1,8 +1,6 @@
 # Booking Management System
 
-## Getting Started
-
-### Client Side
+## Client Side
 
 #### Requirements
 
@@ -21,7 +19,7 @@ yarn dev
 
 - Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-### Server side
+## Server side
 
 #### Requirements
 
@@ -34,7 +32,7 @@ yarn dev
 - run xampp from that directory and open `xampp-control`
 
 ```bash
-    C:\xampp
+C:\xampp
 ```
 
 - Start `Apache` and `Mysql`
@@ -44,21 +42,21 @@ yarn dev
 - Change That value to your database name
 
 ```bash
-    DB_DATABASE= Your_Database_Name
+DB_DATABASE= Your_Database_Name
 ```
 
 - Open up your terminal or command line and paste the following commands
 
 ```bash
-    php artisan key:gen
+php artisan key:gen
 ```
 
 ```bash
-    php artisan migrate:fresh --seed
+php artisan migrate:fresh --seed
 ```
 
 ```bash
-    php artsian serve
+php artsian serve
 ```
 
 - Your api is
@@ -67,4 +65,4 @@ yarn dev
     127.0.0.1:8000
 ```
 
-If you like our project Make click ❤
+If you like our project Make ❤
