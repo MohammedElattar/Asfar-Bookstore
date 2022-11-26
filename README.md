@@ -31,7 +31,7 @@ yarn dev
 - install xampp  , composer
 - run xampp from that directory and open `xampp-control`
 
-```bash
+```console
 C:\xampp
 ```
 
@@ -47,15 +47,15 @@ DB_DATABASE= Your_Database_Name
 
 - Open up your terminal or command line and paste the following commands
 
-```bash
+```console
 php artisan key:gen
 ```
 
-```bash
+```console
 php artisan migrate:fresh --seed
 ```
 
-```bash
+```console
 php artsian serve
 ```
 
