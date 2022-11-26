@@ -41,7 +41,7 @@ C:\xampp
 - Copy all the content from `.env.example` and paste it in `.env`
 - Change That value to your database name
 
-```bash
+```php
 DB_DATABASE= Your_Database_Name
 ```
 
@@ -62,7 +62,7 @@ php artsian serve
 - Your api is
 
 ```console
-    127.0.0.1:8000
+127.0.0.1:8000
 ```
 
 If you like our project Make ❤
