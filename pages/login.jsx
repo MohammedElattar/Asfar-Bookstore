@@ -1,17 +1,11 @@
-import axios from "axios";
 import Head from "next/head";
 import { useState } from "react";
-import Navbar from "../components/Navbar/Navbar";
+
 import useInput from "../hooks/useInput";
 import {
   formWrapper,
   formContainer,
-  submit,
   heading,
-  formButtonLoading,
-  inputControl,
-  error as inputControlError,
-  helperText,
 } from "../styles/form.module.scss";
 import { useRouter } from "next/router";
 import InputControl from "../components/InputControl/InputControl";

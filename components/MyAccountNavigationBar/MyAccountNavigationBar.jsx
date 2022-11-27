@@ -1,3 +1,4 @@
+import Link from "next/link";
 import ActiveLink from "../ActiveLink";
 import s from "./MyAccountNavigationBar.module.scss";
 
@@ -26,9 +27,9 @@ function MyAccountNavigationBar({ signout }) {
         <ActiveLink href="/my-account/edit-account" activeClassName={s.active}>
           تفاصيل الحساب
         </ActiveLink>
-        <button type="button" onClick={signout}>
+        <Link href="/" onClick={signout}>
           تسجيل الخروج
-        </button>
+        </Link>
       </div>
     </div>
   );

@@ -95,7 +95,7 @@ function MenuWithUser({ isOpen, user, close }) {
         <Link href="/my-account/edit-address">عناويني</Link>
       </li>
       <li>
-        <Link href="/signout" onClick={signout}>
+        <Link href="/" onClick={signout}>
           سجل الخروج
         </Link>
       </li>
