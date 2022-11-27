@@ -1,8 +1,15 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Booking Management System
 
-## Getting Started
+## Client Side
 
-First, run the development server:
+### Client side requirements
+
+- `Node.js` installed on your system , download from [HERE](https://nodejs.org/dist/v18.12.1/node-v18.12.1-x64.msi)
+- First, run the development server:
+
+```bash
+npm install
+```
 
 ```bash
 npm run dev
@@ -10,25 +17,52 @@ npm run dev
 yarn dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
+## Server side
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.js`.
+### Server side requirements
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+- `Xampp` installed on your machine , download it from [HERE](https://sourceforge.net/projects/xampp/files/XAMPP%20Windows/7.4.33/xampp-windows-x64-7.4.33-0-VC15-installer.exe)
+- `Composer` installed on your machine , download it from [HERE](https://getcomposer.org/Composer-Setup.exe)
 
-## Learn More
+### Installation
 
-To learn more about Next.js, take a look at the following resources:
+- install xampp  , composer
+- run xampp from that directory and open `xampp-control`
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```console
+C:\xampp
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+- Start `Apache` and `Mysql`
+- Create a database from [HERE](http://localhost/phpmyadmin/index.php?route=/server/databases)
+- Open `Api` directory and create `.env` file
+- Copy all the content from `.env.example` and paste it in `.env`
+- Change That value to your database name
 
-## Deploy on Vercel
+```php
+DB_DATABASE= Your_Database_Name
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- Open up your terminal or command line and paste the following commands
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+```console
+php artisan key:gen
+```
+
+```console
+php artisan migrate:fresh --seed
+```
+
+```console
+php artsian serve
+```
+
+- Your api is
+
+```console
+127.0.0.1:8000/api
+```
+
+If you like our project Make ❤
