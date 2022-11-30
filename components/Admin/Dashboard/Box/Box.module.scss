@@ -1,0 +1,22 @@
+@use "../../../../styles/variables.scss" as *;
+
+.box {
+  width: 300px;
+  border-radius: 5px;
+  box-shadow: 0 0 10px #ccc;
+  margin: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px;
+  .value {
+    font-size: 40px;
+    color: $pink;
+  }
+  .title {
+    color: #777;
+  }
+  svg {
+    font-size: 30px;
+  }
+}
