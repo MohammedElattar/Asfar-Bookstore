@@ -2,18 +2,19 @@
 
 namespace App\Exceptions;
 
+use App\Http\Traits\HttpResponse;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
-use Throwable;
+use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException as methodNotAllowedApiException;
 
 class Handler extends ExceptionHandler
 {
+    use HttpResponse;
     /**
      * A list of exception types with their corresponding custom log levels.
      *
      * @var array<class-string<\Throwable>, \Psr\Log\LogLevel::*>
      */
     protected $levels = [
-        //
     ];
 
     /**
@@ -22,7 +23,6 @@ class Handler extends ExceptionHandler
      * @var array<int, class-string<\Throwable>>
      */
     protected $dontReport = [
-        //
     ];
 
     /**
@@ -43,8 +43,21 @@ class Handler extends ExceptionHandler
      */
     public function register()
     {
-        $this->reportable(function (Throwable $e) {
-            //
+        $this->reportable(function (\Throwable $e) {
+        });
+
+        // Handle User not authenticated
+        $this->renderable(function (\Illuminate\Auth\AuthenticationException $e, $request) {
+            if ($request->is('api/*')) {
+                return $this->error("You are not authenticated" , 401);
+            }
+        });
+
+        // Handle Method Not Allowed Exception
+        $this->renderable(function(methodNotAllowedApiException $e , $request){
+            if($request->is("api/*")){
+                return $this->error($e->getMessage() , 403);
+            }
         });
     }
 }
