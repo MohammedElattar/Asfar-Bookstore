@@ -67,12 +67,18 @@ function Login() {
         data,
         config
       );
+
+      // const cookieRes = await axios.get("/api/cookie");
+
+      // console.log(`Cookie Response`, cookieRes);
+
       const { data: user, token } = res.data.data;
 
       window.localStorage.setItem("token", token);
       setIsLoggedIn(true);
       setUser(user);
-      router.push("/admin/dashboard");
+      console.log(res);
+      // router.push("/admin/dashboard");
     } catch (err) {
       console.error(err);
       setError(true);
