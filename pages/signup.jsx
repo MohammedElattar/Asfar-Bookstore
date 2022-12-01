@@ -11,8 +11,6 @@ import {
 import { useDispatch } from "react-redux";
 import InputControl from "../components/InputControl/InputControl";
 import FormLoadingButton from "../components/FormLoadingButton/FormLoadingButton";
-import { auth } from "../utils/firebase.js";
-import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import Link from "next/link";
 function Signup() {
   const [nameProps, setNameError] = useInput();
@@ -61,13 +59,13 @@ function Signup() {
       let password = passwordProps.value;
       let email = emailProps.value;
 
-      const cred = await createUserWithEmailAndPassword(auth, email, password);
-      await updateProfile(cred.user, {
-        displayName: name,
-      });
+      // const cred = await createUserWithEmailAndPassword(auth, email, password);
+      // await updateProfile(cred.user, {
+      //   displayName: name,
+      // });
 
-      setError(false);
-      router.push("/my-account");
+      // setError(false);
+      // router.push("/my-account");
     } catch (err) {
       console.error(err);
       setError(true);

@@ -4,8 +4,6 @@ import { useState } from "react";
 import { FaSearch, FaBars } from "react-icons/fa";
 import styles from "./Navbar.module.scss";
 import { IoClose } from "react-icons/io5";
-import { auth } from "../../utils/firebase.js";
-import { signOut } from "firebase/auth";
 import { useRouter } from "next/router";
 import { useSelector } from "react-redux";
 

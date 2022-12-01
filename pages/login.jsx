@@ -10,8 +10,6 @@ import {
 import { useRouter } from "next/router";
 import InputControl from "../components/InputControl/InputControl";
 import FormLoadingButton from "../components/FormLoadingButton/FormLoadingButton";
-import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../utils/firebase.js";
 import Link from "next/link";
 function Login() {
   const [emailProps, setEmailError, setEmailProps] = useInput();
@@ -50,14 +48,14 @@ function Login() {
     setLoading(true);
 
     try {
-      const cred = await signInWithEmailAndPassword(
-        auth,
-        emailProps.value,
-        passwordProps.value
-      );
-      console.log(`cred =>`, cred);
-      setError(false);
-      router.push("/my-account");
+      // const cred = await signInWithEmailAndPassword(
+      //   auth,
+      //   emailProps.value,
+      //   passwordProps.value
+      // );
+      // console.log(`cred =>`, cred);
+      // setError(false);
+      // router.push("/my-account");
     } catch (err) {
       console.error(err);
       setError(true);
