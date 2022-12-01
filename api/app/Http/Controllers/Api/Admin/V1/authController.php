@@ -21,10 +21,15 @@ class authController extends Controller
         $user = User::where("email" , $credentials['email'])->first(['id' , 'name' , 'email']);
         $exp = new DateTime("now");
         $exp->add(new DateInterval("PT3600S"));
-        return $this->success([
+        // return $this->success([
+        //     "data" => $user ,
+        //     "token" => $user->createToken($user->name , ['*'] , $exp)->plainTextToken ,
+        //     "expire at" =>date("Y-m-d h:i:s" , $exp->getTimestamp()) ,
+        // ] , "User authenticated successfully");
+        return response()->json([
             "data" => $user ,
-            "token" => $user->createToken($user->name , ['*'] , $exp)->plainTextToken ,
-            "expire at" =>date("Y-m-d h:i:s" , $exp->getTimestamp()) ,
-        ] , "User authenticated successfully");
+            "token" =>  $user->createToken($user->name , ['*'] , $exp)->plainTextToken ,
+        ])->withCookie(cookie("token" ,  $user->createToken($user->name , ['*'] , $exp)->plainTextToken  , 60 * 24 * 7 ));
+
     }
 }
