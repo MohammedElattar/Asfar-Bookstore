@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\books;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -15,9 +16,7 @@ use Illuminate\Support\Facades\Route;
 Route::group([ 'prefix' => 'admin', 'namespace' => '\App\Http\Controllers\Api\Admin'], function () {
     // v1
     Route::group(['prefix' => 'v1', 'namespace' => 'V1' , 'middleware' => ['auth:sanctum']], function () {
-        Route::post("/books" , function(){
-            return json_encode("This is Books");
-        });
+        Route::post("/books" , [books::class , 'index']);
     });
     Route::post("/v1/auth" , 'V1\authController@login');
 });
