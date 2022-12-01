@@ -28,7 +28,7 @@ yarn dev
 
 ### Installation
 
-- install xampp  , composer
+- install xampp , composer
 - run xampp from that directory and open `xampp-control`
 
 ```console
@@ -48,6 +48,10 @@ DB_DATABASE= Your_Database_Name
 - Open up your terminal or command line and paste the following commands
 
 ```console
+composer install
+```
+
+```console
 php artisan key:gen
 ```
 
@@ -56,7 +60,7 @@ php artisan migrate:fresh --seed
 ```
 
 ```console
-php artsian serve
+php artisan serve
 ```
 
 - Your api is
