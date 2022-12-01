@@ -56,7 +56,7 @@ class Handler extends ExceptionHandler
         // Handle Method Not Allowed Exception
         $this->renderable(function(methodNotAllowedApiException $e , $request){
             if($request->is("api/*")){
-                return $this->error($e->getMessage() , 403);
+                return $this->error($e->getMessage() , 400);
             }
         });
 
