@@ -16,6 +16,6 @@ Route::group([ 'prefix' => 'admin', 'namespace' => '\App\Http\Controllers\Api\Ad
     // v1
     Route::group(['prefix' => 'v1', 'namespace' => 'V1' , 'middleware' => ['auth:sanctum' , 'except' => ['auth']]], function () {
     });
-    Route::post("/v1/auth" , '\App\Http\Controllers\Api\Admin\V1\authController@login');
+    Route::post("/v1/auth" , 'V1\authController@login');
 });
 Route::get("/test" , function(){return "Hi";});
