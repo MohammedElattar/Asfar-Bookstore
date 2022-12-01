@@ -1,6 +1,6 @@
 import Head from "next/head";
 import { useState } from "react";
-
+import globalConfig from "../../utils/config";
 import useInput from "../../hooks/useInput";
 import {
   formWrapper,
@@ -9,13 +9,16 @@ import {
 } from "../../styles/form.module.scss";
 import InputControl from "../../components/InputControl/InputControl";
 import FormLoadingButton from "../../components/FormLoadingButton/FormLoadingButton";
-import Link from "next/link";
+import axios from "axios";
+import { useAdminContext } from "../../context/AdminContext";
+import { useRouter } from "next/router";
 function Login() {
   const [emailProps, setEmailError] = useInput();
   const [passwordProps, setPasswordError] = useInput();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
-
+  const { setIsLoggedIn, setUser } = useAdminContext();
+  const router = useRouter();
   const validateInputs = () => {
     let valid = true;
     let emailRegExp = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g;
@@ -24,7 +27,7 @@ function Login() {
       valid = false;
       setEmailError(true, "برجاء ادخال بريد الكتروني صالح");
     }
-    if (passwordProps.value?.length < 6 || passwordProps.value?.length > 25) {
+    if (passwordProps.value?.length < 5 || passwordProps.value?.length > 25) {
       valid = false;
       setPasswordError(true, "برجاء ادخال كلمة سر صالحة");
     }
@@ -46,6 +49,30 @@ function Login() {
     setLoading(true);
 
     try {
+      const data = JSON.stringify({
+        email: "admin@admin.com",
+        password: "admin",
+      });
+
+      const config = {
+        method: "POST",
+        headers: {
+          Accept: "application/vnd.api+json",
+          "Content-Type": "application/vnd.api+json",
+        },
+      };
+
+      const res = await axios.post(
+        process.env.NEXT_PUBLIC_ADMIN_LOGIN_URL,
+        data,
+        config
+      );
+      const { data: user, token } = res.data.data;
+
+      window.localStorage.setItem("token", token);
+      setIsLoggedIn(true);
+      setUser(user);
+      router.push("/admin/dashboard");
     } catch (err) {
       console.error(err);
       setError(true);

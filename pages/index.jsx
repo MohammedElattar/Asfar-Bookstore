@@ -7,21 +7,8 @@ import CounterBox from "../components/CounterBox/CounterBox";
 import ProductsGrid from "../components/ProductsGrid/ProductsGrid";
 import Button from "../components/Button/Button";
 import { getPage } from "../json/products";
-import { useEffect } from "react";
 
 export default function Home({ products }) {
-  useEffect(() => {
-    (async function () {
-      const res = await fetch("/api/test", {
-        method: "post",
-        body: JSON.stringify({
-          name: "zeyad farhat",
-        }),
-      });
-      console.log(await res.json());
-    })();
-  }, []);
-
   return (
     <>
       <Head>
