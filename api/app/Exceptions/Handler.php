@@ -59,5 +59,14 @@ class Handler extends ExceptionHandler
                 return $this->error($e->getMessage() , 403);
             }
         });
+
+        // Handle not found exception
+
+        $this->renderable(function(\Symfony\Component\HttpKernel\Exception\NotFoundHttpException $e , $request){
+            if($request->is("api/*")){
+                return $this->error("This page is not found" , 404);
+            }
+
+        });
     }
 }

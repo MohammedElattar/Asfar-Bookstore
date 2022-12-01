@@ -30,5 +30,12 @@ RewriteCond %{SCRIPT_FILENAME} -d [OR]
 RewriteCond %{SCRIPT_FILENAME} -f
 RewriteRule "(^|/)\." - [F]
 
+# Customize Error Pages
+
 ErrorDocument 403 /asfar/api/errors/403.php
 ErrorDocument 404 /asfar/api/errors/404.php
+
+
+# Disable server signature
+
+serverSignature off
