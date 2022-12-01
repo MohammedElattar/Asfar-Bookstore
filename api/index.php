@@ -11,3 +11,4 @@ if ($uri !== '/' && file_exists($publicPath.$uri)) {
 }
 
 require_once $publicPath.'/public/index.php';
+
