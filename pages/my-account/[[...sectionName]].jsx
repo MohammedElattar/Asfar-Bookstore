@@ -1,4 +1,3 @@
-import { signOut } from "firebase/auth";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useSelector } from "react-redux";
@@ -10,7 +9,6 @@ import Orders from "../../components/my-account/Orders/Orders";
 import PayMethods from "../../components/my-account/PayMethods/PayMethods";
 import MyAccountNavigationBar from "../../components/MyAccountNavigationBar/MyAccountNavigationBar";
 import s from "../../styles/my-account.module.scss";
-import { auth } from "../../utils/firebase.js";
 
 function MyAccount() {
   const router = useRouter();
@@ -19,7 +17,6 @@ function MyAccount() {
   let outlet = null;
 
   const signout = () => {
-    signOut(auth);
     router.reload();
   };
 

@@ -50,34 +50,28 @@ function Login() {
 
     try {
       const data = JSON.stringify({
-        email: "admin@admin.com",
-        password: "admin",
+        email: emailProps.value,
+        password: passwordProps.value,
       });
-
-      const config = {
+      const res = await fetch(process.env.NEXT_PUBLIC_ADMIN_LOGIN_URL, {
         method: "POST",
         headers: {
           Accept: "application/vnd.api+json",
           "Content-Type": "application/vnd.api+json",
         },
-      };
+        body: JSON.stringify({
+          email: emailProps.value,
+          password: passwordProps.value,
+        }),
+      });
 
-      const res = await axios.post(
-        process.env.NEXT_PUBLIC_ADMIN_LOGIN_URL,
-        data,
-        config
-      );
+      const responseData = await res.json();
 
-      // const cookieRes = await axios.get("/api/cookie");
+      console.log(`Response`, responseData);
 
-      // console.log(`Cookie Response`, cookieRes);
-
-      const { data: user, token } = res.data.data;
-
-      window.localStorage.setItem("token", token);
       setIsLoggedIn(true);
-      setUser(user);
-      console.log(res);
+      // setUser(res.data.data);
+      setError(false);
       // router.push("/admin/dashboard");
     } catch (err) {
       console.error(err);

@@ -1,10 +1,8 @@
 import mediumZoom from "medium-zoom";
 import Head from "next/head";
 import { useRef, useState } from "react";
-import Footer from "../../components/Footer/Footer";
 import FormLoadingButton from "../../components/FormLoadingButton/FormLoadingButton";
 import ImageZoom from "../../components/ImageZoom";
-import Navbar from "../../components/Navbar/Navbar";
 import { getAll, getProduct } from "../../json/products";
 import s from "../../styles/single-product.module.scss";
 
@@ -17,7 +15,6 @@ const additionInfo = [
 ];
 
 export default function ProductPage({ product }) {
-  let zoom = useRef(typeof window !== "undefined" ? mediumZoom() : null);
   const [qty, setQty] = useState(1);
   const [loading, setLoading] = useState(false);
 
@@ -37,14 +34,9 @@ export default function ProductPage({ product }) {
         <title>{product.title}</title>
       </Head>
 
-      {/* <div className={s.container}> */}
       <div className="container d-flex gap-4 flex-column flex-md-row py-5">
         <div className={s.img}>
-          <ImageZoom
-            src={product.img}
-            alt={product.title}
-            zoom={zoom.current}
-          />
+          <ImageZoom src={product.img} alt={product.title} />
         </div>
         <div className={s.text}>
           <div className={s.title}>{product.title}</div>
@@ -77,7 +69,6 @@ export default function ProductPage({ product }) {
           ) : null}
         </div>
       </div>
-      {/* </div> */}
 
       <div className="container">
         <div className={s.tabWrapper}>
