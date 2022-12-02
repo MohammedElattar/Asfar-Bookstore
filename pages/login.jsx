@@ -11,6 +11,8 @@ import { useRouter } from "next/router";
 import InputControl from "../components/InputControl/InputControl";
 import FormLoadingButton from "../components/FormLoadingButton/FormLoadingButton";
 import Link from "next/link";
+import { AwesomeButton } from "react-awesome-button";
+import Loading from "../components/Loading";
 function Login() {
   const [emailProps, setEmailError, setEmailProps] = useInput();
   const [passwordProps, setPasswordError, setPasswordProps] = useInput();
@@ -102,7 +104,16 @@ function Login() {
               >
                 تجريبي
               </button>
-              <FormLoadingButton text="تسجيل" loading={loading} />
+              <AwesomeButton type="secondary" size="medium">
+                تسجيل
+                {loading ? (
+                  <Loading
+                    size={15}
+                    style={{ marginRight: "5px" }}
+                    borderColor="#1e88e5"
+                  />
+                ) : null}
+              </AwesomeButton>
               <p>
                 ليس لديك حساب؟
                 <Link href="/signup" className="text-decoration-underline">

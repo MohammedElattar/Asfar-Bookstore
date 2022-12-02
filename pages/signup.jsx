@@ -1,7 +1,6 @@
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useState } from "react";
-import Navbar from "../components/Navbar/Navbar";
 import useInput from "../hooks/useInput";
 import {
   formWrapper,
@@ -10,8 +9,9 @@ import {
 } from "../styles/form.module.scss";
 import { useDispatch } from "react-redux";
 import InputControl from "../components/InputControl/InputControl";
-import FormLoadingButton from "../components/FormLoadingButton/FormLoadingButton";
 import Link from "next/link";
+import { AwesomeButton } from "react-awesome-button";
+import Loading from "../components/Loading";
 function Signup() {
   const [nameProps, setNameError] = useInput();
   const [emailProps, setEmailError] = useInput();
@@ -97,7 +97,16 @@ function Signup() {
                   حدث خطأ اثناء محاولة انشاء حساب الرجاء اعادة المحاولة
                 </p>
               )}
-              <FormLoadingButton loading={loading} text="انشاء حساب" />
+              <AwesomeButton type="secondary" size="medium">
+                تسجيل
+                {loading ? (
+                  <Loading
+                    size={15}
+                    style={{ marginRight: "5px" }}
+                    borderColor="#1e88e5"
+                  />
+                ) : null}
+              </AwesomeButton>
               <p>
                 لديك حساب بالفعل!
                 <Link href="/login" className="text-decoration-underline me-1">

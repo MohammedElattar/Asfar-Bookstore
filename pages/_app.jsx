@@ -1,6 +1,7 @@
 import "../styles/globals.scss";
 import "bootstrap/dist/css/bootstrap-grid.min.css";
 import "bootstrap/dist/css/bootstrap-utilities.min.css";
+import "react-awesome-button/dist/styles.css";
 import { Provider } from "react-redux";
 import store from "../redux/store";
 import Layout from "../components/Layout/Layout";

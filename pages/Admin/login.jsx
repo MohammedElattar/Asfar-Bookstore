@@ -1,6 +1,5 @@
 import Head from "next/head";
 import { useState } from "react";
-import globalConfig from "../../utils/config";
 import useInput from "../../hooks/useInput";
 import {
   formWrapper,
@@ -8,10 +7,10 @@ import {
   heading,
 } from "../../styles/form.module.scss";
 import InputControl from "../../components/InputControl/InputControl";
-import FormLoadingButton from "../../components/FormLoadingButton/FormLoadingButton";
-import axios from "axios";
 import { useAdminContext } from "../../context/AdminContext";
 import { useRouter } from "next/router";
+import { AwesomeButton, AwesomeButtonProgress } from "react-awesome-button";
+import Loading from "../../components/Loading";
 function Login() {
   const [emailProps, setEmailError] = useInput();
   const [passwordProps, setPasswordError] = useInput();
@@ -103,7 +102,16 @@ function Login() {
                   حدث خطأ اثناء محاولة تسجيل الدخول الرجاء اعادة المحاولة
                 </p>
               )}
-              <FormLoadingButton text="تسجيل" loading={loading} />
+              <AwesomeButton type="secondary" size="medium">
+                تسجيل
+                {loading ? (
+                  <Loading
+                    size={15}
+                    style={{ marginRight: "5px" }}
+                    borderColor="#1e88e5"
+                  />
+                ) : null}
+              </AwesomeButton>
             </form>
           </div>
         </div>
