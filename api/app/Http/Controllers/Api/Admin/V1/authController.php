@@ -17,20 +17,17 @@ class authController extends Controller
     {
         $credentials = $req->only('email', 'password');
         if (!Auth::attempt($credentials, 1)) {
-            return $this->error('Authentication failed', 401);
+            return $this->error('Authentication failed', 401 ,null);
         }
         $user = User::where('email', $credentials['email'])->first(['id', 'name', 'email']);
         $exp = new \DateTime('now');
         $exp->add(new \DateInterval('PT604800S'));
         $token = $user->createToken('api token' , ['*'] , $exp)->plainTextToken;
         $cookie = cookie("token" , $token , (60 * 12 * 7));
-        return response()->json([
-            'data' => $user,
-            'token' => $token,
-            'expires at' => date('Y-m-d h:i:s', $exp->getTimestamp()),
-        ])->withCookie($cookie);
-    }
-    public function getCookie(Request $req){
-        var_dump($req->cookie('testCookie'));
+        return $this->success([
+            "user" => $user ,
+            "token" => $token ,
+            "expires at" => $exp->getTimestamp() ,
+        ] , "User authenticated successfully");
     }
 }

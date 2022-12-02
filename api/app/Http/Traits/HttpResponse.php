@@ -32,7 +32,7 @@ trait HttpResponse
      *
      * @return \Symfony\Component\HttpFoundation\JsonResponse
      */
-    public function error(string $msg, int $code, array $data = [])
+    public function error(string $msg, int $code, $data = null)
     {
         return response()->json([
             'data' => $data,
