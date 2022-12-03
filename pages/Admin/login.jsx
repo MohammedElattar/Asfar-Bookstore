@@ -12,6 +12,9 @@ import { useRouter } from "next/router";
 import { AwesomeButton, AwesomeButtonProgress } from "react-awesome-button";
 import Loading from "../../components/Loading";
 import axios from "axios";
+
+
+/*============================ apiHttp Config ===============================*/
 const apiHttp = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_DOMAIN,
   withCredentials: true,
@@ -19,6 +22,8 @@ const apiHttp = axios.create({
     "X-Requested-With": "XMLHttpRequest",
   },
 });
+/*==============================================================================*/
+
 function Login() {
   const [emailProps, setEmailError] = useInput();
   const [passwordProps, setPasswordError] = useInput();
@@ -62,10 +67,9 @@ function Login() {
       });
 
       await apiHttp.get("/sanctum/csrf-cookie").then((response) => {
-        // let admin = apiHttp.post("/admin/login" , {'email' : 'admin@admin.com' , 'password' : 'admin'});
         var config = {
           method: "post",
-          url: "http://localhost:8000/api/admin/v1/books",
+          url: "http://localhost:8000/api/admin/login",
           headers: {
             Accept: "application/vnd.api+json",
             "Content-Type": "application/vnd.api+json",
