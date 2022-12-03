@@ -11,6 +11,14 @@ import { useAdminContext } from "../../context/AdminContext";
 import { useRouter } from "next/router";
 import { AwesomeButton, AwesomeButtonProgress } from "react-awesome-button";
 import Loading from "../../components/Loading";
+import axios from "axios";
+const apiHttp = axios.create({
+  baseURL: process.env.NEXT_PUBLIC_API_DOMAIN,
+  withCredentials: true,
+  headers: {
+    "X-Requested-With": "XMLHttpRequest",
+  },
+});
 function Login() {
   const [emailProps, setEmailError] = useInput();
   const [passwordProps, setPasswordError] = useInput();
@@ -52,26 +60,29 @@ function Login() {
         email: emailProps.value,
         password: passwordProps.value,
       });
-      const res = await fetch(process.env.NEXT_PUBLIC_ADMIN_LOGIN_URL, {
-        method: "POST",
-        headers: {
-          Accept: "application/vnd.api+json",
-          "Content-Type": "application/vnd.api+json",
-        },
-        body: JSON.stringify({
-          email: emailProps.value,
-          password: passwordProps.value,
-        }),
+
+      await apiHttp.get("/sanctum/csrf-cookie").then((response) => {
+        // let admin = apiHttp.post("/admin/login" , {'email' : 'admin@admin.com' , 'password' : 'admin'});
+        var config = {
+          method: "post",
+          url: "http://localhost:8000/api/admin/v1/books",
+          headers: {
+            Accept: "application/vnd.api+json",
+            "Content-Type": "application/vnd.api+json",
+            "X-Requested-With": "XMLHttpRequest",
+          },
+          withCredentials:true,
+          data: data,
+        };
+
+        axios(config)
+          .then(function (response) {
+            console.log(response.data);
+          })
+          .catch(function (error) {
+            console.log(error);
+          });
       });
-
-      const responseData = await res.json();
-
-      console.log(`Response`, responseData);
-
-      setIsLoggedIn(true);
-      // setUser(res.data.data);
-      setError(false);
-      // router.push("/admin/dashboard");
     } catch (err) {
       console.error(err);
       setError(true);
