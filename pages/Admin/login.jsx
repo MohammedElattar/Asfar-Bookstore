@@ -60,27 +60,26 @@ function Login() {
       });
 
       await apiHttp.get("/sanctum/csrf-cookie").then((response) => {
-        // let admin = apiHttp.post("/admin/login" , {'email' : 'admin@admin.com' , 'password' : 'admin'});
-        var config = {
-          method: "POST",
-          url: "http://localhost:8000/api/admin/v1/books",
-          headers: {
-            Accept: "application/vnd.api+json",
-            "Content-Type": "application/vnd.api+json",
-            "X-Requested-With": "XMLHttpRequest",
-          },
-          withCredentials: true,
-          data: data,
-        };
+      // let admin = apiHttp.post("/admin/login" , {'email' : 'admin@admin.com' , 'password' : 'admin'});
+      var config = {
+        method: "POST",
+        url: "http://localhost:8000/api/admin/v1/books",
+        headers: {
+          Accept: "application/vnd.api+json",
+          "Content-Type": "application/vnd.api+json",
+          "X-Requested-With": "XMLHttpRequest",
+        },
+        withCredentials: true,
+        data: data,
+      };
 
-        axios(config)
-          .then(function (response) {
-            console.log(response.data);
-          })
-          .catch(function (error) {
-            console.log(error);
-          });
-      });
+      axios(config)
+        .then(function (response) {
+          console.log(response.data);
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
     } catch (err) {
       console.log(err);
       setError(true);
