@@ -4,7 +4,7 @@ import { useRef, useState } from "react";
 import FormLoadingButton from "../../components/FormLoadingButton/FormLoadingButton";
 import ImageZoom from "../../components/ImageZoom";
 import { getAll, getProduct } from "../../json/products";
-import s from "../../styles/single-product.module.scss";
+import s from "../../styles/pages/product.module.scss";
 
 const additionInfo = [
   { key: "الوزن", value: "0.5 kg" },

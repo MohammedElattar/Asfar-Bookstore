@@ -8,7 +8,7 @@ import { getCategories } from "../../json/categories";
 import { getPage, getPagesPaths } from "../../json/products";
 import { getPublishers } from "../../json/publishers";
 import { getWritters } from "../../json/writters";
-import s from "../../styles/find-product.module.scss";
+import s from "../../styles/pages/products.module.scss";
 import useMediaQuery from "../../hooks/useMediaQuery";
 
 const Context = createContext();

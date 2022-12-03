@@ -2,33 +2,36 @@ import { serialize } from "cookie";
 import axios from "axios";
 
 export default async function handler(req, res) {
-  const response = await fetch("http://127.0.0.1:8000/api/admin/v1/auth", {
+  const response = await fetch(process.env.ADMIN_LOGIN_URL, {
     method: "POST",
     headers: {
       Accept: "application/vnd.api+json",
       "Content-Type": "application/vnd.api+json",
     },
-    body: JSON.stringify({
-      email: "admin@admin.com",
-      password: "admin",
-    }),
+    body: req.body,
   });
 
   const data = await response.json();
 
-  const { data: user, token } = data;
-  // console.log(req.headers);
+  const {
+    data: { user, token },
+    type,
+  } = data;
+
   console.log(data);
 
-  // console.log(user, token);
+  if (type === "success") {
+    res.setHeader(
+      "Set-Cookie",
+      serialize("userToken", token, {
+        httpOnly: true,
+        secure: true,
+        maxAge: 7 * 24 * 60 * 60,
+        sameSite: true,
+        path: "/admin",
+      })
+    );
+  }
 
-  res.setHeader(
-    "Set-Cookie",
-    serialize("token", "testToken", {
-      httpOnly: true,
-      secure: true,
-    })
-  );
-
-  res.status(200).json({ ...data });
+  res.status(response.status).json(data);
 }

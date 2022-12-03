@@ -1,11 +1,11 @@
-import Image from "next/image";
+import { AwesomeButton } from "react-awesome-button";
 import DataTable from "react-data-table-component";
-import Container from "../../components/Admin/Layout/Sidebar/Container/Container";
-import Sidebar from "../../components/Admin/Layout/Sidebar/Sidebar";
 import ImageZoom from "../../components/ImageZoom";
-import Loading from "../../components/Loading/Loading";
-import useAdminFetch from "../../hooks/useAdminFetch";
+import Loading from "../../components/Loading";
 import s from "../../styles/pages/admin/products.module.scss";
+import useSWR from "swr";
+import { useEffect, useState } from "react";
+import Head from "next/head";
 
 const columns = [
   {
@@ -15,29 +15,21 @@ const columns = [
   {
     name: "الصورة",
     selector: (product) => (
-      // <Image
-      //   src={
-      //     product.img ||
-      //     "https://assets.asfar.io/uploads/2022/01/19092920/woocommerce-placeholder-300x300.png"
-      //   }
-      //   alt={product.title}
-      //   width={60}
-      //   height={80}
-      // />
       <ImageZoom
         src={
           product.img ||
           "https://assets.asfar.io/uploads/2022/01/19092920/woocommerce-placeholder-300x300.png"
         }
         alt={product.title}
-        width="60"
-        height="80"
+        width="80"
+        height="100"
       />
     ),
   },
   {
     name: "العنوان",
     selector: (product) => product.title,
+    wrap: true,
   },
   {
     name: "الكاتب",
@@ -72,33 +64,67 @@ const customStyles = {
   },
 };
 
-function Products() {
-  const { data, loading } = useAdminFetch("/api/products");
-  console.log(`data`, data);
+function Products({ products }) {
+  const [render, setRender] = useState(false);
+  useEffect(() => {
+    setRender(true);
+  }, []);
   return (
-    <Container>
-      <Sidebar />
+    <>
+      <Head>
+        <title>المنتجات</title>
+      </Head>
       <div className={s.wrapper}>
-        {loading ? (
-          <Loading />
-        ) : (
+        <div className={s.btnContainer}>
+          <AwesomeButton type="secondary">اضافة منتج</AwesomeButton>
+          <AwesomeButton type="secondary">تعديل منتج</AwesomeButton>
+        </div>
+        {render && (
           <DataTable
             columns={columns}
-            data={data.products}
+            data={products}
             pagination
             customStyles={customStyles}
           />
         )}
       </div>
-    </Container>
+    </>
   );
 }
 export default Products;
 
-export async function getStaticProps() {
+export async function getServerSideProps(ctx) {
+  const {
+    cookies: { userToken },
+  } = ctx.req;
+  const props = { admin: true };
+
+  if (!userToken) {
+    return {
+      redirect: {
+        destination: "/admin/login",
+        permanent: false,
+      },
+    };
+  }
+
+  const res = await fetch(
+    `${process.env.URL}/api/check-login?secretKey=${process.env.SECRET_KEY}&token=${userToken}`
+  );
+  const { isAdmin } = await res.json();
+  if (isAdmin) {
+    const res = await fetch(`${process.env.URL}/api/products`);
+    const { products } = await res.json();
+    props.products = products;
+  } else {
+    return {
+      redirect: {
+        destination: "/admin/login",
+        permanent: false,
+      },
+    };
+  }
   return {
-    props: {
-      admin: true,
-    },
+    props: props,
   };
 }

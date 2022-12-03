@@ -1,8 +1,6 @@
+import Head from "next/head";
+import { useEffect, useState } from "react";
 import DataTable from "react-data-table-component";
-import Container from "../../components/Admin/Layout/Sidebar/Container/Container";
-import Sidebar from "../../components/Admin/Layout/Sidebar/Sidebar";
-import Loading from "../../components/Loading/Loading";
-import useAdminFetch from "../../hooks/useAdminFetch";
 import s from "../../styles/pages/admin/users.module.scss";
 
 const columns = [
@@ -35,34 +33,64 @@ const customStyles = {
   },
 };
 
-function Users() {
-  const { loading, data } = useAdminFetch("/api/users");
-
+function Users({ users }) {
+  const [render, setRender] = useState(false);
+  useEffect(() => {
+    setRender(true);
+  }, []);
   return (
-    <Container>
-      <Sidebar />
+    <>
+      <Head>
+        <title>المستخدمين</title>
+      </Head>
+
       <div className={s.wrapper}>
-        {loading ? (
-          <Loading />
-        ) : (
+        {render && (
           <DataTable
             columns={columns}
-            data={data.users}
+            data={users}
             pagination
             customStyles={customStyles}
           />
         )}
       </div>
-    </Container>
+    </>
   );
 }
 export default Users;
 
 export async function getServerSideProps(ctx) {
+  const {
+    cookies: { userToken },
+  } = ctx.req;
+  const props = { admin: true };
+
+  if (!userToken) {
+    return {
+      redirect: {
+        destination: "/admin/login",
+        permanent: false,
+      },
+    };
+  }
+
+  const res = await fetch(
+    `${process.env.URL}/api/check-login?secretKey=${process.env.SECRET_KEY}&token=${userToken}`
+  );
+  const { isAdmin } = await res.json();
+  if (isAdmin) {
+    const res = await fetch(`${process.env.URL}/api/users`);
+    const { users } = await res.json();
+    props.users = users;
+  } else {
+    return {
+      redirect: {
+        destination: "/admin/login",
+        permanent: false,
+      },
+    };
+  }
   return {
-    props: {
-      admin: true,
-      revalidate: 5,
-    },
+    props: props,
   };
 }

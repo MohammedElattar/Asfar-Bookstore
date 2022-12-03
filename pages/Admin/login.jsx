@@ -7,16 +7,15 @@ import {
   heading,
 } from "../../styles/form.module.scss";
 import InputControl from "../../components/InputControl/InputControl";
-import { useAdminContext } from "../../context/AdminContext";
 import { useRouter } from "next/router";
-import { AwesomeButton, AwesomeButtonProgress } from "react-awesome-button";
+import { AwesomeButton } from "react-awesome-button";
 import Loading from "../../components/Loading";
+
 function Login() {
   const [emailProps, setEmailError] = useInput();
   const [passwordProps, setPasswordError] = useInput();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
-  const { setIsLoggedIn, setUser } = useAdminContext();
   const router = useRouter();
   const validateInputs = () => {
     let valid = true;
@@ -52,26 +51,26 @@ function Login() {
         email: emailProps.value,
         password: passwordProps.value,
       });
-      const res = await fetch(process.env.NEXT_PUBLIC_ADMIN_LOGIN_URL, {
+      const res = await fetch("/api/login", {
         method: "POST",
-        headers: {
-          Accept: "application/vnd.api+json",
-          "Content-Type": "application/vnd.api+json",
-        },
-        body: JSON.stringify({
-          email: emailProps.value,
-          password: passwordProps.value,
-        }),
+        body: data,
       });
 
       const responseData = await res.json();
+      const {
+        data: { token },
+        type,
+      } = responseData;
+
+      if (type !== "success") {
+        throw new Error("error");
+      }
 
       console.log(`Response`, responseData);
 
-      setIsLoggedIn(true);
-      // setUser(res.data.data);
       setError(false);
-      // router.push("/admin/dashboard");
+      window.navigator.clipboard.writeText(token);
+      window.location.pathname = "/admin/dashboard";
     } catch (err) {
       console.error(err);
       setError(true);
@@ -126,6 +125,7 @@ export async function getStaticProps() {
   return {
     props: {
       admin: true,
+      sidebar: false,
     },
   };
 }

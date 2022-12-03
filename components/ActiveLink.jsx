@@ -1,15 +1,38 @@
-import Link from 'next/link'
-import { useRouter } from 'next/router'
+import Link from "next/link";
+import { useRouter } from "next/router";
 
-function ActiveLink({ children, href, activeClassName = 'active', ...props }) {
+function ActiveLink({
+  children,
+  href,
+  activeClassName = "active",
+  tag,
+  ...props
+}) {
   const router = useRouter();
 
+  if (tag === "a") {
+    return (
+      <a
+        href={href}
+        className={`${router.asPath === href ? activeClassName : ""} ${
+          props.className || ""
+        }`}
+      >
+        {children}
+      </a>
+    );
+  }
 
   return (
-    <Link href={href} className={`${router.asPath === href ? activeClassName : ""} ${props.className || ""}`}>
+    <Link
+      href={href}
+      className={`${router.asPath === href ? activeClassName : ""} ${
+        props.className || ""
+      }`}
+    >
       {children}
     </Link>
-  )
+  );
 }
 
-export default ActiveLink
+export default ActiveLink;
