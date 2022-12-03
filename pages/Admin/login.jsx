@@ -11,6 +11,8 @@ import { useRouter } from "next/router";
 import { AwesomeButton } from "react-awesome-button";
 import Loading from "../../components/Loading";
 import axios from "axios";
+
+/*============================ apiHttp Config ===============================*/
 const apiHttp = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_DOMAIN,
   withCredentials: true,
@@ -18,6 +20,8 @@ const apiHttp = axios.create({
     "X-Requested-With": "XMLHttpRequest",
   },
 });
+/*==============================================================================*/
+
 function Login() {
   const [emailProps, setEmailError] = useInput();
   const [passwordProps, setPasswordError] = useInput();
@@ -59,27 +63,27 @@ function Login() {
         password: passwordProps.value,
       });
 
-      await apiHttp.get("/sanctum/csrf-cookie").then((response) => {
-      // let admin = apiHttp.post("/admin/login" , {'email' : 'admin@admin.com' , 'password' : 'admin'});
-      var config = {
-        method: "POST",
-        url: "http://localhost:8000/api/admin/v1/books",
-        headers: {
-          Accept: "application/vnd.api+json",
-          "Content-Type": "application/vnd.api+json",
-          "X-Requested-With": "XMLHttpRequest",
-        },
-        withCredentials: true,
-        data: data,
-      };
+      await apiHttp.get("/sanctum/csrf-cookie").then(() => {
+        const config = {
+          method: "POST",
+          url: "http://localhost:8000/api/admin/v1/books",
+          headers: {
+            Accept: "application/vnd.api+json",
+            "Content-Type": "application/vnd.api+json",
+            "X-Requested-With": "XMLHttpRequest",
+          },
+          withCredentials: true,
+          data: data,
+        };
 
-      axios(config)
-        .then(function (response) {
-          console.log(response.data);
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
+        axios(config)
+          .then(function (response) {
+            console.log(response.data);
+          })
+          .catch(function (error) {
+            console.log(error);
+          });
+      });
     } catch (err) {
       console.log(err);
       setError(true);
