@@ -18,6 +18,10 @@ Route::group([ 'prefix' => 'admin', 'namespace' => '\App\Http\Controllers\Api\Ad
     Route::group(['prefix' => 'v1', 'namespace' => 'V1' , 'middleware' => ['auth:sanctum']], function () {
         Route::post("/books" , [books::class , 'index']);
     });
-    Route::post("/v1/auth" , 'V1\authController@login');
+    Route::post("/login" , 'adminAuthController@login');
 });
 Route::get("/test" , function(){return "Hi";});
+
+Route::get("/login", function () {
+    return "This is login Page";
+})->name("login");
