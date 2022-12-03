@@ -25,3 +25,8 @@ Route::get("/test" , function(){return "Hi";});
 Route::get("/login", function () {
     return "This is login Page";
 })->name("login");
+
+
+// http://localhost:8000/api/dashboard
+
+Route::post("/dashboard" , function(){return "This is Dashboard";})->middleware("auth:sanctum");
