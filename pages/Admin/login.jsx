@@ -66,7 +66,7 @@ function Login() {
       await apiHttp.get("/sanctum/csrf-cookie").then(() => {
         const config = {
           method: "POST",
-          url: "http://localhost:8000/api/admin/v1/books",
+          url: "http://localhost:8000/api/admin/login",
           headers: {
             Accept: "application/vnd.api+json",
             "Content-Type": "application/vnd.api+json",
