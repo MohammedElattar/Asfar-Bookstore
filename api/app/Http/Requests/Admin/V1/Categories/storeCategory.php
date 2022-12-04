@@ -26,7 +26,7 @@ class storeCategory extends FormRequest
     public function rules()
     {
         return [
-            "name" => "required|string|unique:categories,name|regex:/^[\p{Arabic}\p{Hebrew}a-z]+$/iu" ,
+            "name" => "required|string|unique:categories,name|regex:/^[\p{Arabic}\p{Hebrew}a-z ]+$/iu" ,
             "status" => "required|between:0,1"
         ];
     }
