@@ -5,10 +5,10 @@ import s from "./Layout.module.scss";
 import { BsCart3 } from "react-icons/bs";
 import { FaWhatsapp } from "react-icons/fa";
 import { IoCloseSharp } from "react-icons/io5";
-import Container from "../Admin/Layout/Sidebar/Container/Container";
+import Container from "../Admin/Layout/Container/Container";
 import Sidebar from "../Admin/Layout/Sidebar/Sidebar";
-import RequireAdmin from "../RequireAdmin/RequireAdmin";
-import { useAdminContext } from "../../AdminContext";
+import RequireAdmin from "../Admin/RequireAdmin/RequireAdmin";
+import { useAdminContext } from "../../context/AdminContext";
 import Loading from "../Loading";
 function Layout({ children, admin = false, sidebar = true, ...props }) {
   const [cartOpen, setCartOpen] = useState(false);

@@ -1,10 +1,10 @@
-import Box from "../../components/Admin/Dashboard/Box/Box";
+import Box from "../../components/Admin/Box/Box";
 import s from "../../styles/pages/Admin/dashboard.module.scss";
 import { FaUser } from "react-icons/fa";
 import { SiBookstack } from "react-icons/si";
 import { BiCategory } from "react-icons/bi";
 import { BsFillPenFill } from "react-icons/bs";
-import { useAdminContext } from "../../AdminContext";
+import { useAdminContext } from "../../context/AdminContext";
 
 export default function Dashboard() {
   const {
@@ -26,7 +26,7 @@ export default function Dashboard() {
 export async function getStaticProps() {
   const props = {
     admin: true,
-    url: `/api/dashboard`,
+    url: process.env.ADMIN_DASHBOARD,
     title: "لوحة التحكم",
   };
 
