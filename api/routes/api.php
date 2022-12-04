@@ -20,9 +20,10 @@ Route::group([ 'prefix' => 'admin', 'namespace' => '\App\Http\Controllers\Api\Ad
 
         // uncomment this to enable authentication
 
-        // Route::apiResource("/categories", categoriesController::class);
-        Route::apiResource("/categories", categoriesController::class)->withoutMiddleware("auth:sanctum");
+        Route::apiResource("/categories", categoriesController::class);
+        // Route::apiResource("/categories", categoriesController::class)->withoutMiddleware("auth:sanctum");
 
     });
     Route::post("/login" , 'adminAuthController@login');
+    Route::post("/logout" , 'adminAuthController@logout');
 });

@@ -23,7 +23,7 @@ class updateCateogry extends FormRequest
     {
         $cat = $this->route("category")->id;
         return [
-            "name" => "required|string|regex:/^[\p{Arabic}\p{Hebrew}a-z]+$/iu|unique:categories,name,".$cat.",id" ,
+            "name" => "required|string|regex:/^[\p{Arabic}\p{Hebrew}a-z ]+$/iu|unique:categories,name,".$cat.",id" ,
             "status" => "required|between:0,1"
         ];
     }
