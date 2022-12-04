@@ -28,6 +28,7 @@ class adminAuthController extends Controller
         ], "User authenticated successfully");
     }
     public function logout(Request $req){
-            Auth::guard("web")->logout();
+        Auth::guard("web")->logout();
+        return $this->success(msg: "User logged out successfully");
     }
 }
