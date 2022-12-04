@@ -22,7 +22,7 @@ class categoriesController extends Controller
      */
     public function index()
     {
-        return new categoriesCollection(Category::paginate());
+        return new categoriesCollection(Category::all());
     }
 
     /**
