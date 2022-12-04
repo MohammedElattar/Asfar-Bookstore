@@ -13,16 +13,15 @@ trait HttpResponse
      *
      * @return \Symfony\Component\HttpFoundation\JsonResponse
      */
-    public function success(array $data, string $msg = 'The operation has been made successfully', int $code = 200)
+    public function success(array $data=null, string $msg = 'The operation has been made successfully', int $code = 200)
     {
         return response()->json([
             'data' => $data,
             'msg' => $msg,
             'code' => $code,
             'type' => 'success'
-        ], $code)
-                ->header('Accept', 'application/vnd.api+json')
-                ->header('Content-Type', 'application/vnd.api+json');
+        ], $code);
+
     }
 
     /**
@@ -39,7 +38,8 @@ trait HttpResponse
             'msg' => $msg,
             'code' => $code,
             'type' => 'error'
-        ], $code);
-
+        ], $code)
+                ->header('Accept', 'application/vnd.api+json')
+                ->header('Content-Type', 'application/vnd.api+json');
     }
 }

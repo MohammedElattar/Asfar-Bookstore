@@ -22,6 +22,7 @@ class DatabaseSeeder extends Seeder
         // ]);
         $this->call([
             userSeeder::class,
+            categories::class
         ]);
     }
 }
