@@ -1,8 +1,7 @@
-import Head from "next/head";
-import { useEffect, useState } from "react";
 import DataTable from "react-data-table-component";
-import { useAdminContext } from "../../AdminContext";
-import s from "../../styles/pages/admin/users.module.scss";
+import { useAdminContext } from "../../context/AdminContext";
+import global from "../../styles/pages/admin/global.module.scss";
+import { tableCustomStyles } from "../../utils/utils";
 
 const columns = [
   {
@@ -18,21 +17,6 @@ const columns = [
     selector: (row) => row.email,
   },
 ];
-const customStyles = {
-  cells: {
-    style: {
-      fontSize: "16px",
-      paddingTop: "15px",
-      paddingBottom: "15px",
-    },
-  },
-  headCells: {
-    style: {
-      fontSize: "18px",
-      fontWeight: "bold",
-    },
-  },
-};
 
 function Users() {
   const {
@@ -40,16 +24,12 @@ function Users() {
   } = useAdminContext();
   return (
     <>
-      <Head>
-        <title>المستخدمين</title>
-      </Head>
-
-      <div className={s.wrapper}>
+      <div className={global.wrapper}>
         <DataTable
           columns={columns}
           data={users}
           pagination
-          customStyles={customStyles}
+          customStyles={tableCustomStyles}
         />
       </div>
     </>
@@ -57,8 +37,12 @@ function Users() {
 }
 export default Users;
 
-export async function getStaticProps(ctx) {
-  const props = { admin: true, title: "المستخدمين", url: "/api/users" };
+export async function getStaticProps() {
+  const props = {
+    admin: true,
+    title: "المستخدمين",
+    url: process.env.ADMIN_USERS,
+  };
 
   return {
     props: props,

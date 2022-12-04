@@ -4,6 +4,7 @@ import { AiFillEyeInvisible, AiFillEye } from "react-icons/ai";
 import { FaUser } from "react-icons/fa";
 import { MdSpaceDashboard } from "react-icons/md";
 import { SiBookstack } from "react-icons/si";
+import { BiCategoryAlt } from "react-icons/bi";
 import ActiveLink from "../../../ActiveLink";
 import s from "./Sidebar.module.scss";
 function Sidebar() {
@@ -47,6 +48,10 @@ function Sidebar() {
       <ActiveLink href="/admin/users" activeClassName={s.activeLink}>
         <FaUser />
         <span>المستخدمين</span>
+      </ActiveLink>
+      <ActiveLink href="/admin/categories" activeClassName={s.activeLink}>
+        <BiCategoryAlt />
+        <span>الاقسام</span>
       </ActiveLink>
     </aside>
   );

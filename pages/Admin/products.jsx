@@ -1,13 +1,9 @@
 import { AwesomeButton } from "react-awesome-button";
 import DataTable from "react-data-table-component";
 import ImageZoom from "../../components/ImageZoom";
-import Loading from "../../components/Loading";
-import s from "../../styles/pages/admin/products.module.scss";
-import useSWR from "swr";
-import { useEffect, useState } from "react";
-import Head from "next/head";
-import { useAdminContext } from "../../AdminContext";
-
+import global from "../../styles/pages/admin/global.module.scss";
+import { useAdminContext } from "../../context/AdminContext";
+import { tableCustomStyles } from "../../utils/utils";
 const columns = [
   {
     name: "الرقم التعريفي",
@@ -49,32 +45,14 @@ const columns = [
     selector: (product) => product.vendors?.join("-") || "غير معرف",
   },
 ];
-const customStyles = {
-  cells: {
-    style: {
-      fontSize: "16px",
-      paddingTop: "15px",
-      paddingBottom: "15px",
-    },
-  },
-  headCells: {
-    style: {
-      fontSize: "18px",
-      fontWeight: "bold",
-    },
-  },
-};
 
 function Products() {
   const { data } = useAdminContext();
   const { products } = data;
   return (
     <>
-      <Head>
-        <title>المنتجات</title>
-      </Head>
-      <div className={s.wrapper}>
-        <div className={s.btnContainer}>
+      <div className={global.wrapper}>
+        <div className={global.btnContainer}>
           <AwesomeButton type="secondary">اضافة منتج</AwesomeButton>
         </div>
 
@@ -82,7 +60,7 @@ function Products() {
           columns={columns}
           data={products}
           pagination
-          customStyles={customStyles}
+          customStyles={tableCustomStyles}
         />
       </div>
     </>
@@ -91,7 +69,11 @@ function Products() {
 export default Products;
 
 export async function getStaticProps() {
-  const props = { admin: true, title: "المنتجات", url: "/api/products" };
+  const props = {
+    admin: true,
+    title: "المنتجات",
+    url: process.env.ADMIN_PRODUCTS,
+  };
 
   return {
     props: props,

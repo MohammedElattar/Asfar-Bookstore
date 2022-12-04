@@ -2,8 +2,8 @@ import axios from "axios";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { useState } from "react";
-import { useAdminContext } from "../../AdminContext";
-import Loading from "../Loading";
+import { useAdminContext } from "../../../context/AdminContext";
+import Loading from "../../Loading";
 import s from "./RequireAdmin.module.scss";
 function RequireAdmin({ children, ...props }) {
   const [loading, setLoading] = useState(true);
