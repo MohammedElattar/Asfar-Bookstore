@@ -5,13 +5,20 @@ import "react-awesome-button/dist/styles.css";
 import { Provider } from "react-redux";
 import store from "../redux/store";
 import Layout from "../components/Layout/Layout";
+import Head from "next/head";
+import AdminProvider from "../AdminContext";
 function MyApp({ Component, pageProps }) {
   return (
-    <Provider store={store}>
-      <Layout {...pageProps}>
-        <Component {...pageProps} />
-      </Layout>
-    </Provider>
+    <>
+      <Head>{pageProps.title ? <title>{pageProps.title}</title> : null}</Head>
+      <Provider store={store}>
+        <AdminProvider>
+          <Layout {...pageProps}>
+            <Component {...pageProps} />
+          </Layout>
+        </AdminProvider>
+      </Provider>
+    </>
   );
 }
 

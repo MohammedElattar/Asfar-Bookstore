@@ -10,19 +10,6 @@ function ActiveLink({
 }) {
   const router = useRouter();
 
-  if (tag === "a") {
-    return (
-      <a
-        href={href}
-        className={`${router.asPath === href ? activeClassName : ""} ${
-          props.className || ""
-        }`}
-      >
-        {children}
-      </a>
-    );
-  }
-
   return (
     <Link
       href={href}

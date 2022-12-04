@@ -11,6 +11,9 @@ const nextConfig = {
     ],
     domains: ["assets.asfar.io"],
   },
+  compiler: {
+    styledComponents: true,
+  },
 };
 
 module.exports = nextConfig;

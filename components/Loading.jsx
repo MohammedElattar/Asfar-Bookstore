@@ -16,7 +16,7 @@ const Span = styled.span`
   height: ${(props) => (props.size || "20") + "px"};
   background-color: transparent;
   border-style: solid;
-  border-color: ${(props) => props.borderColor || "#000"};
+  border-color: ${(props) => props.borderColor || "#0d59ca"};
   border-width: ${(props) => props.borderWidth || "2px"};
   border-top-color: transparent;
   border-radius: 50%;

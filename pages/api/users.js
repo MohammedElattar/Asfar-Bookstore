@@ -1,9 +1,5 @@
 import users from "../../json/users.json";
 
 export default function handler(req, res) {
-  if (req.method === "GET") {
-    res.status(200).json({ users });
-  } else {
-    res.status(404);
-  }
+  res.status(200).json({ users });
 }

@@ -7,22 +7,32 @@ import { FaWhatsapp } from "react-icons/fa";
 import { IoCloseSharp } from "react-icons/io5";
 import Container from "../Admin/Layout/Sidebar/Container/Container";
 import Sidebar from "../Admin/Layout/Sidebar/Sidebar";
-function Layout({ children, admin = false, sidebar = true }) {
+import RequireAdmin from "../RequireAdmin/RequireAdmin";
+import { useAdminContext } from "../../AdminContext";
+import Loading from "../Loading";
+function Layout({ children, admin = false, sidebar = true, ...props }) {
   const [cartOpen, setCartOpen] = useState(false);
-
-  if (admin)
+  const { loading } = useAdminContext();
+  if (admin) {
     if (sidebar) {
       return (
-        <>
+        <RequireAdmin {...props}>
           <Container>
             <Sidebar />
-            {children}
+            {loading ? (
+              <div className={s.loadingContainer}>
+                <Loading size={60} borderWidth="5px" />
+              </div>
+            ) : (
+              children
+            )}
           </Container>
-        </>
+        </RequireAdmin>
       );
     } else {
       return children;
     }
+  }
 
   return (
     <>
