@@ -11,16 +11,7 @@ import { useRouter } from "next/router";
 import { AwesomeButton } from "react-awesome-button";
 import Loading from "../../components/Loading";
 import axios from "axios";
-
-/*============================ apiHttp Config ===============================*/
-const apiHttp = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_DOMAIN,
-  withCredentials: true,
-  headers: {
-    "X-Requested-With": "XMLHttpRequest",
-  },
-});
-/*==============================================================================*/
+import { apiHttp } from "../../utils/utils";
 
 function Login() {
   const [emailProps, setEmailError] = useInput();

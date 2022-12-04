@@ -20,7 +20,7 @@ export default function Home({ products }) {
       <UsedBooksStore />
       <Program />
       <RecentlyArrived products={products?.slice(0, 8)} />
-      <MostSalled products={products.slice(8, 16)} />
+      <MostSalled products={products?.slice(8, 16)} />
     </>
   );
 }

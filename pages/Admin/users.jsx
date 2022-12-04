@@ -1,6 +1,7 @@
 import Head from "next/head";
 import { useEffect, useState } from "react";
 import DataTable from "react-data-table-component";
+import { useAdminContext } from "../../AdminContext";
 import s from "../../styles/pages/admin/users.module.scss";
 
 const columns = [
@@ -33,11 +34,10 @@ const customStyles = {
   },
 };
 
-function Users({ users }) {
-  const [render, setRender] = useState(false);
-  useEffect(() => {
-    setRender(true);
-  }, []);
+function Users() {
+  const {
+    data: { users },
+  } = useAdminContext();
   return (
     <>
       <Head>
@@ -45,51 +45,21 @@ function Users({ users }) {
       </Head>
 
       <div className={s.wrapper}>
-        {render && (
-          <DataTable
-            columns={columns}
-            data={users}
-            pagination
-            customStyles={customStyles}
-          />
-        )}
+        <DataTable
+          columns={columns}
+          data={users}
+          pagination
+          customStyles={customStyles}
+        />
       </div>
     </>
   );
 }
 export default Users;
 
-export async function getServerSideProps(ctx) {
-  const {
-    cookies: { userToken },
-  } = ctx.req;
-  const props = { admin: true };
+export async function getStaticProps(ctx) {
+  const props = { admin: true, title: "المستخدمين", url: "/api/users" };
 
-  if (!userToken) {
-    return {
-      redirect: {
-        destination: "/admin/login",
-        permanent: false,
-      },
-    };
-  }
-
-  const res = await fetch(
-    `${process.env.URL}/api/check-login?secretKey=${process.env.SECRET_KEY}&token=${userToken}`
-  );
-  const { isAdmin } = await res.json();
-  if (isAdmin) {
-    const res = await fetch(`${process.env.URL}/api/users`);
-    const { users } = await res.json();
-    props.users = users;
-  } else {
-    return {
-      redirect: {
-        destination: "/admin/login",
-        permanent: false,
-      },
-    };
-  }
   return {
     props: props,
   };

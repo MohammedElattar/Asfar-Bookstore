@@ -36,19 +36,15 @@ function Sidebar() {
           </button>
         )}
       </header>
-      <ActiveLink
-        href="/admin/dashboard"
-        activeClassName={s.activeLink}
-        tag="a"
-      >
+      <ActiveLink href="/admin/dashboard" activeClassName={s.activeLink}>
         <MdSpaceDashboard />
         <span>لوحة التحكم</span>
       </ActiveLink>
-      <ActiveLink href="/admin/products" activeClassName={s.activeLink} tag="a">
+      <ActiveLink href="/admin/products" activeClassName={s.activeLink}>
         <SiBookstack />
         <span>المنتجات</span>
       </ActiveLink>
-      <ActiveLink href="/admin/users" activeClassName={s.activeLink} tag="a">
+      <ActiveLink href="/admin/users" activeClassName={s.activeLink}>
         <FaUser />
         <span>المستخدمين</span>
       </ActiveLink>

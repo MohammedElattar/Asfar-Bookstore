@@ -6,6 +6,7 @@ import s from "../../styles/pages/admin/products.module.scss";
 import useSWR from "swr";
 import { useEffect, useState } from "react";
 import Head from "next/head";
+import { useAdminContext } from "../../AdminContext";
 
 const columns = [
   {
@@ -64,11 +65,9 @@ const customStyles = {
   },
 };
 
-function Products({ products }) {
-  const [render, setRender] = useState(false);
-  useEffect(() => {
-    setRender(true);
-  }, []);
+function Products() {
+  const { data } = useAdminContext();
+  const { products } = data;
   return (
     <>
       <Head>
@@ -77,53 +76,23 @@ function Products({ products }) {
       <div className={s.wrapper}>
         <div className={s.btnContainer}>
           <AwesomeButton type="secondary">اضافة منتج</AwesomeButton>
-          <AwesomeButton type="secondary">تعديل منتج</AwesomeButton>
         </div>
-        {render && (
-          <DataTable
-            columns={columns}
-            data={products}
-            pagination
-            customStyles={customStyles}
-          />
-        )}
+
+        <DataTable
+          columns={columns}
+          data={products}
+          pagination
+          customStyles={customStyles}
+        />
       </div>
     </>
   );
 }
 export default Products;
 
-export async function getServerSideProps(ctx) {
-  const {
-    cookies: { userToken },
-  } = ctx.req;
-  const props = { admin: true };
+export async function getStaticProps() {
+  const props = { admin: true, title: "المنتجات", url: "/api/products" };
 
-  if (!userToken) {
-    return {
-      redirect: {
-        destination: "/admin/login",
-        permanent: false,
-      },
-    };
-  }
-
-  const res = await fetch(
-    `${process.env.URL}/api/check-login?secretKey=${process.env.SECRET_KEY}&token=${userToken}`
-  );
-  const { isAdmin } = await res.json();
-  if (isAdmin) {
-    const res = await fetch(`${process.env.URL}/api/products`);
-    const { products } = await res.json();
-    props.products = products;
-  } else {
-    return {
-      redirect: {
-        destination: "/admin/login",
-        permanent: false,
-      },
-    };
-  }
   return {
     props: props,
   };
