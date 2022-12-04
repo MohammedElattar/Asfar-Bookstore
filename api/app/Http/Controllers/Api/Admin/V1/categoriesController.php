@@ -37,14 +37,9 @@ class categoriesController extends Controller
             "name" => $request->name,
             "status" => $request->status
         ]);
-        return response()->json($this->success([
-            "data" => [
-                "name" => $category->name ,
-                "status" =>$category->status ,
-                "created_at" => date("Y-m-d" , strtotime($category->created_at)) ,
-                "id" => $category->id
-            ]
-        ] , "Category created successfully"));
+        return response()->json($this->success(
+            new categoriesResource($category)
+        , "Category created successfully"));
     }
     /**
      * Show Category

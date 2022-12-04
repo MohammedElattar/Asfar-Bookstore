@@ -13,7 +13,7 @@ trait HttpResponse
      *
      * @return \Symfony\Component\HttpFoundation\JsonResponse
      */
-    public function success(array $data=null, string $msg = 'The operation has been made successfully', int $code = 200)
+    public function success($data=null, string $msg = 'The operation has been made successfully', int $code = 200)
     {
         return response()->json([
             'data' => $data,
