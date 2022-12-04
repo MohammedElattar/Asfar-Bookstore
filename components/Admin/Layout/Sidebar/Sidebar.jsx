@@ -5,10 +5,12 @@ import { FaUser } from "react-icons/fa";
 import { MdSpaceDashboard } from "react-icons/md";
 import { SiBookstack } from "react-icons/si";
 import { BiCategoryAlt } from "react-icons/bi";
+import { IoPower } from "react-icons/io5";
 import ActiveLink from "../../../ActiveLink";
 import s from "./Sidebar.module.scss";
 import { apiHttp } from "../../../../utils/utils";
 import { useRouter } from "next/router";
+import { AwesomeButton } from "react-awesome-button";
 function Sidebar() {
   const [isOpen, setIsOpen] = useState(true);
   const router = useRouter();
@@ -65,9 +67,10 @@ function Sidebar() {
         </ActiveLink>
       </div>
       <div>
-        <button className={s.logout} onClick={logout}>
-          logout
-        </button>
+        <AwesomeButton onPress={logout} className={s.logout}>
+          <span>تسجيل خروج</span>
+          <IoPower />
+        </AwesomeButton>
       </div>
     </aside>
   );

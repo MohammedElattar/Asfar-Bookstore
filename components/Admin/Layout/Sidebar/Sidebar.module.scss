@@ -18,6 +18,11 @@
     align-items: center;
     justify-content: center;
   }
+  .logout {
+    span {
+      display: none;
+    }
+  }
 }
 
 .sidebar {
@@ -77,7 +82,6 @@
   .logout {
     font-size: 20px;
     margin: 20px;
-    padding: 10px 20px;
     border-radius: 5px;
   }
 }
