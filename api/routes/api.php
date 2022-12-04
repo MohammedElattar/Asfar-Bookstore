@@ -17,7 +17,7 @@ Route::group([ 'prefix' => 'admin', 'namespace' => '\App\Http\Controllers\Api\Ad
     // v1
     Route::group(['prefix' => 'v1', 'namespace' => 'V1' , 'middleware' => ['auth:sanctum']], function () {
         // Route::post("/books" , [books::class , 'index']);
-        Route::apiResource("/categories", categoriesController::class)->withoutMiddleware("auth:sanctum");
+        Route::apiResource("/categories", categoriesController::class);
     });
     Route::post("/login" , 'adminAuthController@login');
 });
