@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { useState } from "react";
 import { useAdminContext } from "../../../context/AdminContext";
+import { apiHttp } from "../../../utils/utils";
 import Loading from "../../Loading";
 import s from "./RequireAdmin.module.scss";
 function RequireAdmin({ children, ...props }) {
@@ -12,14 +13,10 @@ function RequireAdmin({ children, ...props }) {
   const fetchData = async () => {
     try {
       setAdminLoading(true);
-      const res = await axios.post(props.url, undefined, {
-        headers: {
-          Accept: "application/vnd.api+json",
-          "Content-Type": "application/vnd.api+json",
-          "X-Requested-With": "XMLHttpRequest",
-        },
-        withCredentials: true,
-      });
+      console.log(`url => ${props.url}`);
+      const res = await apiHttp.get(`/v1/categories`);
+
+      console.log(`Success =>`, res);
       setData(res.data);
       setLoading(false);
       setAdminLoading(false);

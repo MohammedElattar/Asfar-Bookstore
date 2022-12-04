@@ -54,27 +54,13 @@ function Login() {
         password: passwordProps.value,
       });
 
-      await apiHttp.get("/sanctum/csrf-cookie").then(() => {
-        const config = {
-          method: "POST",
-          url: "http://localhost:8000/api/admin/login",
-          headers: {
-            Accept: "application/vnd.api+json",
-            "Content-Type": "application/vnd.api+json",
-            "X-Requested-With": "XMLHttpRequest",
-          },
+      await axios
+        .get("http://localhost:8000/sanctum/csrf-cookie", {
           withCredentials: true,
-          data: data,
-        };
-
-        axios(config)
-          .then(function (response) {
-            console.log(response.data);
-          })
-          .catch(function (error) {
-            console.log(error);
-          });
-      });
+        })
+        .then(() => {
+          apiHttp.post("/login", data).then((res) => console.log(res));
+        });
     } catch (err) {
       console.log(err);
       setError(true);

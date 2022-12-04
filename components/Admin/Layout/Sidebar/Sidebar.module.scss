@@ -1,3 +1,25 @@
+@use "../../../../styles/variables.scss" as *;
+
+@mixin sidebarClosed {
+  min-width: 50px;
+  .header {
+    .logo {
+      display: none;
+    }
+  }
+  a {
+    span {
+      display: none;
+    }
+    margin: 10px auto;
+    width: 45px;
+    height: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
 .sidebar {
   min-width: 300px;
   display: block;
@@ -5,23 +27,7 @@
   flex-direction: column;
   border-left: 1px solid #ccc;
   &.sidebarClosed {
-    min-width: 50px;
-    .header {
-      .logo {
-        display: none;
-      }
-    }
-    a {
-      span {
-        display: none;
-      }
-      margin: 10px auto;
-      width: 45px;
-      height: 45px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
+    @include sidebarClosed;
   }
   .header {
     padding: 20px;
@@ -65,6 +71,20 @@
     &:hover:not(.activeLink) {
       background-color: rgb(14, 99, 211, 0.5);
       color: #fff;
+    }
+  }
+}
+
+@media screen and (max-width: 1200px) {
+  .sidebar {
+    @include sidebarClosed;
+    min-width: 50px;
+    header {
+      display: none !important;
+    }
+    a {
+      width: 38px;
+      height: 38px;
     }
   }
 }
