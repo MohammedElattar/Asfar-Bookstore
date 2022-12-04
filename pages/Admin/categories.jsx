@@ -47,10 +47,6 @@ const columns = [
   {
     name: "تعديل",
     selector: (category) => {
-      const deleteCategory = async () => {
-        const confirmed = window.confirm(`سيتم حذف القسم نهائيا!`);
-      };
-
       return (
         <div className="d-flex gap-2">
           <AwesomeButton
@@ -64,7 +60,7 @@ const columns = [
             type="secondary"
             size="small"
             className={s.deleteButton}
-            onPress={deleteCategory}
+            onPress={() => category.deleteCategory(category)}
           >
             حذف
           </AwesomeButton>
@@ -77,11 +73,31 @@ const columns = [
 export default function Categories() {
   const {
     data: { data: categories },
+    setData,
   } = useAdminContext();
 
   const [currentCategory, setCurrentCategory] = useState(null);
 
-  console.log(`data`, categories);
+  console.log(`categories => `, categories);
+
+  const deleteCategory = async (category) => {
+    const confirmed = window.confirm(`سيتم حذف القسم ${category.name} نهائيا!`);
+    if (confirmed) {
+      try {
+        const res = await apiHttp.delete(`/v1/categories/${category.id}`);
+        console.log(`Delete Response =>`, res);
+        const { type } = res.data;
+        if (type === "success") {
+          setData((prevData) => ({
+            ...prevData,
+            data: prevData.data.filter((e) => e.id !== category.id),
+          }));
+        }
+      } catch (err) {
+        console.log(`Delete Error =>`, err);
+      }
+    }
+  };
 
   return (
     <>
@@ -91,7 +107,11 @@ export default function Categories() {
         </div>
         <DataTable
           columns={columns}
-          data={categories?.map((e) => ({ ...e, setCurrentCategory }))}
+          data={categories?.map((e) => ({
+            ...e,
+            setCurrentCategory,
+            deleteCategory,
+          }))}
           pagination
           customStyles={tableCustomStyles}
         />
