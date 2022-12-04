@@ -9,7 +9,6 @@ import { useSelector } from "react-redux";
 
 function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
-  const user = useSelector((state) => state.user.user);
   const open = () => {
     setIsOpen(true);
   };
@@ -48,7 +47,7 @@ function Navbar() {
           ابحث عن كتاب
         </Link>
       </div>
-      {user ? (
+      {false ? (
         <MenuWithUser isOpen={isOpen} close={close} user={user} />
       ) : (
         <MenuWithoutUser isOpen={isOpen} close={close} />
