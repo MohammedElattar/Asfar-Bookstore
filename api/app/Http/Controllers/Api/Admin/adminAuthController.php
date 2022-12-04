@@ -28,10 +28,6 @@ class adminAuthController extends Controller
         ], "User authenticated successfully");
     }
     public function logout(Request $req){
-        $user = User::find($req->input('id'));
-        if($user){
             Auth::guard("web")->logout();
-            // Auth::guard('web')->login()
-        }
     }
 }

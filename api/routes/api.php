@@ -25,5 +25,5 @@ Route::group([ 'prefix' => 'admin', 'namespace' => '\App\Http\Controllers\Api\Ad
 
     });
     Route::post("/login" , 'adminAuthController@login');
-    Route::post("/logout" , 'adminAuthController@logout');
+    Route::post("/logout" , 'adminAuthController@logout')->middleware("auth:sanctum");
 });
