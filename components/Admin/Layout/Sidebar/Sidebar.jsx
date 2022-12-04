@@ -66,9 +66,14 @@ function Sidebar() {
           <span>الاقسام</span>
         </ActiveLink>
       </div>
-      <div>
-        <AwesomeButton onPress={logout} className={s.logout}>
-          <span>تسجيل خروج</span>
+      <div className={s.btnContainer}>
+        <AwesomeButton
+          onPress={logout}
+          type="primary"
+          size="small"
+          className={s.logout}
+        >
+          <span className={s.text}>تسجيل خروج</span>
           <IoPower />
         </AwesomeButton>
       </div>

@@ -21,21 +21,16 @@ const columns = [
   },
   {
     name: "الحالة",
-    selector: (row) => {
-      const toggle = async () => {
-        const { id } = row;
-        console.log(`toggling... =>`, id);
-      };
-      return row.status === "1" ? (
-        <div className={[s.statusActive, s.status].join(" ")} onClick={toggle}>
-          مفعل
-        </div>
-      ) : (
+    selector: (category) => {
+      return (
         <div
-          className={[s.statusDisabled, s.status].join(" ")}
-          onClick={toggle}
+          className={[
+            category.status === "1" ? s.statusActive : s.statusDisabled,
+            s.status,
+          ].join(" ")}
+          onClick={() => category.toggleCategory(category)}
         >
-          غير مفعل
+          {category.status === "1" ? "مفعل" : "غير مفعل"}
         </div>
       );
     },
@@ -86,16 +81,38 @@ export default function Categories() {
       try {
         const res = await apiHttp.delete(`/v1/categories/${category.id}`);
         console.log(`Delete Response =>`, res);
-        const { type } = res.data;
-        if (type === "success") {
-          setData((prevData) => ({
-            ...prevData,
-            data: prevData.data.filter((e) => e.id !== category.id),
-          }));
-        }
+
+        setData((prevData) => ({
+          ...prevData,
+          data: prevData.data.filter((e) => e.id !== category.id),
+        }));
       } catch (err) {
         console.log(`Delete Error =>`, err);
       }
+    }
+  };
+
+  const toggleCategory = async (category) => {
+    const updateCategory = (id) => {
+      setData((prevData) => {
+        const clone = { ...prevData };
+        const category = prevData.data.find((e) => e.id === id);
+        if (category.status === "1") category.status = "0";
+        else if (category.status === "0") category.status = "1";
+        return clone;
+      });
+    };
+
+    try {
+      updateCategory(category.id);
+      const res = await apiHttp.put(`/v1/categories/${category.id}`, {
+        name: category.name,
+        status: category.status === "1" ? "0" : "1",
+      });
+      console.log(`Toggle Response =>`, res);
+    } catch (err) {
+      console.log(`Toggle Error =>`, err);
+      updateCategory(category.id);
     }
   };
 
@@ -111,6 +128,7 @@ export default function Categories() {
             ...e,
             setCurrentCategory,
             deleteCategory,
+            toggleCategory,
           }))}
           pagination
           customStyles={tableCustomStyles}
@@ -135,7 +153,12 @@ function EditMenu({ currentCategory, setCurrentCategory }) {
   const { setData } = useAdminContext();
 
   useEffect(() => {
-    setNameProps((prev) => ({ ...prev, value: currentCategory?.name || "" }));
+    setNameProps((prev) => ({
+      ...prev,
+      value: currentCategory?.name || "",
+      error: false,
+      helperText: "",
+    }));
   }, [currentCategory, setNameProps]);
 
   const handlePress = async (evt, next) => {
@@ -160,22 +183,24 @@ function EditMenu({ currentCategory, setCurrentCategory }) {
 
       console.log(`Response =>`, res);
 
-      if (res.data.type === "success") {
-        setData((prevData) => ({
-          ...prevData,
-          data: prevData.data.map((category) => {
-            if (category.id === currentCategory.id) {
-              return res.data.data[0];
-            }
-            return category;
-          }),
-        }));
-      }
+      setData((prevData) => ({
+        ...prevData,
+        data: prevData.data.map((category) => {
+          if (category.id === currentCategory.id) {
+            return res.data.data[0];
+          }
+          return category;
+        }),
+      }));
 
       setResultMsg("تم التعديل");
-      next(`hello`);
+      next();
     } catch (err) {
       console.log(`Error =>`, err);
+      const [reason] = err?.response?.data?.data?.errors?.name;
+      if (reason === "Name is already in use") {
+        setNameError(true, "الاسم مستخدم بالفعل!");
+      }
       setResultMsg("!خطأ");
       next();
     }
