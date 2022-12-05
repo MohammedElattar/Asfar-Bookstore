@@ -102,7 +102,6 @@ class booksController extends Controller
     private function storeImage($request, string $path = 'public/books')
     {
         if ($request->hasFile('img')) {
-            $hasImage = true;
             $imageName = explode('/', $request->file('img')->store($path))[2];
             return $imageName;
         }
