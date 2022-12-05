@@ -60,6 +60,10 @@ php artisan migrate:fresh --seed
 ```
 
 ```console
+php artisan storage:link
+```
+
+```console
 php artisan serve
 ```
 
