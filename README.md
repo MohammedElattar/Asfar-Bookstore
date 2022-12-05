@@ -70,7 +70,7 @@ php artisan serve
 - Your api is
 
 ```console
-127.0.0.1:8000/api
+http://localhost:8000/api
 ```
 
 If you like our project Make ❤
