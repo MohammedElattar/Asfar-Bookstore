@@ -33,7 +33,7 @@ class UpdateBooks extends FormRequest
             'writter' => "bail|required|regex:/^[\p{Arabic}\p{Hebrew}a-z ]+/i",
             'publisher' => "bail|required|regex:/^[\p{Arabic}\p{Hebrew}a-z ]+/i",
             'vendor' => "bail|required|regex:/^[\p{Arabic}\p{Hebrew}a-z ]+/i",
-            'img' => 'bail|required|image|mimes:jpeg,png,jpg|max:3072',
+            'img' => 'sometimes|bail|required|required|image|mimes:jpeg,png,jpg|max:3072',
         ];
     }
 
@@ -49,7 +49,6 @@ class UpdateBooks extends FormRequest
             'publisher.regex' => 'publisher-not-valid',
             'vendor.required' => 'vendor-required',
             'vendor.regex' => 'vendor-not-valid',
-            'img.required' => 'img-required',
             'img.image' => 'file-not-image',
             'img.mimes' => 'file-extension',
             'img.max' => 'file-big',
