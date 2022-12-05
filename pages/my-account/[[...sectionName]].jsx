@@ -13,14 +13,13 @@ import s from "../../styles/my-account.module.scss";
 function MyAccount() {
   const router = useRouter();
   const page = router.query.sectionName?.at(0);
-  const user = useSelector((state) => state.user.user);
   let outlet = null;
 
   const signout = () => {
     router.reload();
   };
 
-  if (user) {
+  if (true) {
     switch (page) {
       case "orders":
         outlet = <Orders />;
@@ -38,7 +37,7 @@ function MyAccount() {
         outlet = <EditAccount />;
         break;
       default:
-        outlet = <Dashboard user={user} signout={signout} />;
+        outlet = <Dashboard user={null} signout={signout} />;
     }
   } else if (typeof window !== "undefined") {
     router.push("/");

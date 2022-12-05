@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { IoMdClose } from "react-icons/io";
-const Menu = styled.div`
+const MenuContainer = styled.div`
   position: fixed;
   top: 20px;
   left: 50%;
@@ -39,14 +39,14 @@ const Menu = styled.div`
   }
 `;
 
-export default function MenuComponent({
+export default function Menu({
   children,
   title,
   className,
   onClose = () => {},
 }) {
   return (
-    <Menu className={className}>
+    <MenuContainer className={className}>
       <header>
         <h4>{title}</h4>
         <button type="button" onClick={onClose}>
@@ -54,6 +54,6 @@ export default function MenuComponent({
         </button>
       </header>
       <div className="body">{children}</div>
-    </Menu>
+    </MenuContainer>
   );
 }

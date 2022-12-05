@@ -8,7 +8,7 @@ import {
 } from "../../styles/form.module.scss";
 import InputControl from "../../components/InputControl/InputControl";
 import { useRouter } from "next/router";
-import { AwesomeButton } from "react-awesome-button";
+import { AwesomeButton } from "react-awesome-button/";
 import Loading from "../../components/Loading";
 import axios from "axios";
 import { apiHttp } from "../../utils/utils";

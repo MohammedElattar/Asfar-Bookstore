@@ -1,1 +1,15 @@
-
+.menuBody {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+.fileWrapper {
+  margin: 30px 0;
+  label {
+    text-decoration: underline;
+    cursor: pointer;
+  }
+  span {
+    margin-right: 20px;
+  }
+}

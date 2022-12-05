@@ -14,7 +14,7 @@ function RequireAdmin({ children, ...props }) {
     try {
       setAdminLoading(true);
       console.log(`url => ${props.url}`);
-      const res = await apiHttp.get(`/v1/categories`);
+      const res = await apiHttp.get(props.url);
 
       console.log(`Success =>`, res);
       setData(res.data);

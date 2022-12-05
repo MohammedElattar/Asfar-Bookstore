@@ -7,7 +7,6 @@ import {
   formContainer,
   heading,
 } from "../styles/form.module.scss";
-import { useDispatch } from "react-redux";
 import InputControl from "../components/InputControl/InputControl";
 import Link from "next/link";
 import { AwesomeButton } from "react-awesome-button";
@@ -18,7 +17,6 @@ function Signup() {
   const [passwordProps, setPasswordError] = useInput();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
-  const dispatch = useDispatch();
   const router = useRouter();
 
   const validateInputs = () => {
