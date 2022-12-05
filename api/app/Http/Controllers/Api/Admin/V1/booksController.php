@@ -35,10 +35,10 @@ class booksController extends Controller
     {
         $imageName = $this->storeImage($request);
         $book = Book::create([
-            'title' => $request->title ?? 's',
+            'title' => $request->title,
             'writter' => $request->writter,
             'publisher' => $request->publisher,
-            'vendor' => $request->vendor ?? 'Google',
+            'vendor' => $request->vendor,
             'img' => $imageName ? $imageName : null,
         ]);
         // $book = "";
@@ -69,7 +69,6 @@ class booksController extends Controller
         if ($request->isMethod('post')) {
             $book->title = $request->title;
             $book->writter = $request->writter;
-            $book->author = $request->author;
             $book->publisher = $request->publisher;
             $book->vendor = $request->vendor;
             if ($request->hasFile('img')) {

@@ -29,7 +29,6 @@ class storebook extends FormRequest
     {
         return [
             'title' => "bail|required|regex:/^[\p{Arabic}\p{Hebrew}a-z ]+/i|unique:books,title",
-            'author' => "bail|required|regex:/^[\p{Arabic}\p{Hebrew}a-z ]+/i",
             'writter' => "bail|required|regex:/^[\p{Arabic}\p{Hebrew}a-z ]+/i",
             'publisher' => "bail|required|regex:/^[\p{Arabic}\p{Hebrew}a-z ]+/i",
             'vendor' => "bail|required|regex:/^[\p{Arabic}\p{Hebrew}a-z ]+/i",
@@ -43,8 +42,6 @@ class storebook extends FormRequest
             'title.required' => 'title-required',
             'title.regex' => 'title-not-valid',
             'title.unique' => 'title-exists',
-            'author.required' => 'author-required',
-            'author.regex' => 'author-not-valid',
             'writter.required' => 'writter-required',
             'writter.regex' => 'writter-not-valid',
             'publisher.required' => 'publisher-required',

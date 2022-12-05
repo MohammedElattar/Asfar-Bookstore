@@ -43,8 +43,6 @@ class UpdateBooks extends FormRequest
             'title.required' => 'title-required',
             'title.regex' => 'title-not-valid',
             'title.unique' => 'title-exists',
-            'author.required' => 'author-required',
-            'author.regex' => 'author-not-valid',
             'writter.required' => 'writter-required',
             'writter.regex' => 'writter-not-valid',
             'publisher.required' => 'publisher-required',
