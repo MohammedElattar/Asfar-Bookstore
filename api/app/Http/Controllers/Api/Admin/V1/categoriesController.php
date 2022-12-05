@@ -56,7 +56,7 @@ class categoriesController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Category  $category
+     * @param  \App\Models\Api\Admin\V1\Category  $category
      * @return \Illuminate\Http\JSONResponse
      */
     public function update(updateCateogry $request, Category $category)
@@ -73,7 +73,7 @@ class categoriesController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Category  $category
+     * @param  \App\Models\Api\Admin\V1\Category $category
      * @return \Illuminate\Http\JSONResponse
      */
     public function destroy(Category $category)
