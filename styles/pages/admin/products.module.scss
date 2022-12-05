@@ -13,3 +13,18 @@
     margin-right: 20px;
   }
 }
+.menu {
+  position: relative;
+}
+.imagePreview {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  img {
+    object-fit: cover;
+    width: auto;
+    height: auto;
+    max-height: 100px;
+    max-width: 120px;
+  }
+}

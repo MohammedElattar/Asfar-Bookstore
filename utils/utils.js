@@ -10,6 +10,10 @@ export const apiHttp = axios.create({
   },
 });
 
+if (typeof window !== "undefined") {
+  window.apiHttp = apiHttp;
+}
+
 export const tableCustomStyles = {
   cells: {
     style: {
@@ -30,3 +34,31 @@ export const tableCustomStyles = {
     },
   },
 };
+
+// const urlToFile = async (Image) => {
+//   const response = await fetch(image);
+//   // here image is url/location of image
+//   const blob = await response.blob();
+//   const file = new File([blob], "image.jpg", { type: blob.type });
+//   return file;
+// };
+
+// [].forEach(async (product) => {
+//   const formData = new FormData();
+//   formData.append("title", product.title);
+//   formData.append(
+//     "writter",
+//     product.author !== "user"
+//       ? product.author
+//       : product.writter
+//       ? product.writter
+//       : "غير معرف"
+//   );
+//   formData.append("publisher", product.publisher || "غير معرف");
+//   formData.append("vendor", product.vendor?.at(0) || "غير معرف");
+//   if (product.img) {
+//     const file = await urlToFile(product.img);
+//     formData.append("img", file);
+//   }
+//   apiHttp.post(`/v1/books`, formData);
+// });

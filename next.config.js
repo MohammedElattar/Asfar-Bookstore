@@ -2,7 +2,7 @@
 const nextConfig = {
   reactStrictMode: false,
   images: {
-    domains: ["assets.asfar.io"],
+    domains: ["assets.asfar.io", "localhost"],
   },
   compiler: {
     styledComponents: true,

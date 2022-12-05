@@ -54,7 +54,7 @@ const columns = [
           <AwesomeButton
             type="secondary"
             size="small"
-            className={s.deleteButton}
+            className={global.deleteButton}
             onPress={() => category.deleteCategory(category)}
           >
             حذف

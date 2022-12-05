@@ -9,3 +9,10 @@
   align-items: center;
   gap: 10px;
 }
+.deleteButton {
+  --button-secondary-color: #f2f6f9;
+  --button-secondary-color-dark: #941717;
+  --button-secondary-color-light: #fc3b3b;
+  --button-secondary-color-hover: #e1eaf1;
+  --button-secondary-border: 2px solid #e51e1e;
+}
