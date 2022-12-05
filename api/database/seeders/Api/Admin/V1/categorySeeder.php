@@ -1,12 +1,12 @@
 <?php
 
-namespace Database\Seeders;
+namespace Database\Seeders\Api\Admin\V1;
 
-use App\Models\Category;
+use App\Models\Api\Admin\V1\Category;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
-class categories extends Seeder
+class categorySeeder extends Seeder
 {
     /**
      * Run the database seeds.

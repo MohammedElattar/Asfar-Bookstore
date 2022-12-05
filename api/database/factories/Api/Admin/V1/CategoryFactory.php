@@ -1,14 +1,16 @@
 <?php
 
-namespace Database\Factories;
+namespace Database\Factories\Api\Admin\V1;
 
+use App\Models\Api\Admin\V1\Category;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Category>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Api\Admin\V1\Category>
  */
 class CategoryFactory extends Factory
 {
+    protected $model = Category::class;
     /**
      * Define the model's default state.
      *
