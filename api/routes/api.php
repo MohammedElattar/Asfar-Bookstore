@@ -28,6 +28,10 @@ Route::group([ 'prefix' => 'admin', 'namespace' => '\App\Http\Controllers\Api\Ad
         Route::apiResource("/categories", categoriesController::class);
         Route::apiResource("/books", booksController::class)->withoutMiddleware("auth:sanctum");
 
+        // books
+        Route::match ("POST", "/books/{book}", "booksController@update")->where("book" , '[0-9]+');
+        Route::post("/books/{book}", "booksController@update")->withoutMiddleware("auth:sanctum");
+
     });
     Route::post("/login" , 'adminAuthController@login');
     Route::post("/logout" , 'adminAuthController@logout')->middleware("auth:sanctum");

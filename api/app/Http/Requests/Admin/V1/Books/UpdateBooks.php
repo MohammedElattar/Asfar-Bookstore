@@ -4,8 +4,9 @@ namespace App\Http\Requests\Admin\V1\Books;
 
 use App\Http\Traits\HttpResponse;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Contracts\Validation\Validator;
 
-class updatebook extends FormRequest
+class UpdateBooks extends FormRequest
 {
     use HttpResponse;
 
@@ -26,14 +27,13 @@ class updatebook extends FormRequest
      */
     public function rules()
     {
-        $book = $this->route("book")->id;
         return [
-            'title' => "bail|required|regex:/^[\p{Arabic}\p{Hebrew}a-z ]+/i|unique:books,title,$book,id",
+            'title' => "bail|required|regex:/^[\p{Arabic}\p{Hebrew}a-z ]+/i|unique:books,title,{$this->route('book')->id},id",
             'author' => "bail|required|regex:/^[\p{Arabic}\p{Hebrew}a-z ]+/i",
             'writter' => "bail|required|regex:/^[\p{Arabic}\p{Hebrew}a-z ]+/i",
             'publisher' => "bail|required|regex:/^[\p{Arabic}\p{Hebrew}a-z ]+/i",
             'vendor' => "bail|required|regex:/^[\p{Arabic}\p{Hebrew}a-z ]+/i",
-            'img' => 'sometimes|bail|image|mimes:jpeg,png,jpg|max:3072',
+            'img' => 'bail|required|image|mimes:jpeg,png,jpg|max:3072',
         ];
     }
 
@@ -56,5 +56,11 @@ class updatebook extends FormRequest
             'img.mimes' => 'file-extension',
             'img.max' => 'file-big',
         ];
+    }
+    protected function failedValidation(Validator $validator)
+    {
+        throw new \Illuminate\Validation\ValidationException($validator , $this->error("validation errors" , 422 , [
+            "errors" => $validator->errors()
+        ]));
     }
 }
