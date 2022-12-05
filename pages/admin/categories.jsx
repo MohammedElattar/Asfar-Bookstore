@@ -40,7 +40,7 @@ const columns = [
     selector: (row) => row.created_at,
   },
   {
-    name: "تعديل",
+    name: "الادوات",
     selector: (category) => {
       return (
         <div className="d-flex gap-2">
