@@ -5,6 +5,8 @@ import { SiBookstack } from "react-icons/si";
 import { BiCategory } from "react-icons/bi";
 import { BsFillPenFill } from "react-icons/bs";
 import { useAdminContext } from "../../context/AdminContext";
+import { useEffect } from "react";
+import axios from "axios";
 
 export default function Dashboard() {
   const {

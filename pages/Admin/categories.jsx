@@ -72,8 +72,7 @@ export default function Categories() {
   } = useAdminContext();
 
   const [currentCategory, setCurrentCategory] = useState(null);
-
-  console.log(`categories => `, categories);
+  const [addCategory, setAddCategory] = useState(false);
 
   const deleteCategory = async (category) => {
     const confirmed = window.confirm(`سيتم حذف القسم ${category.name} نهائيا!`);
@@ -120,7 +119,9 @@ export default function Categories() {
     <>
       <div className={global.wrapper}>
         <div className={global.btnContainer}>
-          <AwesomeButton type="secondary">اضافة قسم</AwesomeButton>
+          <AwesomeButton type="secondary" onPress={() => setAddCategory(true)}>
+            اضافة قسم
+          </AwesomeButton>
         </div>
         <DataTable
           columns={columns}
@@ -136,13 +137,18 @@ export default function Categories() {
       </div>
 
       <div
-        className={["overlay", currentCategory ? "active" : undefined].join(
-          " "
-        )}
-        onClick={() => setCurrentCategory(null)}
+        className={[
+          "overlay",
+          currentCategory || addCategory ? "active" : "",
+        ].join(" ")}
+        onClick={() => {
+          setCurrentCategory(null);
+          setAddCategory(false);
+        }}
       ></div>
 
       <EditMenu {...{ currentCategory, setCurrentCategory }} />
+      <AddCategoryMenu {...{ addCategory, setAddCategory }} />
     </>
   );
 }
@@ -200,6 +206,13 @@ function EditMenu({ currentCategory, setCurrentCategory }) {
       const [reason] = err?.response?.data?.data?.errors?.name;
       if (reason === "Name is already in use") {
         setNameError(true, "الاسم مستخدم بالفعل!");
+      } else if (
+        reason === "Name must have arabic or english characters only"
+      ) {
+        setNameError(
+          true,
+          "الاسم يجب ان يحتوي علي حروف عربية او انجليزية فقط."
+        );
       }
       setResultMsg("!خطأ");
       next();
@@ -221,6 +234,83 @@ function EditMenu({ currentCategory, setCurrentCategory }) {
         resultLabel={resultMsg}
       >
         تعديل القسم
+      </AwesomeButtonProgress>
+    </Menu>
+  );
+}
+
+function AddCategoryMenu({ addCategory, setAddCategory }) {
+  const [nameProps, setNameError, setNameProps] = useInput();
+  const [resultMsg, setResultMsg] = useState("تم الاضافة");
+  const { setData } = useAdminContext();
+
+  useEffect(() => {
+    setNameProps((prev) => ({
+      ...prev,
+      value: "",
+      error: false,
+      helperText: "",
+    }));
+  }, [addCategory, setNameProps]);
+
+  const handlePress = async (evt, next) => {
+    if (!nameProps.value.trim()) {
+      setNameError(true, "!يرجي ادخال اسم صالح");
+      setResultMsg("!خطأ");
+      next();
+      return;
+    }
+
+    try {
+      const res = await apiHttp.post("/v1/categories", {
+        name: nameProps.value,
+        status: "1",
+      });
+      console.log(`Create Success =>`, res);
+
+      if (res.data.original.type === "success" && res.data.original.data) {
+        setData((prev) => {
+          const clone = { ...prev };
+          clone.data.push(res.data.original.data);
+          return clone;
+        });
+      }
+
+      setResultMsg("تم الاضافة");
+      next();
+    } catch (err) {
+      const [reason] = err?.response?.data?.data?.errors?.name;
+      if (reason === "Name is already in use") {
+        setNameError(true, "الاسم مستخدم بالفعل!");
+      } else if (
+        reason === "Name must have arabic or english characters only"
+      ) {
+        setNameError(
+          true,
+          "الاسم يجب ان يحتوي علي حروف عربية او انجليزية فقط."
+        );
+      }
+      console.log(`Create Error =>`, err);
+      setResultMsg("!خطأ");
+      next();
+    }
+  };
+
+  return (
+    <Menu
+      title="اضافة قسم"
+      className={addCategory ? "active" : ""}
+      onClose={() => setAddCategory(false)}
+    >
+      <InputControl props={nameProps} label="اسم القسم" />
+      <AwesomeButtonProgress
+        type="primary"
+        style={{ marginTop: "40px" }}
+        onPress={handlePress}
+        loadingLabel="جار التحميل..."
+        resultLabel={resultMsg}
+      >
+        اضافة القسم
       </AwesomeButtonProgress>
     </Menu>
   );

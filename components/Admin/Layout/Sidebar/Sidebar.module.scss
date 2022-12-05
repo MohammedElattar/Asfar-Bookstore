@@ -19,7 +19,7 @@
     justify-content: center;
   }
   .logout {
-    width: 45px;
+    width: 45px !important;
     .text {
       display: none;
     }
@@ -57,7 +57,6 @@
     }
   }
   a {
-    // width: 100%;
     padding: 10px;
     border-radius: 1000px;
     display: block;
@@ -81,8 +80,11 @@
     }
   }
   .btnContainer {
-    width: 100%;
     .logout {
+      --button-primary-color: #c74343;
+      --button-primary-color-dark: #612222;
+      --button-primary-color-hover: #b12727;
+      width: 150px;
       display: flex;
       gap: 5px;
       align-items: center;
@@ -91,6 +93,7 @@
       margin: 20px auto;
       .text {
         margin-left: 5px;
+        white-space: nowrap;
       }
       svg {
         font-size: 20px;
