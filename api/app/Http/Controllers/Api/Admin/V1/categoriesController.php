@@ -8,8 +8,7 @@ use App\Http\Requests\Admin\V1\Categories\updateCateogry;
 use App\Http\Resources\Api\admin\v1\categoriesCollection;
 use App\Http\Resources\Api\admin\v1\categoriesResource;
 use App\Http\Traits\HttpResponse;
-use App\Models\Category;
-use Illuminate\Http\Request;
+use App\Models\Api\Admin\V1\Category;
 
 class categoriesController extends Controller
 {
@@ -49,17 +48,6 @@ class categoriesController extends Controller
      * @return categoriesResource
      */
     public function show(Category $category)
-    {
-        return new categoriesResource($category);
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Category  $category
-     * @return categoriesResource
-     */
-    public function edit(Category $category)
     {
         return new categoriesResource($category);
     }
