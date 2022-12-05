@@ -18,10 +18,15 @@ Route::group([ 'prefix' => 'admin', 'namespace' => '\App\Http\Controllers\Api\Ad
     Route::group(['prefix' => 'v1', 'namespace' => 'V1' , 'middleware' => ['auth:sanctum']], function () {
         // Route::post("/books" , [books::class , 'index']);
 
-        // uncomment this to enable authentication
+        /*
+            Add ->withoutMiddleware("auth:sanctum") to disable authentication
+            * Like That :
+                *Route::apiResource("/categories", categoriesController::class)->withoutMiddleware("auth:sanctum");
+         */
 
-        // Route::apiResource("/categories", categoriesController::class);
-        Route::apiResource("/categories", categoriesController::class)->withoutMiddleware("auth:sanctum");
+
+        Route::apiResource("/categories", categoriesController::class);
+        Route::apiResource("/books", booksController::class)->withoutMiddleware("auth:sanctum");
 
     });
     Route::post("/login" , 'adminAuthController@login');
