@@ -74,7 +74,7 @@ class booksController extends Controller
             if ($request->hasFile('img')) {
                 if (file_exists('storage/books/'.$book->img)) {
                     unlink('storage/books/'.$book->img);
-                    $this->storeImage($request);
+                    $book->img = $this->storeImage($request);
                 }
             }
             $book->save();
