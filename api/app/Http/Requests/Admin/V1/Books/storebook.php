@@ -33,6 +33,8 @@ class storebook extends FormRequest
             'writter' => "bail|required|regex:".$ar_en_reg."|not_regex:/^\d+$/|max:20",
             'publisher' => "bail|required|regex:".$ar_en_reg."|not_regex:/^\d+$/|max:20",
             'vendor' => "bail|required|regex:".$ar_en_reg."|not_regex:/^\d+$/|max:20",
+            "quantity" => "bail|required|numeric|min:1",
+            "price" => "bail|required|numeric|min:1",
             'img' => 'sometimes|bail|required|image|mimes:jpeg,png,jpg|max:3072',
         ];
     }
@@ -60,6 +62,13 @@ class storebook extends FormRequest
             "writter.max" => "writter-long",
             "publisher.max" => "publisher-long",
             "vendor.max" => "vendor-long",
+            "price.required" => "price-required",
+            "price.numeric" => 'price-invalid',
+            "price.min" => 'price-small',
+            'quantity.required' => 'quantity-required',
+            "quantity.numeric" => 'quantity-invalid',
+            'quantity.min' => 'quantity-invalid',
+
         ];
     }
     protected function failedValidation(Validator $validator)

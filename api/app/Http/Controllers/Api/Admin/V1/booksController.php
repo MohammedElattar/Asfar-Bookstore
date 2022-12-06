@@ -46,6 +46,8 @@ class booksController extends Controller
             'writter' => $request->writter,
             'publisher' => $request->publisher,
             'vendor' => $request->vendor,
+            'quantity' => $request->quantity,
+            'price' => $request->price,
             'img' => $imageName ? $imageName : null,
         ]);
 
@@ -78,6 +80,8 @@ class booksController extends Controller
             $book->writter = $request->writter;
             $book->publisher = $request->publisher;
             $book->vendor = $request->vendor;
+            $book->quantity = $request->quantity;
+            $book->price = $request->price;
             if ($request->hasFile('img')) {
                 if ($book->img && file_exists('storage/books/'.$book->img)) {
                     unlink('storage/books/'.$book->img);

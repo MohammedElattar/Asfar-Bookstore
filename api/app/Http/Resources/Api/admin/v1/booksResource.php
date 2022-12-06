@@ -20,6 +20,8 @@ class booksResource extends JsonResource
             "writter" => $this->writter ,
             "publisher" => $this->publisher,
             "vendor" => $this->vendor,
+            "quantity" => $this->quantity,
+            "price" => $this->price,
             "img" => $this->img ? env("APP_URL" , "http://localhost:8000")."/storage/books/{$this->img}":null,
             "created_at" => date("Y-m-d" , strtotime($this->created_at))
         ];

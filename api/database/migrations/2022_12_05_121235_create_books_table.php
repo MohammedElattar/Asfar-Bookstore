@@ -19,6 +19,8 @@ return new class() extends Migration {
             $table->string('writter',$str_len)->nullable();
             $table->string('publisher',$str_len)->nullable();
             $table->string("vendor",$str_len);
+            $table->bigInteger("quantity", unsigned: true);
+            $table->unsignedDouble("price");
             $table->string('img')->nullable();
             $table->timestamps();
         });
