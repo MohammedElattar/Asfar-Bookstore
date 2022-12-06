@@ -40,20 +40,34 @@ const columns = [
   {
     name: "الناشر",
     selector: (product) => product.publisher || "غير معرف",
+    wrap: true,
   },
   {
     name: "الكاتب",
     selector: (product) => product.writter || "غير معرف",
+    wrap: true,
   },
   {
     name: "البائع",
     selector: (product) => product.vendor,
+    wrap: true,
+  },
+  {
+    name: "السعر",
+    selector: (product) => Number(product.price).toFixed(2),
+    wrap: true,
+    wrap: true,
+  },
+  {
+    name: "العدد",
+    selector: (product) => product.quantity,
+    wrap: true,
   },
   {
     name: "الادوات",
     selector: (product) => {
       return (
-        <div className="d-flex gap-2 ">
+        <div className="d-flex gap-2 flex-wrap">
           <AwesomeButton
             type="secondary"
             size="small"
@@ -145,6 +159,8 @@ function AddProductMenu({ addProductIsActive, setAddProductIsActive }) {
   const [writterProps, setWritterError, setWritterProps] = useInput("");
   const [publisherProps, setPublisherError, setPublisherProps] = useInput("");
   const [vendorProps, setVendorError, setVendorProps] = useInput("");
+  const [priceProps, setPriceError, setPriceProps] = useInput("");
+  const [quantityProps, setQuantityError, setQuantityProps] = useInput("");
   const [image, setImage] = useState(null);
   const [resultMsg, setResultMsg] = useState("");
   const [error, setError] = useState(null);
@@ -155,6 +171,8 @@ function AddProductMenu({ addProductIsActive, setAddProductIsActive }) {
     const check2 = writterProps.value.trim().length <= 4;
     const check3 = publisherProps.value.trim().length <= 4;
     const check4 = vendorProps.value.trim().length <= 4;
+    const check5 = /^\d{1,}$/.test(priceProps.value.trim());
+    const check6 = /^\d{1,}$/.test(quantityProps.value.trim());
     if (check1) {
       setNameError(true, "الاسم قصير جدا!");
     }
@@ -167,7 +185,17 @@ function AddProductMenu({ addProductIsActive, setAddProductIsActive }) {
     if (check4) {
       setVendorError(true, "الاسم قصير جدا!");
     }
-    if (check1 || check2 || check3 || check4) {
+    if (priceProps.value.trim().length <= 0) {
+      setPriceError(true, "رقم واحد علي الاقل");
+    } else if (!check5) {
+      setPriceError(true, "ارقام فقط");
+    }
+    if (quantityProps.value.trim().length <= 0) {
+      setQuantityError(true, "رقم واحد علي الاقل");
+    } else if (!check6) {
+      setQuantityError(true, "ارقام فقط");
+    }
+    if (check1 || check2 || check3 || check4 || !check5 || !check6) {
       setResultMsg("خطأ!");
       next();
       return;
@@ -179,6 +207,8 @@ function AddProductMenu({ addProductIsActive, setAddProductIsActive }) {
       formData.append("writter", writterProps.value);
       formData.append("publisher", publisherProps.value);
       formData.append("vendor", vendorProps.value);
+      formData.append("price", priceProps.value);
+      formData.append("quantity", quantityProps.value);
       if (image) {
         formData.append("img", image);
       }
@@ -208,17 +238,19 @@ function AddProductMenu({ addProductIsActive, setAddProductIsActive }) {
   };
 
   useEffect(() => {
-    [setNameProps, setWritterProps, setPublisherProps, setVendorProps].forEach(
-      (e) => e((prev) => ({ ...prev, error: false, helperText: "", value: "" }))
+    [
+      setNameProps,
+      setWritterProps,
+      setPublisherProps,
+      setVendorProps,
+      setPriceProps,
+      setQuantityProps,
+    ].forEach((e) =>
+      e((prev) => ({ ...prev, error: false, helperText: "", value: "" }))
     );
     setImage(null);
-  }, [
-    addProductIsActive,
-    setNameProps,
-    setPublisherProps,
-    setVendorProps,
-    setWritterProps,
-  ]);
+    // eslint-disable-next-line
+  }, [addProductIsActive]);
 
   return (
     <Menu
@@ -231,6 +263,8 @@ function AddProductMenu({ addProductIsActive, setAddProductIsActive }) {
         <InputControl label="اسم الكاتب" props={writterProps} />
         <InputControl label="اسم الناشر" props={publisherProps} />
         <InputControl label="اسم البائع" props={vendorProps} />
+        <InputControl label="السعر" props={priceProps} />
+        <InputControl label="العدد" props={quantityProps} />
       </div>
       <div className={s.fileWrapper}>
         <label htmlFor="image">اختيار صورة</label>
@@ -284,6 +318,8 @@ function EditProductMenu({ currentProduct, setCurrentProduct }) {
   const [writterProps, setWritterError, setWritterProps] = useInput("");
   const [publisherProps, setPublisherError, setPublisherProps] = useInput("");
   const [vendorProps, setVendorError, setVendorProps] = useInput("");
+  const [priceProps, setPriceError, setPriceProps] = useInput("");
+  const [quantityProps, setQuantityError, setQuantityProps] = useInput("");
   const [image, setImage] = useState(null);
   const [resultMsg, setResultMsg] = useState("");
   const [error, setError] = useState(null);
@@ -295,6 +331,8 @@ function EditProductMenu({ currentProduct, setCurrentProduct }) {
     const check2 = writterProps.value.trim().length <= 4;
     const check3 = publisherProps.value.trim().length <= 4;
     const check4 = vendorProps.value.trim().length <= 4;
+    const check5 = /^\d{1,}$/.test(priceProps.value.trim());
+    const check6 = /^\d{1,}$/.test(quantityProps.value.trim());
     if (check1) {
       setNameError(true, "الاسم قصير جدا!");
     }
@@ -307,7 +345,17 @@ function EditProductMenu({ currentProduct, setCurrentProduct }) {
     if (check4) {
       setVendorError(true, "الاسم قصير جدا!");
     }
-    if (check1 || check2 || check3 || check4) {
+    if (priceProps.value.trim().length <= 0) {
+      setPriceError(true, "رقم واحد علي الاقل");
+    } else if (!check5) {
+      setPriceError(true, "ارقام فقط");
+    }
+    if (quantityProps.value.trim().length <= 0) {
+      setQuantityError(true, "رقم واحد علي الاقل");
+    } else if (!check6) {
+      setQuantityError(true, "ارقام فقط");
+    }
+    if (check1 || check2 || check3 || check4 || !check5 || !check6) {
       setResultMsg("خطأ!");
       next();
       return;
@@ -319,9 +367,12 @@ function EditProductMenu({ currentProduct, setCurrentProduct }) {
       formData.append("writter", writterProps.value);
       formData.append("publisher", publisherProps.value);
       formData.append("vendor", vendorProps.value);
+      formData.append("price", priceProps.value);
+      formData.append("quantity", quantityProps.value);
       if (image) {
         formData.append("img", image);
       }
+      console.log(Object.fromEntries(formData.entries()));
 
       const res = await apiHttp.post(
         `/v1/books/${currentProduct.id}`,
@@ -356,40 +407,47 @@ function EditProductMenu({ currentProduct, setCurrentProduct }) {
   };
 
   useEffect(() => {
-    if (currentProduct) {
-      setNameProps((prev) => ({
-        ...prev,
-        error: false,
-        helperText: "",
-        value: currentProduct.title || "",
-      }));
-      setWritterProps((prev) => ({
-        ...prev,
-        error: false,
-        helperText: "",
-        value: currentProduct.writter || "",
-      }));
-      setPublisherProps((prev) => ({
-        ...prev,
-        error: false,
-        helperText: "",
-        value: currentProduct.publisher || "",
-      }));
-      setVendorProps((prev) => ({
-        ...prev,
-        error: false,
-        helperText: "",
-        value: currentProduct.vendor || "",
-      }));
-      setImage(null);
-    }
-  }, [
-    currentProduct,
-    setNameProps,
-    setPublisherProps,
-    setVendorProps,
-    setWritterProps,
-  ]);
+    if (!currentProduct) return;
+    setNameProps((prev) => ({
+      ...prev,
+      error: false,
+      helperText: "",
+      value: currentProduct.title || "",
+    }));
+    setWritterProps((prev) => ({
+      ...prev,
+      error: false,
+      helperText: "",
+      value: currentProduct.writter || "",
+    }));
+    setPublisherProps((prev) => ({
+      ...prev,
+      error: false,
+      helperText: "",
+      value: currentProduct.publisher || "",
+    }));
+    setVendorProps((prev) => ({
+      ...prev,
+      error: false,
+      helperText: "",
+      value: currentProduct.vendor || "",
+    }));
+    setPriceProps((prev) => ({
+      ...prev,
+      error: false,
+      helperText: "",
+      value: String(currentProduct.price) || "",
+    }));
+    setQuantityProps((prev) => ({
+      ...prev,
+      error: false,
+      helperText: "",
+      value: String(currentProduct.quantity) || "",
+    }));
+    setImage(null);
+
+    // eslint-disable-next-line
+  }, [currentProduct]);
 
   return (
     <Menu
@@ -402,6 +460,8 @@ function EditProductMenu({ currentProduct, setCurrentProduct }) {
         <InputControl label="اسم الكاتب" props={writterProps} />
         <InputControl label="اسم الناشر" props={publisherProps} />
         <InputControl label="اسم البائع" props={vendorProps} />
+        <InputControl label="السعر" props={priceProps} />
+        <InputControl label="العدد" props={quantityProps} />
       </div>
       <div className={s.fileWrapper}>
         <label htmlFor="editImage">اختيار صورة</label>
