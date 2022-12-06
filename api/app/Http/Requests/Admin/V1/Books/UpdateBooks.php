@@ -29,7 +29,6 @@ class UpdateBooks extends FormRequest
     {
         return [
             'title' => "bail|required|regex:/^[\p{Arabic}\p{Hebrew}a-z ]+/i|unique:books,title,{$this->route('book')->id},id",
-            'author' => "bail|required|regex:/^[\p{Arabic}\p{Hebrew}a-z ]+/i",
             'writter' => "bail|required|regex:/^[\p{Arabic}\p{Hebrew}a-z ]+/i",
             'publisher' => "bail|required|regex:/^[\p{Arabic}\p{Hebrew}a-z ]+/i",
             'vendor' => "bail|required|regex:/^[\p{Arabic}\p{Hebrew}a-z ]+/i",
