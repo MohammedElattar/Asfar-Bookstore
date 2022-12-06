@@ -9,10 +9,11 @@ import s from "./RequireAdmin.module.scss";
 function RequireAdmin({ children, ...props }) {
   const [loading, setLoading] = useState(true);
   const { setData, setLoading: setAdminLoading } = useAdminContext();
-  const { push } = useRouter();
+  const { push, query } = useRouter();
   const fetchData = async () => {
     try {
       setAdminLoading(true);
+
       console.log(`url => ${props.url}`);
       const res = await apiHttp.get(props.url);
 
