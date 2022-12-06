@@ -27,11 +27,12 @@ class UpdateBooks extends FormRequest
      */
     public function rules()
     {
+        $ar_en_reg = config("app.ar_en_reg");
         return [
-            'title' => "bail|required|regex:/^[\p{Arabic}\p{Hebrew}a-z ]+/i|unique:books,title,{$this->route('book')->id},id",
-            'writter' => "bail|required|regex:/^[\p{Arabic}\p{Hebrew}a-z ]+/i",
-            'publisher' => "bail|required|regex:/^[\p{Arabic}\p{Hebrew}a-z ]+/i",
-            'vendor' => "bail|required|regex:/^[\p{Arabic}\p{Hebrew}a-z ]+/i",
+            'title' => "bail|required|unique:books,title,{$this->route('book')->id},id|regex:$ar_en_reg"."|not_regex:/\^d+$/",
+            'writter' => "bail|required|regex:$ar_en_reg"."|not_regex:/\^d+$/",
+            'publisher' => "bail|required|regex:$ar_en_reg"."|not_regex:/\^d+$/",
+            'vendor' => "bail|required|regex:$ar_en_reg"."|not_regex:/\^d+$/",
             'img' => 'sometimes|bail|required|required|image|mimes:jpeg,png,jpg|max:3072',
         ];
     }
@@ -41,16 +42,24 @@ class UpdateBooks extends FormRequest
         return [
             'title.required' => 'title-required',
             'title.regex' => 'title-not-valid',
+            "title.not_regex" => "title-only_numbers",
             'title.unique' => 'title-exists',
             'writter.required' => 'writter-required',
             'writter.regex' => 'writter-not-valid',
+            "writter.not_regex" => "-only_numbers",
             'publisher.required' => 'publisher-required',
             'publisher.regex' => 'publisher-not-valid',
+            "publisher.not_regex" => "publisher-only_numbers",
             'vendor.required' => 'vendor-required',
             'vendor.regex' => 'vendor-not-valid',
+            "vendor.not_regex" => "-only_numbers",
             'img.image' => 'file-not-image',
             'img.mimes' => 'file-extension',
             'img.max' => 'file-big',
+            "title.max" => "title-long",
+            "writter.max" => "writter-long",
+            "publisher.max" => "publisher-long",
+            "vendor.max" => "vendor-long",
         ];
     }
     protected function failedValidation(Validator $validator)

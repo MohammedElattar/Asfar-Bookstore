@@ -223,7 +223,7 @@ function AddProductMenu({ addProductIsActive, setAddProductIsActive }) {
       setError(null);
       next();
     } catch (err) {
-      console.log(`Create Product Error =>`, err);
+      console.log(`Create Product Error =>`, err.response.data.data);
       setResultMsg("خطأ!");
       setError(`حدث خطأ اثناء القيام بالعملية`);
       next();
@@ -371,7 +371,7 @@ function EditProductMenu({ currentProduct, setCurrentProduct }) {
       setError(null);
       next();
     } catch (err) {
-      console.log(`Edit Product Error =>`, err);
+      console.log(`Edit Product Error =>`, err.response.data);
       setResultMsg("خطأ!");
       setError(`حدث خطأ اثناء القيام بالعملية`);
       next();
