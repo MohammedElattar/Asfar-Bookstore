@@ -9,6 +9,7 @@ use App\Http\Resources\Api\admin\v1\booksCollection;
 use App\Http\Resources\Api\admin\v1\booksResource;
 use App\Http\Traits\HttpResponse;
 use App\Models\Api\Admin\V1\Book;
+use Illuminate\Http\Request;
 
 class booksController extends Controller
 {
@@ -19,9 +20,15 @@ class booksController extends Controller
      *
      * @return booksCollection
      */
-    public function index()
+    public function index(Request $req)
     {
-        return new booksCollection(Book::all());
+        $cnt = 10;
+        if($req->has("cnt")){
+            $t = $req->input("cnt");
+            if (is_numeric($t) && $t > 5 && $t<=50)
+                $cnt = $t;
+        }
+        return new booksCollection(Book::paginate($cnt));
     }
 
     /**

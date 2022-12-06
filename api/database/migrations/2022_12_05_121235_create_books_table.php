@@ -13,11 +13,12 @@ return new class() extends Migration {
     public function up()
     {
         Schema::create('books', function (Blueprint $table) {
+            $str_len = 40;
             $table->id();
-            $table->string('title');
-            $table->string('writter')->nullable();
-            $table->string('publisher')->nullable();
-            $table->string("vendor");
+            $table->string('title',$str_len);
+            $table->string('writter',$str_len)->nullable();
+            $table->string('publisher',$str_len)->nullable();
+            $table->string("vendor",$str_len);
             $table->string('img')->nullable();
             $table->timestamps();
         });
