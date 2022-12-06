@@ -13,6 +13,7 @@ import useInput from "../../hooks/useInput";
 import { useEffect } from "react";
 import ImagePreview from "../../components/Admin/ImagePreview";
 import Loading from "../../components/Loading";
+import { useRouter } from "next/router";
 const defaultImg =
   "https://assets.asfar.io/uploads/2022/01/19092920/woocommerce-placeholder-300x300.png";
 const columns = [
@@ -171,7 +172,7 @@ function AddProductMenu({ addProductIsActive, setAddProductIsActive }) {
     const check2 = writterProps.value.trim().length <= 4;
     const check3 = publisherProps.value.trim().length <= 4;
     const check4 = vendorProps.value.trim().length <= 4;
-    const check5 = /^\d{1,}$/.test(priceProps.value.trim());
+    const check5 = /^[\d.]{1,}$/.test(priceProps.value.trim());
     const check6 = /^\d{1,}$/.test(quantityProps.value.trim());
     if (check1) {
       setNameError(true, "الاسم قصير جدا!");
@@ -331,7 +332,7 @@ function EditProductMenu({ currentProduct, setCurrentProduct }) {
     const check2 = writterProps.value.trim().length <= 4;
     const check3 = publisherProps.value.trim().length <= 4;
     const check4 = vendorProps.value.trim().length <= 4;
-    const check5 = /^\d{1,}$/.test(priceProps.value.trim());
+    const check5 = /^[\d.]{1,}$/.test(priceProps.value.trim());
     const check6 = /^\d{1,}$/.test(quantityProps.value.trim());
     if (check1) {
       setNameError(true, "الاسم قصير جدا!");
@@ -522,6 +523,7 @@ function useProductsTable() {
     },
     setData,
   } = useAdminContext();
+  const router = useRouter();
 
   const [loading, setLoading] = useState(false);
   const [perPage, setPerPage] = useState(10);
@@ -537,6 +539,11 @@ function useProductsTable() {
       setData(res.data);
       setLoading(false);
       setPerPage(newRows);
+      router.push(
+        { pathname: router.pathname, query: { ...router.query, cnt: newRows } },
+        undefined,
+        { shallow: true }
+      );
     } catch (err) {
       console.log(`Fetch Rows Error`, err);
     }
@@ -549,6 +556,12 @@ function useProductsTable() {
       console.log(`Page Change Response =>`, res);
       setData(res.data);
       setLoading(false);
+      console.log(router);
+      router.push(
+        { pathname: router.pathname, query: { ...router.query, page } },
+        undefined,
+        { shallow: true }
+      );
     } catch (err) {
       console.log(`Page Change Error`, err);
     }
