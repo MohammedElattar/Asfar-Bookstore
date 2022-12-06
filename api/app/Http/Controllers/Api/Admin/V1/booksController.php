@@ -76,7 +76,6 @@ class booksController extends Controller
     public function update(UpdateBooks $request, Book $book)
     {
         if ($request->isMethod('post')) {
-            // print_r($request->file("img"));
             $book->title = $request->title;
             $book->writter = $request->writter;
             $book->publisher = $request->publisher;

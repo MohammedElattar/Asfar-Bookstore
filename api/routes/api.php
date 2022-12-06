@@ -33,7 +33,5 @@ Route::group(['prefix' => 'admin', 'namespace' => '\App\Http\Controllers\Api\Adm
     Route::post('/logout', 'adminAuthController@logout')->middleware('auth:sanctum');
 });
 
-Route::get('/search/{table}/{column}/{operator}/{value}', [App\Http\Controllers\Api\Admin\V1\searchController::class, 'index'])
-                                                        ->whereAlpha('table')
-                                                        ->whereAlpha('column')
-                                                        ->whereAlpha('operator');
+Route::get('/search/{table}/{value}', [App\Http\Controllers\Api\Admin\V1\searchController::class, 'index'])
+            ->whereAlpha('table');
