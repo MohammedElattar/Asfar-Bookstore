@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "git-sync": "git add . && git commit -m \"Upload\" && git pull origin && git push origin"
+    "git": "git add . && git commit -m \"Upload\" && git pull origin && git push origin"
   },
   "dependencies": {
     "@reduxjs/toolkit": "^1.9.0",
