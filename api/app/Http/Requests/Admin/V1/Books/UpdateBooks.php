@@ -27,7 +27,7 @@ class UpdateBooks extends FormRequest
      */
     public function rules()
     {
-        $mx = 50;
+        $mx = 150;
         $ar_en_reg = config("app.ar_en_reg");
         return [
             'title' => "bail|required|unique:books,title,{$this->route('book')->id},id|regex:$ar_en_reg"."|not_regex:/\^d+$/|max:$mx",

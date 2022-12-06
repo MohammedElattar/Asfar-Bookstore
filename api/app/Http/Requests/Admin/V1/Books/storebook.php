@@ -28,7 +28,7 @@ class storebook extends FormRequest
     public function rules()
     {
         $ar_en_reg = config("app.ar_en_reg");
-        $mx = 50;
+        $mx = 150;
         return [
             'title' => "bail|required|unique:books,title|regex:".$ar_en_reg."|not_regex:/^^\d+$/|max:$mx",
             'writter' => "bail|required|regex:".$ar_en_reg."|not_regex:/^\d+$/|max:$mx",
