@@ -68,5 +68,15 @@ class Handler extends ExceptionHandler
             }
 
         });
+
+        // Handle CSRF token mismatch
+
+        $this->renderable(function (\Symfony\Component\HttpKernel\Exception\HttpException $e, $req) {
+            if($req->is("api/*")){
+                return $this->error("HTTP Exception", 419, [
+                    "message" => $e->getMessage(),
+                ]);
+            }
+        });
     }
 }

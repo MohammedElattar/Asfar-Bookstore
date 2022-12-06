@@ -13,10 +13,9 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-Route::group([ 'prefix' => 'admin', 'namespace' => '\App\Http\Controllers\Api\Admin'], function () {
+Route::group(['prefix' => 'admin', 'namespace' => '\App\Http\Controllers\Api\Admin'], function () {
     // v1
-    Route::group(['prefix' => 'v1', 'namespace' => 'V1' , 'middleware' => ['auth:sanctum']], function () {
-        // Route::post("/books" , [books::class , 'index']);
+    Route::group(['prefix' => 'v1', 'namespace' => 'V1', 'middleware' => ['auth:sanctum']], function () {
 
         /*
             Add ->withoutMiddleware("auth:sanctum") to disable authentication
@@ -24,16 +23,17 @@ Route::group([ 'prefix' => 'admin', 'namespace' => '\App\Http\Controllers\Api\Ad
                 *Route::apiResource("/categories", categoriesController::class)->withoutMiddleware("auth:sanctum");
          */
 
-
-        Route::apiResource("/categories", categoriesController::class);
-        Route::apiResource("/books", booksController::class);
+        Route::apiResource('/categories', categoriesController::class);
+        Route::apiResource('/books', booksController::class);
 
         // books
-        Route::match ("POST", "/books/{book}", "booksController@update")->where("book" , '[0-9]+');
-
+        Route::match('POST', '/books/{book}', 'booksController@update')->where('book', '[0-9]+');
     });
-    Route::post("/login" , 'adminAuthController@login');
-    Route::post("/logout" , 'adminAuthController@logout')->middleware("auth:sanctum");
+    Route::post('/login', 'adminAuthController@login');
+    Route::post('/logout', 'adminAuthController@logout')->middleware('auth:sanctum');
 });
 
-// Route::get("/search/{table}/{key}" , [App\Http\Controllers\Api\Admin\V1\searchController::class , 'index'])->whereAlpha("table");
+Route::get('/search/{table}/{column}/{operator}/{value}', [App\Http\Controllers\Api\Admin\V1\searchController::class, 'index'])
+                                                        ->whereAlpha('table')
+                                                        ->whereAlpha('column')
+                                                        ->whereAlpha('operator');

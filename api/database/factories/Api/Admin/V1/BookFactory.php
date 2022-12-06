@@ -17,10 +17,10 @@ class BookFactory extends Factory
     public function definition()
     {
         return [
-            "title" => fake()->name() ,
-            "writter" => fake()->name() ,
-            "publisher" => fake()->name() ,
-            "vendor" => fake()->name() ,
+            "title" => "testTitle" ,
+            "writter" => "testwritter" ,
+            "publisher" => "test publisher",
+            "vendor" => "testvendor" ,
             "quantity" => fake()->numberBetween(1,300),
             "price" => fake()->randomFloat(null , 1,6000),
             "img" => null
