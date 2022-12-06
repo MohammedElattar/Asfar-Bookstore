@@ -602,7 +602,7 @@ function useProductsPage() {
       return false;
     }
     try {
-      const url = `${process.env.NEXT_PUBLIC_API_DOMAIN_PURE}/api/search/books/${searchProps.value}?cnt=${perPage}`;
+      const url = `http://localhost:8000/api/search/books/${searchProps.value}?cnt=${perPage}`;
       console.log(`URL =>`, url);
       const res = await apiHttp.get(url);
       console.log(`Search Response =>`, res);
