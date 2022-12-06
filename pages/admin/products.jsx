@@ -60,7 +60,7 @@ const columns = [
     wrap: true,
   },
   {
-    name: "العدد",
+    name: "الكمية",
     selector: (product) => product.quantity,
     wrap: true,
   },
@@ -102,7 +102,9 @@ export default function Products() {
     totalRows,
     handlePerRowsChange,
     fetchProducts,
-  } = useProductsTable();
+    searchProps,
+    handleSearchSubmit,
+  } = useProductsPage();
 
   return (
     <>
@@ -115,6 +117,10 @@ export default function Products() {
             اضافة منتج
           </AwesomeButton>
         </div>
+
+        <form onSubmit={handleSearchSubmit} className={s.searchWrapper}>
+          <InputControl props={searchProps} label="بحث" />
+        </form>
 
         <DataTable
           columns={columns}
@@ -265,7 +271,7 @@ function AddProductMenu({ addProductIsActive, setAddProductIsActive }) {
         <InputControl label="اسم الناشر" props={publisherProps} />
         <InputControl label="اسم البائع" props={vendorProps} />
         <InputControl label="السعر" props={priceProps} />
-        <InputControl label="العدد" props={quantityProps} />
+        <InputControl label="الكمية" props={quantityProps} />
       </div>
       <div className={s.fileWrapper}>
         <label htmlFor="image">اختيار صورة</label>
@@ -462,7 +468,7 @@ function EditProductMenu({ currentProduct, setCurrentProduct }) {
         <InputControl label="اسم الناشر" props={publisherProps} />
         <InputControl label="اسم البائع" props={vendorProps} />
         <InputControl label="السعر" props={priceProps} />
-        <InputControl label="العدد" props={quantityProps} />
+        <InputControl label="الكمية" props={quantityProps} />
       </div>
       <div className={s.fileWrapper}>
         <label htmlFor="editImage">اختيار صورة</label>
@@ -515,7 +521,7 @@ function EditProductMenu({ currentProduct, setCurrentProduct }) {
   );
 }
 
-function useProductsTable() {
+function useProductsPage() {
   const {
     data: {
       data: products,
@@ -529,6 +535,8 @@ function useProductsTable() {
   const [perPage, setPerPage] = useState(10);
   const [addProductIsActive, setAddProductIsActive] = useState(false);
   const [currentProduct, setCurrentProduct] = useState(null);
+  const [searchProps, setSearchError, setSearchProps] = useInput();
+  const [searchData, setSearchData] = useState(null);
 
   const handlePerRowsChange = async (newRows, page) => {
     setLoading(true);
@@ -539,11 +547,11 @@ function useProductsTable() {
       setData(res.data);
       setLoading(false);
       setPerPage(newRows);
-      router.push(
-        { pathname: router.pathname, query: { ...router.query, cnt: newRows } },
-        undefined,
-        { shallow: true }
-      );
+      // router.push(
+      //   { pathname: router.pathname, query: { ...router.query, cnt: newRows } },
+      //   undefined,
+      //   { shallow: true }
+      // );
     } catch (err) {
       console.log(`Fetch Rows Error`, err);
     }
@@ -557,11 +565,11 @@ function useProductsTable() {
       setData(res.data);
       setLoading(false);
       console.log(router);
-      router.push(
-        { pathname: router.pathname, query: { ...router.query, page } },
-        undefined,
-        { shallow: true }
-      );
+      // router.push(
+      //   { pathname: router.pathname, query: { ...router.query, page } },
+      //   undefined,
+      //   { shallow: true }
+      // );
     } catch (err) {
       console.log(`Page Change Error`, err);
     }
@@ -587,17 +595,38 @@ function useProductsTable() {
     }
   };
 
+  const handleSearchSubmit = async (e) => {
+    e.preventDefault();
+    if (searchProps.value.trim().length === 0) {
+      setSearchData(null);
+      return false;
+    }
+    try {
+      const url = `${process.env.NEXT_PUBLIC_API_DOMAIN_PURE}/api/search/books/${searchProps.value}?cnt=${perPage}`;
+      console.log(`URL =>`, url);
+      const res = await apiHttp.get(url);
+      console.log(`Search Response =>`, res);
+      setSearchData(res.data.data);
+    } catch (err) {
+      console.log(`Search Error =>`, err);
+    }
+  };
+
   return {
     loading,
     addProductIsActive,
     currentProduct,
-    products,
+    products: searchData || products,
     setAddProductIsActive,
     setCurrentProduct,
     deleteProduct,
     totalRows: total,
     handlePerRowsChange,
     fetchProducts,
+    searchProps,
+    setSearchError,
+    setSearchProps,
+    handleSearchSubmit,
   };
 }
 
