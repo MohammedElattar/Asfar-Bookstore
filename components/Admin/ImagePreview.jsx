@@ -16,12 +16,8 @@ export default function ImagePreview({
     if (!file) {
       return;
     }
-    const reader = new FileReader();
-    reader.onload = () => {
-      const dataURL = reader.result;
-      setSrc(dataURL);
-    };
-    reader.readAsDataURL(file);
+    const url = URL.createObjectURL(file);
+    setSrc(url);
   }, [file, url]);
   return (
     <div {...other}>

@@ -87,6 +87,8 @@ export default function Products() {
   const [currentProduct, setCurrentProduct] = useState(null);
   // const fetchProducts = () => {};
 
+  console.log(`Data =>`, products);
+
   // const handlePerRowsChange = () => {};
 
   // const handlePageChange = () => {};
@@ -350,20 +352,19 @@ function EditProductMenu({ currentProduct, setCurrentProduct }) {
       );
       console.log(`Edit Book Response =>`, res);
 
-      const editedBook = res.data;
+      const editedBook = res.data.data;
 
       if (res.data.type === "success" && editedBook) {
         console.log(`Setting Data...`);
-        setData((prevData) => {
-          const clone = { ...prevData };
-          prevData.data = prevData.data.map((product) => {
-            if (product.id === editedBook.id) {
+        setData((prevData) => ({
+          ...prevData,
+          data: prevData.data.map((book) => {
+            if (book.id == editedBook.id) {
               return editedBook;
             }
-            return product;
-          });
-          return clone;
-        });
+            return book;
+          }),
+        }));
       }
 
       setResultMsg("تم التعديل");
@@ -403,6 +404,7 @@ function EditProductMenu({ currentProduct, setCurrentProduct }) {
         helperText: "",
         value: currentProduct.vendor || "",
       }));
+      setImage(null);
     }
   }, [
     currentProduct,
