@@ -26,7 +26,7 @@ class searchController extends Controller
      * @param Request $req
      * @param string|null $table
      * @param mixed|null $value
-     * @return JsonResponse
+     * @return booksCollection|jsonResponse
      */
     public function index(Request $req , string $table = null, mixed $value = null , $cnt = 10)
     {
@@ -52,7 +52,7 @@ class searchController extends Controller
                 }
             }
             $rows = $t == 'books' ? $this->books($value, $cnt) : ($t == 'categories' ? $this->categories($value, $cnt) : []);
-            return $rows;
+            return new booksCollection($rows);
         } else
             return $this->error("Not found", 404);
     }

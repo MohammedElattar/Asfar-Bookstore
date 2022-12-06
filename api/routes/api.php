@@ -24,7 +24,7 @@ Route::group(['prefix' => 'admin', 'namespace' => '\App\Http\Controllers\Api\Adm
          */
 
         Route::apiResource('/categories', categoriesController::class);
-        Route::apiResource('/books', booksController::class);
+        Route::apiResource('/books', booksController::class)->withoutMiddleware("auth:sanctum");
 
         // books
         Route::match('POST', '/books/{book}', 'booksController@update')->where('book', '[0-9]+');
@@ -34,5 +34,4 @@ Route::group(['prefix' => 'admin', 'namespace' => '\App\Http\Controllers\Api\Adm
 });
 
 Route::get('/search/{table}/{value}/{cnt?}', [App\Http\Controllers\Api\Admin\V1\searchController::class, 'index'])
-            ->whereAlpha('table')
-            ;
+            ->whereAlpha('table');
