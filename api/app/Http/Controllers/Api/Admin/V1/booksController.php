@@ -41,7 +41,7 @@ class booksController extends Controller
             'vendor' => $request->vendor,
             'img' => $imageName ? $imageName : null,
         ]);
-        // $book = "";
+
         return $this->success([
             new booksResource($book),
         ], 'Book created successfully');
@@ -96,6 +96,7 @@ class booksController extends Controller
             unlink("storage/books/{$book->img}");
         }
         $book->delete();
+
         return $this->success(msg: 'Book deleted successfully');
     }
 
@@ -103,6 +104,7 @@ class booksController extends Controller
     {
         if ($request->hasFile('img')) {
             $imageName = explode('/', $request->file('img')->store($path))[2];
+
             return $imageName;
         }
 
