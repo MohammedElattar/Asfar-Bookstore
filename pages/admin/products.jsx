@@ -12,6 +12,8 @@ import InputControl from "../../components/InputControl/InputControl";
 import useInput from "../../hooks/useInput";
 import { useEffect } from "react";
 import ImagePreview from "../../components/Admin/ImagePreview";
+const defaultImg =
+  "https://assets.asfar.io/uploads/2022/01/19092920/woocommerce-placeholder-300x300.png";
 const columns = [
   {
     name: "الرقم التعريفي",
@@ -21,10 +23,7 @@ const columns = [
     name: "الصورة",
     selector: (product) => (
       <ImageZoom
-        src={
-          product.img ||
-          "https://assets.asfar.io/uploads/2022/01/19092920/woocommerce-placeholder-300x300.png"
-        }
+        src={product.img || defaultImg}
         style={{ objectFit: "cover" }}
         alt={product.title}
         width="80"
@@ -455,7 +454,7 @@ function EditProductMenu({ currentProduct, setCurrentProduct }) {
 
       {!!currentProduct && (
         <ImagePreview
-          url={currentProduct.img}
+          url={currentProduct.img || defaultImg}
           file={image}
           width={80}
           height={100}
