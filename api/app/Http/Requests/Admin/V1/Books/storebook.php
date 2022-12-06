@@ -28,11 +28,12 @@ class storebook extends FormRequest
     public function rules()
     {
         $ar_en_reg = config("app.ar_en_reg");
+        $mx = 50;
         return [
-            'title' => "bail|required|unique:books,title|regex:".$ar_en_reg."|not_regex:/^^\d+$/|max:20",
-            'writter' => "bail|required|regex:".$ar_en_reg."|not_regex:/^\d+$/|max:20",
-            'publisher' => "bail|required|regex:".$ar_en_reg."|not_regex:/^\d+$/|max:20",
-            'vendor' => "bail|required|regex:".$ar_en_reg."|not_regex:/^\d+$/|max:20",
+            'title' => "bail|required|unique:books,title|regex:".$ar_en_reg."|not_regex:/^^\d+$/|max:$mx",
+            'writter' => "bail|required|regex:".$ar_en_reg."|not_regex:/^\d+$/|max:$mx",
+            'publisher' => "bail|required|regex:".$ar_en_reg."|not_regex:/^\d+$/|max:$mx",
+            'vendor' => "bail|required|regex:".$ar_en_reg."|not_regex:/^\d+$/|max:$mx",
             "quantity" => "bail|required|numeric|min:1",
             "price" => "bail|required|numeric|min:1",
             'img' => 'sometimes|bail|required|image|mimes:jpeg,png,jpg|max:3072',

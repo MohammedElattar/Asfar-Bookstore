@@ -27,12 +27,13 @@ class UpdateBooks extends FormRequest
      */
     public function rules()
     {
+        $mx = 50;
         $ar_en_reg = config("app.ar_en_reg");
         return [
-            'title' => "bail|required|unique:books,title,{$this->route('book')->id},id|regex:$ar_en_reg"."|not_regex:/\^d+$/",
-            'writter' => "bail|required|regex:$ar_en_reg"."|not_regex:/\^d+$/",
-            'publisher' => "bail|required|regex:$ar_en_reg"."|not_regex:/\^d+$/",
-            'vendor' => "bail|required|regex:$ar_en_reg"."|not_regex:/\^d+$/",
+            'title' => "bail|required|unique:books,title,{$this->route('book')->id},id|regex:$ar_en_reg"."|not_regex:/\^d+$/|max:$mx",
+            'writter' => "bail|required|regex:$ar_en_reg"."|not_regex:/\^d+$/|max:$mx",
+            'publisher' => "bail|required|regex:$ar_en_reg"."|not_regex:/\^d+$/|max:$mx",
+            'vendor' => "bail|required|regex:$ar_en_reg"."|not_regex:/\^d+$/|max:$mx",
             "quantity" => "bail|required|numeric|min:1",
             "price" => "bail|required|numeric|min:1",
             'img' => 'sometimes|bail|required|image|mimes:jpeg,png,jpg|max:3072',
