@@ -72,7 +72,7 @@ class booksController extends Controller
             $book->publisher = $request->publisher;
             $book->vendor = $request->vendor;
             if ($request->hasFile('img')) {
-                if (file_exists('storage/books/'.$book->img)) {
+                if ($book->img && file_exists('storage/books/'.$book->img)) {
                     unlink('storage/books/'.$book->img);
                     $book->img = $this->storeImage($request);
                 }
