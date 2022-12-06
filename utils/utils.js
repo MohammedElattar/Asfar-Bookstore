@@ -44,21 +44,21 @@ export const tableCustomStyles = {
 // };
 
 // [].forEach(async (product) => {
-//   const formData = new FormData();
-//   formData.append("title", product.title);
-//   formData.append(
-//     "writter",
-//     product.author !== "user"
-//       ? product.author
-//       : product.writter
-//       ? product.writter
-//       : "غير معرف"
-//   );
-//   formData.append("publisher", product.publisher || "غير معرف");
-//   formData.append("vendor", product.vendor?.at(0) || "غير معرف");
-//   if (product.img) {
-//     const file = await urlToFile(product.img);
-//     formData.append("img", file);
-//   }
-//   apiHttp.post(`/v1/books`, formData);
+// const formData = new FormData();
+// formData.append("title", product.title);
+// formData.append(
+//   "writter",
+//   product.author !== "user"
+//     ? product.author
+//     : product.writter
+//     ? product.writter
+//     : "غير معرف"
+// );
+// formData.append("publisher", product.publisher || "غير معرف");
+// formData.append("vendor", product.vendor?.at(0) || "غير معرف");
+// if (product.img) {
+//   const file = await urlToFile(product.img);
+//   formData.append("img", file);
+// }
+// apiHttp.post(`/v1/books`, formData);
 // });

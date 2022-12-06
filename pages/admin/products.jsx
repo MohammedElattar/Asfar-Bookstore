@@ -12,6 +12,7 @@ import InputControl from "../../components/InputControl/InputControl";
 import useInput from "../../hooks/useInput";
 import { useEffect } from "react";
 import ImagePreview from "../../components/Admin/ImagePreview";
+import Loading from "../../components/Loading";
 const defaultImg =
   "https://assets.asfar.io/uploads/2022/01/19092920/woocommerce-placeholder-300x300.png";
 const columns = [
@@ -52,7 +53,7 @@ const columns = [
     name: "الادوات",
     selector: (product) => {
       return (
-        <div className="d-flex gap-2">
+        <div className="d-flex gap-2 ">
           <AwesomeButton
             type="secondary"
             size="small"
@@ -76,46 +77,17 @@ const columns = [
 
 export default function Products() {
   const {
-    data: { data: products },
-    setData,
-  } = useAdminContext();
-  // const [data, setData] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [totalRows, setTotalRows] = useState(0);
-  const [perPage, setPerPage] = useState(10);
-  const [addProductIsActive, setAddProductIsActive] = useState(false);
-  const [currentProduct, setCurrentProduct] = useState(null);
-  // const fetchProducts = () => {};
-
-  console.log(`Data =>`, products);
-
-  // const handlePerRowsChange = () => {};
-
-  // const handlePageChange = () => {};
-
-  // useEffect(() => {
-  //   fetchProducts();
-  // }, []);
-
-  const deleteProduct = async (product) => {
-    const confirmed = window.confirm(`سيتم مسح ${product.title} نهائيا`);
-    if (confirmed) {
-      try {
-        const res = await apiHttp.delete(`/v1/books/${product.id}`);
-        console.log(`Delete Response =>`, res);
-
-        if (res.data.type === "success") {
-          setData((prev) => {
-            const clone = { ...prev };
-            clone.data = clone.data.filter((e) => e.id !== product.id);
-            return clone;
-          });
-        }
-      } catch (err) {
-        console.log(`Delete Error =>`, err);
-      }
-    }
-  };
+    loading,
+    addProductIsActive,
+    currentProduct,
+    products,
+    setAddProductIsActive,
+    setCurrentProduct,
+    deleteProduct,
+    totalRows,
+    handlePerRowsChange,
+    fetchProducts,
+  } = useProductsTable();
 
   return (
     <>
@@ -138,11 +110,16 @@ export default function Products() {
           }))}
           pagination
           customStyles={tableCustomStyles}
-          // progressPending={loading}
-          // paginationServer
-          // paginationTotalRows={totalRows}
-          // onChangeRowsPerPage={handlePerRowsChange}
-          // onChangePage={handlePageChange}
+          progressPending={loading}
+          progressComponent={
+            <div>
+              <Loading size={60} borderWidth="5px" />
+            </div>
+          }
+          paginationServer
+          paginationTotalRows={totalRows}
+          onChangeRowsPerPage={handlePerRowsChange}
+          onChangePage={fetchProducts}
           noDataComponent={<h3>لا يوجد بيانات لعرضها</h3>}
         />
       </div>
@@ -475,6 +452,79 @@ function EditProductMenu({ currentProduct, setCurrentProduct }) {
       </AwesomeButtonProgress>
     </Menu>
   );
+}
+
+function useProductsTable() {
+  const {
+    data: {
+      data: products,
+      meta: { total },
+    },
+    setData,
+  } = useAdminContext();
+  const [loading, setLoading] = useState(false);
+  const [perPage, setPerPage] = useState(10);
+  const [addProductIsActive, setAddProductIsActive] = useState(false);
+  const [currentProduct, setCurrentProduct] = useState(null);
+
+  const handlePerRowsChange = async (newRows, page) => {
+    setLoading(true);
+
+    try {
+      const res = await apiHttp.get(`/v1/books?page=${page}&cnt=${newRows}`);
+      console.log(`Rows Per Page Change Response =>`, res);
+      setData(res.data);
+      setLoading(false);
+      setPerPage(newRows);
+    } catch (err) {
+      console.log(`Fetch Rows Error`, err);
+    }
+  };
+
+  const fetchProducts = async (page) => {
+    setLoading(true);
+    try {
+      const res = await apiHttp.get(`/v1/books?page=${page}&cnt=${perPage}`);
+      console.log(`Page Change Response =>`, res);
+      setData(res.data);
+      setLoading(false);
+    } catch (err) {
+      console.log(`Page Change Error`, err);
+    }
+  };
+
+  const deleteProduct = async (product) => {
+    const confirmed = window.confirm(`سيتم مسح ${product.title} نهائيا`);
+    if (confirmed) {
+      try {
+        const res = await apiHttp.delete(`/v1/books/${product.id}`);
+        console.log(`Delete Response =>`, res);
+
+        if (res.data.type === "success") {
+          setData((prev) => {
+            const clone = { ...prev };
+            clone.data = clone.data.filter((e) => e.id !== product.id);
+            return clone;
+          });
+        }
+      } catch (err) {
+        console.log(`Delete Error =>`, err);
+      }
+    }
+  };
+
+  return {
+    loading,
+    addProductIsActive,
+    currentProduct,
+    products,
+    setAddProductIsActive,
+    setCurrentProduct,
+    deleteProduct,
+    totalRows: total,
+    handlePerRowsChange,
+    fetchProducts,
+  };
 }
 
 export async function getStaticProps() {
