@@ -351,15 +351,21 @@ function EditProductMenu({ currentProduct, setCurrentProduct }) {
       );
       console.log(`Edit Book Response =>`, res);
 
-      const [editedBook] = res.data.data;
+      const editedBook = res.data;
 
-      // if (res.data.type === "success" && newBook) {
-      //   setData((prevData) => {
-      //     const clone = { ...prevData };
-      //     prevData.data.push(newBook);
-      //     return clone;
-      //   });
-      // }
+      if (res.data.type === "success" && editedBook) {
+        console.log(`Setting Data...`);
+        setData((prevData) => {
+          const clone = { ...prevData };
+          prevData.data = prevData.data.map((product) => {
+            if (product.id === editedBook.id) {
+              return editedBook;
+            }
+            return product;
+          });
+          return clone;
+        });
+      }
 
       setResultMsg("تم التعديل");
       setError(null);
@@ -453,7 +459,7 @@ function EditProductMenu({ currentProduct, setCurrentProduct }) {
           file={image}
           width={80}
           height={100}
-          alt={currentProduct.title}
+          alt={"image preview"}
           className={s.imagePreview}
         />
       )}
