@@ -28,7 +28,7 @@ class searchController extends Controller
      * @param mixed|null $value
      * @return JsonResponse
      */
-    public function index(Request $req , string $table = null, mixed $value = null)
+    public function index(Request $req , string $table = null, mixed $value = null , $cnt = 10)
     {
         $table = trim(htmlspecialchars($table));
         $value = trim(htmlspecialchars($value));
@@ -45,7 +45,6 @@ class searchController extends Controller
                 }
             }
             $rows = [];
-            $cnt = 10;
             if($req->has("cnt")){
                 $tmp = $req->input("cnt");
                 if(is_numeric($tmp) && $tmp >= 5 && $tmp<=50){
