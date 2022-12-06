@@ -78,7 +78,6 @@ class booksController extends Controller
                 }
             }
             $book->save();
-
             return $this->success(new booksResource($book), 'Book updated successfully');
         } else {
             return $this->error('This route is not found', 404);
