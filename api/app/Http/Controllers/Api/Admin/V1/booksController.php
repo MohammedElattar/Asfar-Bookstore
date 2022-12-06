@@ -76,17 +76,18 @@ class booksController extends Controller
     public function update(UpdateBooks $request, Book $book)
     {
         if ($request->isMethod('post')) {
+            // print_r($request->file("img"));
             $book->title = $request->title;
             $book->writter = $request->writter;
             $book->publisher = $request->publisher;
             $book->vendor = $request->vendor;
             $book->quantity = $request->quantity;
             $book->price = $request->price;
-            if ($request->hasFile('img')) {
+            if ($request->hasFile('img') && $request->file("img")) {
                 if ($book->img && file_exists('storage/books/'.$book->img)) {
                     unlink('storage/books/'.$book->img);
-                    $book->img = $this->storeImage($request);
                 }
+                $book->img = $this->storeImage($request);
             }
             $book->save();
             return $this->success(new booksResource($book), 'Book updated successfully');
