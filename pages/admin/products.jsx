@@ -537,6 +537,7 @@ function useProductsPage() {
   const [currentProduct, setCurrentProduct] = useState(null);
   const [searchProps, setSearchError, setSearchProps] = useInput();
   const [searchData, setSearchData] = useState(null);
+  const [searchTotal, setSearchTotal] = useState(0);
 
   const handlePerRowsChange = async (newRows, page) => {
     setLoading(true);
@@ -598,7 +599,7 @@ function useProductsPage() {
   const handleSearchSubmit = async (e) => {
     e.preventDefault();
     if (searchProps.value.trim().length === 0) {
-      setSearchData(null);
+      setSearchError(true, "قيمة البحث غير صالحة");
       return false;
     }
     try {
@@ -607,10 +608,27 @@ function useProductsPage() {
       const res = await apiHttp.get(url);
       console.log(`Search Response =>`, res);
       setSearchData(res.data.data);
+      setSearchTotal(res.data.meta.total);
     } catch (err) {
       console.log(`Search Error =>`, err);
     }
   };
+  const clearSearch = (e) => {
+    if (e.target.value.length === 0) {
+      setSearchError(false);
+      setSearchData(null);
+      setSearchTotal(null);
+    }
+  };
+
+  useEffect(() => {
+    if (searchProps.value.length === 0) {
+      setSearchError(false);
+      setSearchData(null);
+      setSearchTotal(null);
+    }
+    // eslint-disable-next-line
+  }, [searchProps.value]);
 
   return {
     loading,
@@ -620,7 +638,7 @@ function useProductsPage() {
     setAddProductIsActive,
     setCurrentProduct,
     deleteProduct,
-    totalRows: total,
+    totalRows: searchTotal && searchData ? searchTotal : total,
     handlePerRowsChange,
     fetchProducts,
     searchProps,
