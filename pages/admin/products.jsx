@@ -462,6 +462,7 @@ function useProductsTable() {
     },
     setData,
   } = useAdminContext();
+
   const [loading, setLoading] = useState(false);
   const [perPage, setPerPage] = useState(10);
   const [addProductIsActive, setAddProductIsActive] = useState(false);
