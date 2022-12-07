@@ -7,6 +7,7 @@ function InputControl({
   placeholder = "",
   select,
   type = "text",
+  onKeyUp = () => {},
   options,
   ...otherProps
 }) {
@@ -33,6 +34,7 @@ function InputControl({
           value={props.value}
           placeholder={placeholder}
           style={{ fontSize: "18px" }}
+          onKeyUp={onKeyUp}
         />
       ) : (
         <select value={props.value} onChange={props.onChange}>

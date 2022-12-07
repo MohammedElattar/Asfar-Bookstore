@@ -14,6 +14,7 @@ import { useEffect } from "react";
 import ImagePreview from "../../components/Admin/ImagePreview";
 import Loading from "../../components/Loading";
 import { useRouter } from "next/router";
+import { useRef } from "react";
 const defaultImg =
   "https://assets.asfar.io/uploads/2022/01/19092920/woocommerce-placeholder-300x300.png";
 const columns = [
@@ -103,7 +104,7 @@ export default function Products() {
     handlePerRowsChange,
     fetchProducts,
     searchProps,
-    handleSearchSubmit,
+    handleSearchKeyUp,
   } = useProductsPage();
 
   return (
@@ -118,8 +119,12 @@ export default function Products() {
           </AwesomeButton>
         </div>
 
-        <form onSubmit={handleSearchSubmit} className={s.searchWrapper}>
-          <InputControl props={searchProps} label="بحث" />
+        <form className={s.searchWrapper}>
+          <InputControl
+            props={searchProps}
+            label="بحث"
+            onKeyUp={handleSearchKeyUp}
+          />
         </form>
 
         <DataTable
@@ -538,6 +543,8 @@ function useProductsPage() {
   const [searchProps, setSearchError, setSearchProps] = useInput();
   const [searchData, setSearchData] = useState(null);
   const [searchTotal, setSearchTotal] = useState(0);
+  const waitTime = 500;
+  const timer = useRef();
 
   const handlePerRowsChange = async (newRows, page) => {
     setLoading(true);
@@ -548,11 +555,6 @@ function useProductsPage() {
       setData(res.data);
       setLoading(false);
       setPerPage(newRows);
-      // router.push(
-      //   { pathname: router.pathname, query: { ...router.query, cnt: newRows } },
-      //   undefined,
-      //   { shallow: true }
-      // );
     } catch (err) {
       console.log(`Fetch Rows Error`, err);
     }
@@ -566,11 +568,6 @@ function useProductsPage() {
       setData(res.data);
       setLoading(false);
       console.log(router);
-      // router.push(
-      //   { pathname: router.pathname, query: { ...router.query, page } },
-      //   undefined,
-      //   { shallow: true }
-      // );
     } catch (err) {
       console.log(`Page Change Error`, err);
     }
@@ -596,14 +593,12 @@ function useProductsPage() {
     }
   };
 
-  const handleSearchSubmit = async (e) => {
-    e.preventDefault();
-    if (searchProps.value.trim().length === 0) {
-      setSearchError(true, "قيمة البحث غير صالحة");
-      return false;
-    }
+  const search = async (text) => {
+    setLoading(true);
     try {
-      const url = `http://localhost:8000/api/search/books/${searchProps.value}?cnt=${perPage}`;
+      const url = `http://localhost:8000/api/search/books/${
+        text || searchProps.value
+      }?cnt=${perPage}`;
       console.log(`URL =>`, url);
       const res = await apiHttp.get(url);
       console.log(`Search Response =>`, res);
@@ -611,24 +606,29 @@ function useProductsPage() {
       setSearchTotal(res.data.meta.total);
     } catch (err) {
       console.log(`Search Error =>`, err);
-    }
-  };
-  const clearSearch = (e) => {
-    if (e.target.value.length === 0) {
-      setSearchError(false);
-      setSearchData(null);
-      setSearchTotal(null);
+    } finally {
+      setLoading(false);
     }
   };
 
-  useEffect(() => {
-    if (searchProps.value.length === 0) {
-      setSearchError(false);
-      setSearchData(null);
-      setSearchTotal(null);
+  const handleSearchKeyUp = (e) => {
+    const text = e.currentTarget.value;
+    console.log(`Text => ${text}`);
+
+    if (timer.current) {
+      clearTimeout(timer.current);
     }
-    // eslint-disable-next-line
-  }, [searchProps.value]);
+
+    timer.current = setTimeout(() => {
+      if (text !== "") {
+        search(text);
+      } else {
+        setSearchError(false);
+        setSearchData(null);
+        setSearchTotal(null);
+      }
+    }, waitTime);
+  };
 
   return {
     loading,
@@ -642,9 +642,8 @@ function useProductsPage() {
     handlePerRowsChange,
     fetchProducts,
     searchProps,
-    setSearchError,
-    setSearchProps,
-    handleSearchSubmit,
+    // handleSearchSubmit,
+    handleSearchKeyUp,
   };
 }
 
