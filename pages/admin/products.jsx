@@ -119,7 +119,7 @@ export default function Products() {
           </AwesomeButton>
         </div>
 
-        <form className={s.searchWrapper} onSubmi={(e) => e.preventDefault()}>
+        <form className={s.searchWrapper} onSubmit={(e) => e.preventDefault()}>
           <InputControl
             props={searchProps}
             label="بحث"
