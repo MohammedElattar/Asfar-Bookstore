@@ -49,32 +49,31 @@ class Handler extends ExceptionHandler
         // Handle User not authenticated
         $this->renderable(function (\Illuminate\Auth\AuthenticationException $e, $request) {
             if ($request->is('api/*')) {
-                return $this->error("You are not authenticated" , 401);
+                return $this->error('You are not authenticated', 401);
             }
         });
 
         // Handle Method Not Allowed Exception
-        $this->renderable(function(methodNotAllowedApiException $e , $request){
-            if($request->is("api/*")){
-                return $this->error($e->getMessage() , 405);
+        $this->renderable(function (methodNotAllowedApiException $e, $request) {
+            if ($request->is('api/*')) {
+                return $this->error($e->getMessage(), 405);
             }
         });
 
         // Handle not found exception
 
-        $this->renderable(function(\Symfony\Component\HttpKernel\Exception\NotFoundHttpException $e , $request){
-            if($request->is("api/*")){
-                return $this->error("This page is not found" , 404);
+        $this->renderable(function (\Symfony\Component\HttpKernel\Exception\NotFoundHttpException $e, $request) {
+            if ($request->is('api/*')) {
+                return $this->error('This page is not found', 404);
             }
-
         });
 
-        // Handle CSRF token mismatch
+        // Handle HTTP Exceptions
 
         $this->renderable(function (\Symfony\Component\HttpKernel\Exception\HttpException $e, $req) {
-            if($req->is("api/*")){
-                return $this->error("HTTP Exception", 419, [
-                    "message" => $e->getMessage(),
+            if ($req->is('api/*')) {
+                return $this->error('HTTP Exception', 419, [
+                    'message' => $e->getMessage(),
                 ]);
             }
         });
