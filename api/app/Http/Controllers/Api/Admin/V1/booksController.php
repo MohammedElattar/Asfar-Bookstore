@@ -3,8 +3,7 @@
 namespace App\Http\Controllers\Api\Admin\V1;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Admin\V1\Books\storebook;
-use App\Http\Requests\Admin\V1\Books\UpdateBooks;
+use App\Http\Requests\Admin\V1\Books\books as bookRequest;
 use App\Http\Resources\Api\admin\v1\booksCollection;
 use App\Http\Resources\Api\admin\v1\booksResource;
 use App\Http\Traits\HttpResponse;
@@ -41,7 +40,7 @@ class booksController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function store(storebook $request)
+    public function store(bookRequest $request)
     {
         $imageName = $this->storeImage($request);
         $book = Book::create([
@@ -72,11 +71,9 @@ class booksController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param \Illuminate\Http\Request $request
-     *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function update(UpdateBooks $request, Book $book)
+    public function update(bookRequest $request, Book $book)
     {
         if ($request->isMethod('post')) {
             $book->title = $request->title;

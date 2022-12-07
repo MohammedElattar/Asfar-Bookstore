@@ -32,7 +32,7 @@ Route::group(['prefix' => 'admin', 'namespace' => '\App\Http\Controllers\Api\Adm
          */
         Route::delete('/books/delete_all', 'booksController@delete_all');
         Route::apiResource('/books', booksController::class);
-        Route::post( '/books/{book}', 'booksController@update')->where('book', '[0-9]+');
+        Route::post('/books/{book}', 'booksController@update')->where('book', '[0-9]+');
     });
     Route::post('/login', 'adminAuthController@login');
     Route::post('/logout', 'adminAuthController@logout')->middleware('auth:sanctum');

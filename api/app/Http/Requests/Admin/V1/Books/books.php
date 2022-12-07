@@ -3,10 +3,10 @@
 namespace App\Http\Requests\Admin\V1\Books;
 
 use App\Http\Traits\HttpResponse;
-use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Foundation\Http\FormRequest;
 
-class UpdateBooks extends FormRequest
+class books extends FormRequest
 {
     use HttpResponse;
 
@@ -27,15 +27,18 @@ class UpdateBooks extends FormRequest
      */
     public function rules()
     {
+        $route = $this->route('book');
+        $id = $route ? $route->id : null;
+        $ar_en_reg = config('app.ar_en_reg');
         $mx = 150;
-        $ar_en_reg = config("app.ar_en_reg");
+
         return [
-            'title' => "bail|required|unique:books,title,{$this->route('book')->id},id|regex:$ar_en_reg"."|not_regex:/\^d+$/|max:$mx",
-            'writter' => "bail|required|regex:$ar_en_reg"."|not_regex:/\^d+$/|max:$mx",
-            'publisher' => "bail|required|regex:$ar_en_reg"."|not_regex:/\^d+$/|max:$mx",
-            'vendor' => "bail|required|regex:$ar_en_reg"."|not_regex:/\^d+$/|max:$mx",
-            "quantity" => "bail|required|numeric|min:1",
-            "price" => "bail|required|numeric|min:1",
+            'title' => 'bail|required|regex:'.$ar_en_reg."|not_regex:/^^\d+$/|max:$mx|unique:books,title".($id != null ? ",$id,id" : ''),
+            'writter' => 'bail|required|regex:'.$ar_en_reg."|not_regex:/^\d+$/|max:$mx",
+            'publisher' => 'bail|required|regex:'.$ar_en_reg."|not_regex:/^\d+$/|max:$mx",
+            'vendor' => 'bail|required|regex:'.$ar_en_reg."|not_regex:/^\d+$/|max:$mx",
+            'quantity' => 'bail|required|numeric|min:1',
+            'price' => 'bail|required|numeric|min:1',
             'img' => 'sometimes|bail|required|image|mimes:jpeg,png,jpg|max:3072',
         ];
     }
@@ -45,36 +48,35 @@ class UpdateBooks extends FormRequest
         return [
             'title.required' => 'title-required',
             'title.regex' => 'title-not-valid',
-            "title.not_regex" => "title-only_numbers",
+            'title.not_regex' => 'title-only_numbers',
             'title.unique' => 'title-exists',
             'writter.required' => 'writter-required',
             'writter.regex' => 'writter-not-valid',
-            "writter.not_regex" => "-only_numbers",
+            'writter.not_regex' => '-only_numbers',
             'publisher.required' => 'publisher-required',
             'publisher.regex' => 'publisher-not-valid',
-            "publisher.not_regex" => "publisher-only_numbers",
+            'publisher.not_regex' => 'publisher-only_numbers',
             'vendor.required' => 'vendor-required',
             'vendor.regex' => 'vendor-not-valid',
-            "vendor.not_regex" => "-only_numbers",
+            'vendor.not_regex' => '-only_numbers',
             'img.image' => 'file-not-image',
             'img.mimes' => 'file-extension',
             'img.max' => 'file-big',
-            "title.max" => "title-long",
-            "writter.max" => "writter-long",
-            "publisher.max" => "publisher-long",
-            "vendor.max" => "vendor-long",
-            "price.required" => "price-required",
-            "price.numeric" => 'price-invalid',
-            "price.min" => 'price-small',
+            'title.max' => 'title-long',
+            'writter.max' => 'writter-long',
+            'publisher.max' => 'publisher-long',
+            'vendor.max' => 'vendor-long',
+            'price.required' => 'price-required',
+            'price.numeric' => 'price-invalid',
+            'price.min' => 'price-small',
             'quantity.required' => 'quantity-required',
-            "quantity.numeric" => 'quantity-invalid',
+            'quantity.numeric' => 'quantity-invalid',
             'quantity.min' => 'quantity-invalid',
         ];
     }
+
     protected function failedValidation(Validator $validator)
     {
-        throw new \Illuminate\Validation\ValidationException($validator , $this->error("validation errors" , 422 , [
-            "errors" => $validator->errors()
-        ]));
+        throw new \Illuminate\Validation\ValidationException($validator, $this->error('validation errors', 422, ['errors' => $validator->errors()]));
     }
 }

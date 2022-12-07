@@ -3,8 +3,7 @@
 namespace App\Http\Controllers\Api\Admin\V1;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Admin\V1\Categories\storeCategory;
-use App\Http\Requests\Admin\V1\Categories\updateCateogry;
+use App\Http\Requests\Admin\V1\Categories\categoryRequest;
 use App\Http\Resources\Api\admin\v1\categoriesCollection;
 use App\Http\Resources\Api\admin\v1\categoriesResource;
 use App\Http\Traits\HttpResponse;
@@ -34,7 +33,7 @@ class categoriesController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function store(storeCategory $request)
+    public function store(categoryRequest $request)
     {
         $category = Category::create([
             'name' => $request->name,
@@ -64,7 +63,7 @@ class categoriesController extends Controller
      *
      * @return \Illuminate\Http\JSONResponse
      */
-    public function update(updateCateogry $request, Category $category)
+    public function update(categoryRequest $request, Category $category)
     {
         $category->update([
             'name' => $request->name,
