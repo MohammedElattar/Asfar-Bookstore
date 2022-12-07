@@ -25,15 +25,14 @@ Route::group(['prefix' => 'admin', 'namespace' => '\App\Http\Controllers\Api\Adm
         /*
             ******************************* Categories **********************************************
          */
-        Route::apiResource('/categories', categoriesController::class);
         Route::delete('/categories/delete_all', 'categoriesController@delete_all');
-
+        Route::apiResource('/categories', categoriesController::class);
         /*
             ************************************ Books **********************************************
          */
-        Route::apiResource('/books', booksController::class);
-        Route::match('POST', '/books/{book}', 'booksController@update')->where('book', '[0-9]+');
         Route::delete('/books/delete_all', 'booksController@delete_all');
+        Route::apiResource('/books', booksController::class);
+        Route::post( '/books/{book}', 'booksController@update')->where('book', '[0-9]+');
     });
     Route::post('/login', 'adminAuthController@login');
     Route::post('/logout', 'adminAuthController@logout')->middleware('auth:sanctum');
