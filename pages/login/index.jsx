@@ -1,18 +1,15 @@
 import Head from "next/head";
 import { useState } from "react";
 
-import useInput from "../hooks/useInput";
-import {
-  formWrapper,
-  formContainer,
-  heading,
-} from "../styles/form.module.scss";
+import useInput from "../../hooks/useInput";
+import form from "../../styles/form.module.scss";
 import { useRouter } from "next/router";
-import InputControl from "../components/InputControl/InputControl";
-import FormLoadingButton from "../components/FormLoadingButton/FormLoadingButton";
+import InputControl from "../../components/InputControl/InputControl";
 import Link from "next/link";
 import { AwesomeButton } from "react-awesome-button";
-import Loading from "../components/Loading";
+import Loading from "../../components/Loading";
+import Image from "next/image";
+
 function Login() {
   const [emailProps, setEmailError, setEmailProps] = useInput();
   const [passwordProps, setPasswordError, setPasswordProps] = useInput();
@@ -72,17 +69,29 @@ function Login() {
         <title>تسجيل دخول</title>
       </Head>
 
-      <div className={formContainer}>
+      <div className={form.formContainer}>
         <div className="container">
-          <div className={formWrapper}>
+          <div className={form.formWrapper}>
             <form onSubmit={handleSubmit}>
-              <h3 className={heading}>تسجيل دخول</h3>
+              <h3 className={form.heading}>تسجيل دخول</h3>
               <InputControl props={emailProps} label="البريد الالكتروني" />
               <InputControl
                 props={passwordProps}
                 type="password"
                 label="كلمة السر"
               />
+              <p className={form.or}>
+                <span>أو</span>
+              </p>
+              <Link href="#" className={form.googleBtn}>
+                <Image
+                  src="/images/google.svg"
+                  width={30}
+                  height={30}
+                  alt="google"
+                />
+                تسجيل الدخول باستخدام جوجل
+              </Link>
               {!!error && (
                 <p className="my-2 text-danger">
                   حدث خطأ اثناء محاولة تسجيل الدخول الرجاء اعادة المحاولة
@@ -114,6 +123,12 @@ function Login() {
                   />
                 ) : null}
               </AwesomeButton>
+              <Link
+                href="/login/forgot-password"
+                className="text-decoration-underline"
+              >
+                نسيت كلمة السر
+              </Link>
               <p>
                 ليس لديك حساب؟
                 <Link href="/signup" className="text-decoration-underline">

@@ -16,6 +16,45 @@
       width: 450px;
       max-width: 100%;
       margin: 0 auto;
+      .googleBtn {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        justify-content: center;
+        padding: 10px;
+        border-radius: 5px;
+        color: #777;
+        border: 1px solid #ccc;
+        font-weight: 500;
+        transition: 0.3s;
+        &:hover {
+          background-color: #eee;
+        }
+      }
+      .or {
+        position: relative;
+        span {
+          color: #777;
+          font-size: 20px;
+          background-color: #fff;
+          display: block;
+          width: 30px;
+          margin: 0 auto;
+          text-align: center;
+          text-transform: capitalize;
+        }
+        &::before {
+          content: "";
+          position: absolute;
+          top: 50%;
+          left: 0;
+          right: 0;
+          background-color: #ccc;
+          height: 1px;
+          // transform: tra;
+          z-index: -1;
+        }
+      }
     }
   }
 }

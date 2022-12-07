@@ -2,15 +2,12 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import useInput from "../hooks/useInput";
-import {
-  formWrapper,
-  formContainer,
-  heading,
-} from "../styles/form.module.scss";
+import form from "../styles/form.module.scss";
 import InputControl from "../components/InputControl/InputControl";
 import Link from "next/link";
 import { AwesomeButton } from "react-awesome-button";
 import Loading from "../components/Loading";
+import Image from "next/image";
 function Signup() {
   const [nameProps, setNameError] = useInput();
   const [emailProps, setEmailError] = useInput();
@@ -65,7 +62,7 @@ function Signup() {
       // setError(false);
       // router.push("/my-account");
     } catch (err) {
-      console.error(err);
+      console.log(`Login Error =>`, err);
       setError(true);
     } finally {
       setLoading(false);
@@ -78,11 +75,11 @@ function Signup() {
         <title>انشاء حساب</title>
       </Head>
 
-      <div className={formContainer}>
+      <div className={form.formContainer}>
         <div className="container">
-          <div className={formWrapper}>
+          <div className={form.formWrapper}>
             <form onSubmit={handleSubmit}>
-              <h3 className={heading}>انشاء حساب</h3>
+              <h3 className={form.heading}>انشاء حساب</h3>
               <InputControl props={nameProps} label="الاسم" />
               <InputControl props={emailProps} label="البريد الالكتروني" />
               <InputControl
@@ -90,20 +87,29 @@ function Signup() {
                 type="password"
                 label="كلمة السر"
               />
+              <p className={form.or}>
+                <span>أو</span>
+              </p>
+              <Link href="#" className={form.googleBtn}>
+                <Image
+                  src="/images/google.svg"
+                  width={30}
+                  height={30}
+                  alt="google"
+                />
+                تسجيل الدخول باستخدام جوجل
+              </Link>
               {!!error && (
                 <p className="my-2 text-danger">
                   حدث خطأ اثناء محاولة انشاء حساب الرجاء اعادة المحاولة
                 </p>
               )}
-              <AwesomeButton type="secondary" size="medium">
-                تسجيل
-                {loading ? (
-                  <Loading
-                    size={15}
-                    style={{ marginRight: "5px" }}
-                    borderColor="#1e88e5"
-                  />
-                ) : null}
+              <AwesomeButton
+                type="secondary"
+                size="medium"
+                className={form.submitBtn}
+              >
+                {!loading && "انشاء"}
               </AwesomeButton>
               <p>
                 لديك حساب بالفعل!
