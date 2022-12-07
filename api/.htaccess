@@ -30,6 +30,7 @@ RewriteCond %{SCRIPT_FILENAME} -d [OR]
 RewriteCond %{SCRIPT_FILENAME} -f
 RewriteRule "(^|/)\." - [F]
 
+# Restrict Access to important files
 # Customize Error Pages
 
 ErrorDocument 403 /asfar/api/errors/403.php
