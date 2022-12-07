@@ -9,14 +9,17 @@ use App\Http\Resources\Api\admin\v1\categoriesCollection;
 use App\Http\Resources\Api\admin\v1\categoriesResource;
 use App\Http\Traits\HttpResponse;
 use App\Models\Api\Admin\V1\Category;
+use Illuminate\Support\Facades\DB;
 
 class categoriesController extends Controller
 {
     use HttpResponse;
+
     /**
-     * Index
+     * Index.
      *
      * Returns all cateogries
+     *
      * @return categoriesCollection
      */
     public function index()
@@ -27,24 +30,26 @@ class categoriesController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
+     *
      * @return \Illuminate\Http\JsonResponse
      */
     public function store(storeCategory $request)
     {
         $category = Category::create([
-            "name" => $request->name,
-            "status" => $request->status
+            'name' => $request->name,
+            'status' => $request->status,
         ]);
+
         return response()->json($this->success(
-            new categoriesResource($category)
-        , "Category created successfully"));
+            new categoriesResource($category), 'Category created successfully'));
     }
+
     /**
-     * Show Category
+     * Show Category.
      *
      * This function returns one category
-     * @param Category $category
+     *
      * @return categoriesResource
      */
     public function show(Category $category)
@@ -55,30 +60,38 @@ class categoriesController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Api\Admin\V1\Category  $category
+     * @param \Illuminate\Http\Request $request
+     *
      * @return \Illuminate\Http\JSONResponse
      */
     public function update(updateCateogry $request, Category $category)
     {
         $category->update([
-            "name" => $request->name ,
-            "status" => $request->status
+            'name' => $request->name,
+            'status' => $request->status,
         ]);
+
         return $this->success([
-            new categoriesResource($category)
-        ] , "Category updated successfully");
+            new categoriesResource($category),
+        ], 'Category updated successfully');
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Api\Admin\V1\Category $category
      * @return \Illuminate\Http\JSONResponse
      */
     public function destroy(Category $category)
     {
         $category->delete();
-        return $this->success(msg:"Category deleted successfully");
+
+        return $this->success(msg: 'Category deleted successfully');
+    }
+
+    public function delete_all()
+    {
+        DB::delete('DELETE FROM categories');
+
+        return $this->success(msg: 'All categories deleted successfully');
     }
 }

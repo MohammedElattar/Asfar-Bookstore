@@ -10,6 +10,7 @@ use App\Http\Resources\Api\admin\v1\booksResource;
 use App\Http\Traits\HttpResponse;
 use App\Models\Api\Admin\V1\Book;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class booksController extends Controller
 {
@@ -23,11 +24,13 @@ class booksController extends Controller
     public function index(Request $req)
     {
         $cnt = 10;
-        if($req->has("cnt")){
-            $t = $req->input("cnt");
-            if (is_numeric($t) && $t > 5 && $t<=50)
+        if ($req->has('cnt')) {
+            $t = $req->input('cnt');
+            if (is_numeric($t) && $t > 5 && $t <= 50) {
                 $cnt = $t;
+            }
         }
+
         return new booksCollection(Book::paginate($cnt));
     }
 
@@ -82,13 +85,14 @@ class booksController extends Controller
             $book->vendor = $request->vendor;
             $book->quantity = $request->quantity;
             $book->price = $request->price;
-            if ($request->hasFile('img') && $request->file("img")) {
+            if ($request->hasFile('img') && $request->file('img')) {
                 if ($book->img && file_exists('storage/books/'.$book->img)) {
                     unlink('storage/books/'.$book->img);
                 }
                 $book->img = $this->storeImage($request);
             }
             $book->save();
+
             return $this->success(new booksResource($book), 'Book updated successfully');
         } else {
             return $this->error('This route is not found', 404);
@@ -119,5 +123,12 @@ class booksController extends Controller
         }
 
         return false;
+    }
+
+    public function delete_all()
+    {
+        DB::delete('DELETE FROM books');
+
+        return $this->success(msg: 'All books deleted successfully');
     }
 }
