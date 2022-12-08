@@ -1,8 +1,12 @@
 // middleware.ts
 import { NextResponse } from "next/server";
+import { apiHttp } from "./utils/utils";
 
-// This function can be marked `async` if using `await` inside
 export function middleware(request) {
-  //   console.log(`cookies =>`, request.cookies);
-  return NextResponse.next();
+  const response = NextResponse.next();
+
+  const { cookies } = request;
+  console.log(`Middleware Cookies =>`, cookies);
+
+  return response;
 }

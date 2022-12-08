@@ -12,9 +12,9 @@ import axios from "axios";
 import { useAuthContext } from "../context/AuthContext";
 import { FaFacebook, FaGithub } from "react-icons/fa";
 
-const googleAuth = `${process.env.NEXT_PUBLIC_API_DOMAIN_PURE}/api/login/google/redirect`;
-const githubAuth = `${process.env.NEXT_PUBLIC_API_DOMAIN_PURE}/api/login/github/redirect`;
-const facebookAuth = `${process.env.NEXT_PUBLIC_API_DOMAIN_PURE}/api/login/facebook/redirect`;
+// const googleAuth = `${process.env.NEXT_PUBLIC_API_DOMAIN_PURE}/api/login/google/redirect`;
+// const githubAuth = `${process.env.NEXT_PUBLIC_API_DOMAIN_PURE}/api/login/github/redirect`;
+// const facebookAuth = `${process.env.NEXT_PUBLIC_API_DOMAIN_PURE}/api/login/facebook/redirect`;
 
 function Signup() {
   const [nameProps, setNameError] = useInput();
@@ -129,10 +129,10 @@ function Signup() {
                 type="password"
                 label="كلمة السر"
               />
-              <p className={form.or}>
+              {/* <p className={form.or}>
                 <span>أو</span>
-              </p>
-              <Link href={googleAuth} className={form.googleBtn}>
+              </p> */}
+              {/* <Link href={googleAuth} className={form.googleBtn}>
                 <Image
                   src="/images/google.svg"
                   width={30}
@@ -140,15 +140,15 @@ function Signup() {
                   alt="google"
                 />
                 تسجيل الدخول باستخدام google
-              </Link>
+              </Link> */}
               {/* <Link href={githubAuth} className={form.githubBtn}>
                 <FaGithub />
                 تسجيل الدخول باستخدام github
               </Link> */}
-              <Link href={facebookAuth} className={form.facebookBtn}>
+              {/* <Link href={facebookAuth} className={form.facebookBtn}>
                 <FaFacebook />
                 تسجيل الدخول باستخدام facebook
-              </Link>
+              </Link> */}
               {!!error && (
                 <p className="my-2 text-danger">
                   حدث خطأ اثناء محاولة انشاء حساب الرجاء اعادة المحاولة

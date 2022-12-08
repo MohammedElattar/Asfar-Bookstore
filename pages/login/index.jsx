@@ -11,10 +11,11 @@ import Image from "next/image";
 import { useAuthContext } from "../../context/AuthContext";
 import { apiHttp } from "../../utils/utils";
 import { FaGithub, FaFacebook } from "react-icons/fa";
+import axios from "axios";
 
-const googleAuth = `${process.env.NEXT_PUBLIC_API_DOMAIN_PURE}/api/login/google/redirect`;
-const githubAuth = `${process.env.NEXT_PUBLIC_API_DOMAIN_PURE}/api/login/github/redirect`;
-const facebookAuth = `${process.env.NEXT_PUBLIC_API_DOMAIN_PURE}/api/login/facebook/redirect`;
+// const googleAuth = `${process.env.NEXT_PUBLIC_API_DOMAIN_PURE}/api/login/google/redirect`;
+// const githubAuth = `${process.env.NEXT_PUBLIC_API_DOMAIN_PURE}/api/login/github/redirect`;
+// const facebookAuth = `${process.env.NEXT_PUBLIC_API_DOMAIN_PURE}/api/login/facebook/redirect`;
 
 export default function Login() {
   const [emailProps, setEmailError, setEmailProps] = useInput();
@@ -60,6 +61,14 @@ export default function Login() {
         email: emailProps.value,
         password: passwordProps.value,
       };
+
+      await axios.get(
+        `${process.env.NEXT_PUBLIC_API_DOMAIN_PURE}/sanctum/csrf-cookie`,
+        {
+          withCredentials: true,
+        }
+      );
+
       const url = `${process.env.NEXT_PUBLIC_API_DOMAIN_PURE}/api/login`;
       console.log(`Login URL => `, url);
       const res = await apiHttp.post(url, data);
@@ -103,26 +112,7 @@ export default function Login() {
                 type="password"
                 label="كلمة السر"
               />
-              <p className={form.or}>
-                <span>أو</span>
-              </p>
-              <Link href={googleAuth} className={form.googleBtn}>
-                <Image
-                  src="/images/google.svg"
-                  width={30}
-                  height={30}
-                  alt="google"
-                />
-                <p>تسجيل الدخول باستخدام google</p>
-              </Link>
-              {/* <Link href={githubAuth} className={form.githubBtn}>
-                <FaGithub />
-                تسجيل الدخول باستخدام github
-              </Link> */}
-              <Link href={facebookAuth} className={form.facebookBtn}>
-                <FaFacebook />
-                <p>تسجيل الدخول باستخدام facebook</p>
-              </Link>
+
               {!!error && (
                 <p className="my-2 text-danger" style={{ fontSize: "18px" }}>
                   {isNaN(error)

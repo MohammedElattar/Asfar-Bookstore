@@ -7,6 +7,7 @@ import CounterBox from "../components/CounterBox/CounterBox";
 import ProductsGrid from "../components/ProductsGrid/ProductsGrid";
 import Button from "../components/Button/Button";
 import { getPage } from "../json/products";
+import { apiHttp } from "../utils/utils";
 
 export default function Home({ products }) {
   return (
@@ -193,8 +194,16 @@ function MostSalled({ products }) {
   );
 }
 
-export async function getStaticProps() {
+export async function getServerSideProps() {
   const products = getPage(5);
+
+  try {
+    const res = await apiHttp.get("/v1/books");
+
+    console.log(`Response =>`, res);
+  } catch (err) {
+    console.log(`Error Occured =>`, err);
+  }
 
   return {
     props: {
