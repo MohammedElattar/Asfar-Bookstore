@@ -9,7 +9,7 @@ import Menu from "../../components/Admin/Menu";
 import InputControl from "../../components/InputControl/InputControl";
 import useInput from "../../hooks/useInput";
 import { useEffect } from "react";
-
+import http from "http";
 const columns = [
   {
     name: "الرقم التعريفي",
@@ -115,12 +115,32 @@ export default function Categories() {
     }
   };
 
+  const deleteAll = async () => {
+    if (!window.confirm(`سيتم حذف المنتجات نهائيا`)) return;
+    try {
+      const res = await apiHttp.delete("/v1/categories/delete_all");
+      console.log(`Delete All Response =>`, res);
+      if (res.data.type === "success") {
+        setData({ data: [] });
+      }
+    } catch (err) {
+      console.log(`Delete All Error =>`, err);
+    }
+  };
+
   return (
     <>
       <div className={global.wrapper}>
         <div className={global.btnContainer}>
           <AwesomeButton type="secondary" onPress={() => setAddCategory(true)}>
             اضافة قسم
+          </AwesomeButton>
+          <AwesomeButton
+            type="secondary"
+            onPress={deleteAll}
+            className={global.deleteButton}
+          >
+            حذف كل المنتجات
           </AwesomeButton>
         </div>
         <DataTable
@@ -133,6 +153,7 @@ export default function Categories() {
           }))}
           pagination
           customStyles={tableCustomStyles}
+          noDataComponent={<h3>لا يوجد بيانات لعرضها</h3>}
         />
       </div>
 
@@ -316,7 +337,15 @@ function AddCategoryMenu({ addCategory, setAddCategory }) {
   );
 }
 
-export async function getStaticProps() {
+export async function getServerSideProps({ req }) {
+  try {
+    http.get("http://localhost:8000/api/admin/v1/categories", (res) => {
+      console.log(`Response =>`, res);
+    });
+  } catch (err) {
+    console.log(`Error occured =>`, err);
+  }
+
   const props = {
     admin: true,
     url: process.env.ADMIN_CATEGORIES,

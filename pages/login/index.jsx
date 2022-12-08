@@ -7,14 +7,21 @@ import { useRouter } from "next/router";
 import InputControl from "../../components/InputControl/InputControl";
 import Link from "next/link";
 import { AwesomeButton } from "react-awesome-button";
-import Loading from "../../components/Loading";
 import Image from "next/image";
+import { useAuthContext } from "../../context/AuthContext";
+import { apiHttp } from "../../utils/utils";
+import { FaGithub, FaFacebook } from "react-icons/fa";
 
-function Login() {
+const googleAuth = `${process.env.NEXT_PUBLIC_API_DOMAIN_PURE}/api/login/google/redirect`;
+const githubAuth = `${process.env.NEXT_PUBLIC_API_DOMAIN_PURE}/api/login/github/redirect`;
+const facebookAuth = `${process.env.NEXT_PUBLIC_API_DOMAIN_PURE}/api/login/facebook/redirect`;
+
+export default function Login() {
   const [emailProps, setEmailError, setEmailProps] = useInput();
   const [passwordProps, setPasswordError, setPasswordProps] = useInput();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
+  const { setUser } = useAuthContext();
   const router = useRouter();
 
   const validateInputs = () => {
@@ -25,9 +32,11 @@ function Login() {
       valid = false;
       setEmailError(true, "برجاء ادخال بريد الكتروني صالح");
     }
-    if (passwordProps.value?.length < 6 || passwordProps.value?.length > 25) {
+    if (passwordProps.value?.length < 8) {
       valid = false;
-      setPasswordError(true, "برجاء ادخال كلمة سر صالحة");
+      setPasswordError(true, "كلمة السر يجب ان تحتوي علي 8 رموز علي الاقل.");
+    } else if (passwordProps.value?.length > 25) {
+      setPasswordError(true, "كلمة السر طويلة جدا.");
     }
     if (!valid) {
       return false;
@@ -47,17 +56,31 @@ function Login() {
     setLoading(true);
 
     try {
-      // const cred = await signInWithEmailAndPassword(
-      //   auth,
-      //   emailProps.value,
-      //   passwordProps.value
-      // );
-      // console.log(`cred =>`, cred);
-      // setError(false);
-      // router.push("/my-account");
+      const data = {
+        email: emailProps.value,
+        password: passwordProps.value,
+      };
+      const url = `${process.env.NEXT_PUBLIC_API_DOMAIN_PURE}/api/login`;
+      console.log(`Login URL => `, url);
+      const res = await apiHttp.post(url, data);
+      console.log(`Login Response =>`, res);
+
+      if (res.data.type === "success") {
+        const { data: user } = res.data;
+        setUser(user);
+        console.log(`New User =>`, user);
+      }
+
+      setError(false);
+      router.push("/my-account");
     } catch (err) {
-      console.error(err);
-      setError(true);
+      console.log(`Login Error =>`, err);
+      const { msg } = err.response.data;
+      if (msg === "Not authorized") {
+        setError(`البيانات غير صالحة.`);
+      } else {
+        setError(true);
+      }
     } finally {
       setLoading(false);
     }
@@ -83,21 +106,31 @@ function Login() {
               <p className={form.or}>
                 <span>أو</span>
               </p>
-              <Link href="#" className={form.googleBtn}>
+              <Link href={googleAuth} className={form.googleBtn}>
                 <Image
                   src="/images/google.svg"
                   width={30}
                   height={30}
                   alt="google"
                 />
-                تسجيل الدخول باستخدام جوجل
+                <p>تسجيل الدخول باستخدام google</p>
+              </Link>
+              {/* <Link href={githubAuth} className={form.githubBtn}>
+                <FaGithub />
+                تسجيل الدخول باستخدام github
+              </Link> */}
+              <Link href={facebookAuth} className={form.facebookBtn}>
+                <FaFacebook />
+                <p>تسجيل الدخول باستخدام facebook</p>
               </Link>
               {!!error && (
-                <p className="my-2 text-danger">
-                  حدث خطأ اثناء محاولة تسجيل الدخول الرجاء اعادة المحاولة
+                <p className="my-2 text-danger" style={{ fontSize: "18px" }}>
+                  {isNaN(error)
+                    ? error
+                    : "حدث خطأ اثناء محاولة تسجيل الدخول الرجاء اعادة المحاولة"}
                 </p>
               )}
-              <button
+              {/* <button
                 type="button"
                 className="ms-auto bg-transparent fs-6"
                 onClick={() => {
@@ -112,16 +145,13 @@ function Login() {
                 }}
               >
                 تجريبي
-              </button>
-              <AwesomeButton type="secondary" size="medium">
-                تسجيل
-                {loading ? (
-                  <Loading
-                    size={15}
-                    style={{ marginRight: "5px" }}
-                    borderColor="#1e88e5"
-                  />
-                ) : null}
+              </button> */}
+              <AwesomeButton
+                type="secondary"
+                size="medium"
+                className={form.submitBtn}
+              >
+                {!loading && "تسجيل"}
               </AwesomeButton>
               <Link
                 href="/login/forgot-password"
@@ -142,5 +172,3 @@ function Login() {
     </>
   );
 }
-
-export default Login;

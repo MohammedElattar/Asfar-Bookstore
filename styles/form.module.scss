@@ -1,7 +1,40 @@
-@use "variables.scss" as *;
+@import "variables.scss";
+
+@mixin authBtn {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  justify-content: center;
+  padding: 10px;
+  border-radius: 5px;
+  font-weight: 500;
+  transition: 0.3s;
+  margin-top: 10px;
+  svg,
+  img {
+    width: 30px;
+    height: 30px;
+  }
+  p {
+    margin: 0;
+    width: 240px;
+  }
+  @include mobile {
+    svg,
+    img {
+      width: 20px;
+      height: 20px;
+    }
+    p {
+      font-size: 13px;
+      width: 191px;
+    }
+  }
+}
 
 .formContainer {
-  height: calc(100vh - 80px);
+  min-height: calc(100vh - 80px);
+  padding: 30px 0;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -12,27 +45,45 @@
     form {
       display: flex;
       flex-direction: column;
-      gap: 20px;
+      // gap: 20px;
       width: 450px;
       max-width: 100%;
       margin: 0 auto;
+
       .googleBtn {
-        display: flex;
-        align-items: center;
-        gap: 15px;
-        justify-content: center;
-        padding: 10px;
-        border-radius: 5px;
-        color: #777;
+        @include authBtn;
         border: 1px solid #ccc;
-        font-weight: 500;
-        transition: 0.3s;
+        color: #777;
         &:hover {
           background-color: #eee;
         }
       }
+      > div {
+        margin-top: 20px;
+      }
+      .githubBtn {
+        @include authBtn;
+        color: #fff;
+        background-color: #222;
+        border: none;
+
+        &:hover {
+          background-color: #333;
+        }
+      }
+      .facebookBtn {
+        @include authBtn;
+        color: #fff;
+        background-color: #1877f2;
+        border: none;
+
+        &:hover {
+          background-color: #3788f1;
+        }
+      }
       .or {
         position: relative;
+        margin: 20px 0 10px;
         span {
           color: #777;
           font-size: 20px;
@@ -54,6 +105,13 @@
           // transform: tra;
           z-index: -1;
         }
+      }
+      .submitBtn {
+        margin-top: 30px;
+        margin-bottom: 25px;
+      }
+      p {
+        margin-top: 10px;
       }
     }
   }

@@ -6,14 +6,23 @@ import form from "../styles/form.module.scss";
 import InputControl from "../components/InputControl/InputControl";
 import Link from "next/link";
 import { AwesomeButton } from "react-awesome-button";
-import Loading from "../components/Loading";
 import Image from "next/image";
+import { apiHttp } from "../utils/utils";
+import axios from "axios";
+import { useAuthContext } from "../context/AuthContext";
+import { FaFacebook, FaGithub } from "react-icons/fa";
+
+const googleAuth = `${process.env.NEXT_PUBLIC_API_DOMAIN_PURE}/api/login/google/redirect`;
+const githubAuth = `${process.env.NEXT_PUBLIC_API_DOMAIN_PURE}/api/login/github/redirect`;
+const facebookAuth = `${process.env.NEXT_PUBLIC_API_DOMAIN_PURE}/api/login/facebook/redirect`;
+
 function Signup() {
   const [nameProps, setNameError] = useInput();
   const [emailProps, setEmailError] = useInput();
   const [passwordProps, setPasswordError] = useInput();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
+  const { setUser } = useAuthContext();
   const router = useRouter();
 
   const validateInputs = () => {
@@ -28,14 +37,34 @@ function Signup() {
       valid = false;
       setEmailError(true, "برجاء ادخال بريد الكتروني صالح");
     }
-    if (passwordProps.value?.length < 6 || passwordProps.value?.length > 25) {
+    if (passwordProps.value?.length < 8) {
       valid = false;
-      setPasswordError(true, "برجاء ادخال كلمة سر صالحة");
+      setPasswordError(true, "كلمة السر يجب ان تحتوي علي 8 رموز علي الاقل.");
+    } else if (passwordProps.value?.length > 25) {
+      setPasswordError(true, "كلمة السر طويلة جدا.");
     }
     if (!valid) {
       return false;
     }
     return true;
+  };
+
+  const handleErrors = (errors) => {
+    let checked = false;
+    const emailErr = errors.email;
+    const nameErr = errors.name;
+    if (emailErr?.at(0) === "email-exists") {
+      setEmailError(true, "البريد الالكتروني موجود بالفعل");
+      checked = true;
+    } else if (emailErr?.at(0) === "email-invalid") {
+      setEmailError(true, "البريد الالكتروني غير صالح");
+      checked = true;
+    }
+    if (nameErr?.at(0) === "name-only-numbers") {
+      setNameError(true, "الاسم يجب ان يحتوي علي حرف واحد علي الاقل");
+      checked = true;
+    }
+    return checked;
   };
 
   const handleSubmit = async (e) => {
@@ -50,20 +79,33 @@ function Signup() {
     setLoading(true);
 
     try {
-      let name = nameProps.value;
-      let password = passwordProps.value;
-      let email = emailProps.value;
-
-      // const cred = await createUserWithEmailAndPassword(auth, email, password);
-      // await updateProfile(cred.user, {
-      //   displayName: name,
-      // });
-
-      // setError(false);
-      // router.push("/my-account");
+      const data = {
+        name: nameProps.value,
+        email: emailProps.value,
+        password: passwordProps.value,
+      };
+      await axios.get(
+        `${process.env.NEXT_PUBLIC_API_DOMAIN_PURE}/sanctum/csrf-cookie`,
+        {
+          withCredentials: true,
+        }
+      );
+      const url = `${process.env.NEXT_PUBLIC_API_DOMAIN_PURE}/api/register`;
+      console.log(`Register URL => `, url);
+      const res = await apiHttp.post(url, data);
+      console.log(`Register Response =>`, res);
+      if (res.data.type === "success") {
+        const { data: user } = res.data;
+        setUser(user);
+        console.log(`New User =>`, user);
+      }
+      setError(false);
     } catch (err) {
       console.log(`Login Error =>`, err);
-      setError(true);
+      const { errors } = err.response.data.data;
+      if (!handleErrors(errors)) {
+        setError(true);
+      }
     } finally {
       setLoading(false);
     }
@@ -90,14 +132,22 @@ function Signup() {
               <p className={form.or}>
                 <span>أو</span>
               </p>
-              <Link href="#" className={form.googleBtn}>
+              <Link href={googleAuth} className={form.googleBtn}>
                 <Image
                   src="/images/google.svg"
                   width={30}
                   height={30}
                   alt="google"
                 />
-                تسجيل الدخول باستخدام جوجل
+                تسجيل الدخول باستخدام google
+              </Link>
+              <Link href={githubAuth} className={form.githubBtn}>
+                <FaGithub />
+                تسجيل الدخول باستخدام github
+              </Link>
+              <Link href={facebookAuth} className={form.facebookBtn}>
+                <FaFacebook />
+                تسجيل الدخول باستخدام facebook
               </Link>
               {!!error && (
                 <p className="my-2 text-danger">

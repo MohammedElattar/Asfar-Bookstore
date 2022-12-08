@@ -105,6 +105,7 @@ export default function Products() {
     fetchProducts,
     searchProps,
     handleSearchKeyUp,
+    deleteAll,
   } = useProductsPage();
 
   return (
@@ -116,6 +117,13 @@ export default function Products() {
             onPress={() => setAddProductIsActive(true)}
           >
             اضافة منتج
+          </AwesomeButton>
+          <AwesomeButton
+            type="secondary"
+            onPress={deleteAll}
+            className={global.deleteButton}
+          >
+            حذف كل المنتجات
           </AwesomeButton>
         </div>
 
@@ -129,7 +137,7 @@ export default function Products() {
 
         <DataTable
           columns={columns}
-          data={products.map((product) => ({
+          data={products?.map((product) => ({
             ...product,
             setCurrentProduct,
             deleteProduct,
@@ -528,13 +536,9 @@ function EditProductMenu({ currentProduct, setCurrentProduct }) {
 
 function useProductsPage() {
   const {
-    data: {
-      data: products,
-      meta: { total },
-    },
+    data: { data: products, meta },
     setData,
   } = useAdminContext();
-  const router = useRouter();
 
   const [loading, setLoading] = useState(false);
   const [perPage, setPerPage] = useState(10);
@@ -543,8 +547,10 @@ function useProductsPage() {
   const [searchProps, setSearchError, setSearchProps] = useInput();
   const [searchData, setSearchData] = useState(null);
   const [searchTotal, setSearchTotal] = useState(0);
+  const router = useRouter();
   const waitTime = 500;
   const timer = useRef();
+  let total = meta?.total;
 
   const handlePerRowsChange = async (newRows, page) => {
     setLoading(true);
@@ -630,6 +636,22 @@ function useProductsPage() {
     }, waitTime);
   };
 
+  const deleteAll = async () => {
+    if (!window.confirm(`سيتم حذف المنتجات نهائيا`)) return;
+    setLoading(true);
+    try {
+      const res = await apiHttp.delete("/v1/books/delete_all");
+      console.log(`Delete All Response =>`, res);
+      if (res.data.type === "success") {
+        setData({ data: [] });
+      }
+    } catch (err) {
+      console.log(`Delete All Error =>`, err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return {
     loading,
     addProductIsActive,
@@ -642,12 +664,13 @@ function useProductsPage() {
     handlePerRowsChange,
     fetchProducts,
     searchProps,
-    // handleSearchSubmit,
     handleSearchKeyUp,
+    deleteAll,
   };
 }
 
-export async function getStaticProps() {
+export async function getServerSideProps(ctx) {
+  console.log(`Cookies =>`, ctx.req.cookies);
   const props = {
     admin: true,
     title: "المنتجات",

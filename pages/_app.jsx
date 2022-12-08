@@ -5,16 +5,19 @@ import "react-awesome-button/dist/styles.css";
 import Layout from "../components/Layout/Layout";
 import Head from "next/head";
 import AdminProvider from "../context/AdminContext";
+import AuthProvider from "../context/AuthContext";
 function MyApp({ Component, pageProps }) {
   return (
     <>
       <Head>{pageProps.title ? <title>{pageProps.title}</title> : null}</Head>
 
-      <AdminProvider>
-        <Layout {...pageProps}>
-          <Component {...pageProps} />
-        </Layout>
-      </AdminProvider>
+      <AuthProvider>
+        <AdminProvider>
+          <Layout {...pageProps}>
+            <Component {...pageProps} />
+          </Layout>
+        </AdminProvider>
+      </AuthProvider>
     </>
   );
 }

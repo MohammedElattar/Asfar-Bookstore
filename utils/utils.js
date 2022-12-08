@@ -12,6 +12,13 @@ export const apiHttp = axios.create({
 
 if (typeof window !== "undefined") {
   window.apiHttp = apiHttp;
+  window.urlToFile = async (Image) => {
+    const response = await fetch(image);
+    // here image is url/location of image
+    const blob = await response.blob();
+    const file = new File([blob], "image.jpg", { type: blob.type });
+    return file;
+  };
 }
 
 export const tableCustomStyles = {
@@ -35,14 +42,6 @@ export const tableCustomStyles = {
   },
 };
 
-// const urlToFile = async (Image) => {
-//   const response = await fetch(image);
-//   // here image is url/location of image
-//   const blob = await response.blob();
-//   const file = new File([blob], "image.jpg", { type: blob.type });
-//   return file;
-// };
-
 // [].forEach(async (product) => {
 // const formData = new FormData();
 // formData.append("title", product.title);
@@ -56,6 +55,8 @@ export const tableCustomStyles = {
 // );
 // formData.append("publisher", product.publisher || "غير معرف");
 // formData.append("vendor", product.vendor?.at(0) || "غير معرف");
+// formData.append("quantity", 300);
+// formData.append("price", Math.floor(Math.random() * 300 + 100));
 // if (product.img) {
 //   const file = await urlToFile(product.img);
 //   formData.append("img", file);
