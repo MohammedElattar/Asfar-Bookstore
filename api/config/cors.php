@@ -16,13 +16,13 @@ return [
 
     'paths' => ['*'],
 
-    'allowed_methods' => ['GET','POST','PUT','PATCH','DELETE','HEAD'],
+    'allowed_methods' => ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'HEAD'],
 
     'allowed_origins' => [env('FRONTEND_URL', 'http://localhost:3000')],
 
     'allowed_origins_patterns' => [],
 
-    'allowed_headers' => ['Accept' , 'Content-Type' , 'X-Requested-With' , 'X-XSRF-TOKEN'],
+    'allowed_headers' => ['Accept', 'Content-Type', 'X-Requested-With', 'X-XSRF-TOKEN'],
 
     'exposed_headers' => [],
 
