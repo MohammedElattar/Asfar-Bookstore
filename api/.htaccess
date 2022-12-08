@@ -7,6 +7,8 @@ RewriteCond %{HTTP:Authorization} .
 RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
 
 # Force HTTPS
+# RewriteCond %{HTTPS} !=on
+# RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 
 # Redirect Trailing Slashes If Not A Folder...
 RewriteCond %{REQUEST_FILENAME} !-d
@@ -24,17 +26,16 @@ RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_URI} !^/public/
 RewriteRule ^(css|js|images)/(.*)$ public/$1 [L,NC]
 
-# Restrict Access to hidden files
+# Restrict Access to config files and sensitive files
+<FilesMatch "(^(\.|README.md|composer.json|composer.lock|package.json)|(.json$))">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
 
-RewriteCond %{SCRIPT_FILENAME} -d [OR]
-RewriteCond %{SCRIPT_FILENAME} -f
-RewriteRule "(^|/)\." - [F]
-
-# Restrict Access to important files
 # Customize Error Pages
 
-ErrorDocument 403 /asfar/api/errors/403.php
-ErrorDocument 404 /asfar/api/errors/404.php
+ErrorDocument 403 "/asfar/api/"
+ErrorDocument 404 "/asfar/api/"
 
 
 # Disable server signature
