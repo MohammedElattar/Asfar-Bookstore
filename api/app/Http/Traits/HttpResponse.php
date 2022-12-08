@@ -32,14 +32,18 @@ trait HttpResponse
      *
      * @return \Symfony\Component\HttpFoundation\JsonResponse
      */
-    public function error(string $msg, int $code, $data = null)
+    public function error(string $msg, int $code, $data = null, bool $includeData = true)
     {
-        return response()->json([
+        $payload = [
             'data' => $data,
             'msg' => $msg,
             'code' => $code,
             'type' => 'error',
-        ], $code)
+        ];
+        if (!$includeData) {
+            array_unshift($payload, $data);
+        }
+        return response()->json($payload, $code)
                 ->header('Accept', 'application/vnd.api+json')
                 ->header('Content-Type', 'application/vnd.api+json');
     }
