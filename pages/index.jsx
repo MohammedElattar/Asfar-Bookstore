@@ -194,13 +194,13 @@ function MostSalled({ products }) {
   );
 }
 
-export async function getServerSideProps() {
+export async function getServerSideProps(ctx) {
   const products = getPage(5);
-
+  const cookies = ctx.req.cookies;
+  const stringCookies = ctx.req.headers.cookie;
   try {
-    const res = await apiHttp.get("/v1/books");
-
-    console.log(`Response =>`, res);
+    // const res = await apiHttp.get("/v1/books");
+    // console.log(`Response =>`, res);
   } catch (err) {
     console.log(`Error Occured =>`, err);
   }
