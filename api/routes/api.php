@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\books;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -13,6 +12,9 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+
+/************************************************************ Admin ***************************************************/
+
 Route::group(['prefix' => 'admin', 'namespace' => '\App\Http\Controllers\Api\Admin'], function () {
     // v1
     Route::group(['prefix' => 'v1', 'namespace' => 'V1', 'middleware' => ['auth:sanctum']], function () {
@@ -36,9 +38,10 @@ Route::group(['prefix' => 'admin', 'namespace' => '\App\Http\Controllers\Api\Adm
     });
     Route::post('/login', 'adminAuthController@login');
     Route::post('/logout', 'adminAuthController@logout')->middleware('auth:sanctum');
-
-    // Client
 });
+
+/************************************************************ Client ***************************************************/
+
 Route::group(
     ['namespace' => "App\Http\Controllers\Api\Client"],
     function () {
@@ -51,12 +54,37 @@ Route::group(
         Route::group(
             ['prefix' => 'login'],
             function () {
+                Route::get('/', 'authClientController@index');
                 Route::post('/', 'authClientController@login');
+                Route::group(['middleware' => 'web'], function () {
+                    // *************************************** Github ***************************************//
+
+                    // redirect
+                    Route::get('/github/redirect', 'authClientController@loginGithubRedirect')->name('github_redirect');
+                    // callback
+                    Route::get('/github/callback', 'authClientController@loginGithubCallback');
+
+                    // *************************************** Google ***************************************//
+
+                    // redirect
+                    Route::get('/google/redirect', 'authClientController@loginGoogleRedirect')->name('google_redirect');
+                    // callback
+                    Route::get('/google/callback', 'authClientController@loginGoogleCallback');
+
+                    // *************************************** Facebook ***************************************//
+
+                    // redirect
+                    Route::get('/facebook/redirect', 'authClientController@loginFacebookRedirect')->name('facebook_redirect');
+                    // callback
+                    Route::get('/facebook/callback', 'authClientController@loginFacebookCallback');
+                }
+                );
             }
         );
     }
 );
-// Route::group()
+
+// Search
 
 Route::get('/search/{table}/{value}/{cnt?}', [App\Http\Controllers\Api\Admin\V1\searchController::class, 'index'])
             ->whereAlpha('table')->middleware('auth:sanctum');

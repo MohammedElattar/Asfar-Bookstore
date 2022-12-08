@@ -20,6 +20,8 @@ class userResource extends JsonResource
             'email' => $this->email,
             'name' => $this->name,
             'admin' => $this->user_role ? true : false,
+            'avatar' => $this->avatar,
+            'active' => $this->active ? true : false,
         ];
     }
 }

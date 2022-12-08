@@ -29,14 +29,19 @@ return [
         'secret' => env('AWS_SECRET_ACCESS_KEY'),
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
-    'google-register' => [
-        'client_id' => env('GOOGLE_REGISTER_CLIENT_ID'),
-        'client_secret' => env('GOOGLE_REGISTER_CLIENT_SECRET'),
-        'redirect' => env('GOOGLE_REGISTER_REDIRECT'),
-    ],
-    'google-login' => [
+    'google' => [
         'client_id' => env('GOOGLE_LOGIN_CLIENT_ID'),
         'client_secret' => env('GOOGLE_LOGIN_CLIENT_SECRET'),
         'redirect' => env('GOOGLE_LOGIN_REDIRECT'),
     ],
+    'github' => [
+        'client_id' => env('GITHUB_CLIENT_ID'),
+        'client_secret' => env('GITHUB_CLIENT_SECERT'),
+        'redirect' => env('GITHUB_REDIRECT'),
+    ],
+    'facebook' => [
+        'client_id' => env("FACEBOOK_CLIENT_ID"),
+        'client_secret' => env("FACEBOOK_CLIENT_SECRET"),
+        'redirect' => env('FACEBOOK_REDIRECT')
+    ]
 ];
