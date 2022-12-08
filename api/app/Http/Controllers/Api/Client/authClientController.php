@@ -44,13 +44,14 @@ class authClientController extends Controller
     public function register(registerClient $req)
     {
         $user = new User();
-        $user->name = $req->name;
-        $user->email = $req->email;
-        $user->active = 1;
-        $user->password = Hash::make($req->password);
-        $user->save();
+        $user = User::create([
+            'name' => $req->name,
+            'email' => $req->email,
+            'active' => 1,
+            'password' => Hash::make($req->password),
+        ]);
 
-        return $this->success(msg: 'Client registered successfully');
+        return $this->success(new userResource($user), msg: 'Client registered successfully');
     }
 
     /**
@@ -111,7 +112,7 @@ class authClientController extends Controller
                 return $this->success(new userResource($user), 'User logged in successfully');
             }
         } catch (\Exception $e) {
-            return $this->error('Failed to login to '.ucfirst($provider), 419, ['msg' => $e->getMessage()]);
+            return $this->error('Failed to login to '.ucfirst($provider), 419, ['msg' => $e->getMessage() ? $e->getMessage() : 'Invalid Credentials']);
         }
     }
 
