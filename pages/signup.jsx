@@ -141,10 +141,10 @@ function Signup() {
                 />
                 تسجيل الدخول باستخدام google
               </Link>
-              <Link href={githubAuth} className={form.githubBtn}>
+              {/* <Link href={githubAuth} className={form.githubBtn}>
                 <FaGithub />
                 تسجيل الدخول باستخدام github
-              </Link>
+              </Link> */}
               <Link href={facebookAuth} className={form.facebookBtn}>
                 <FaFacebook />
                 تسجيل الدخول باستخدام facebook
