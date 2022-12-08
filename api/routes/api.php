@@ -36,9 +36,27 @@ Route::group(['prefix' => 'admin', 'namespace' => '\App\Http\Controllers\Api\Adm
     });
     Route::post('/login', 'adminAuthController@login');
     Route::post('/logout', 'adminAuthController@logout')->middleware('auth:sanctum');
+
+    // Client
 });
+Route::group(
+    ['namespace' => "App\Http\Controllers\Api\Client"],
+    function () {
+        Route::group(
+            ['prefix' => 'register'],
+            function () {
+                Route::post('', 'authClientController@register');
+            }
+        );
+        Route::group(
+            ['prefix' => 'login'],
+            function () {
+                Route::post('/', 'authClientController@login');
+            }
+        );
+    }
+);
+// Route::group()
 
 Route::get('/search/{table}/{value}/{cnt?}', [App\Http\Controllers\Api\Admin\V1\searchController::class, 'index'])
             ->whereAlpha('table')->middleware('auth:sanctum');
-
-Route::get('/login')->name('login');
