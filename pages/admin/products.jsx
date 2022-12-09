@@ -669,8 +669,7 @@ function useProductsPage() {
   };
 }
 
-export async function getServerSideProps(ctx) {
-  console.log(`Cookies =>`, ctx.req.cookies);
+export async function getStaticProps() {
   const props = {
     admin: true,
     title: "المنتجات",

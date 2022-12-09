@@ -11,6 +11,7 @@ export const apiHttp = axios.create({
 });
 
 if (typeof window !== "undefined") {
+  window.axios = axios;
   window.apiHttp = apiHttp;
   window.urlToFile = async (Image) => {
     const response = await fetch(image);

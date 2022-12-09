@@ -16,3 +16,31 @@
   --button-secondary-color-hover: #e1eaf1;
   --button-secondary-border: 2px solid #e51e1e;
 }
+
+.statusActive {
+  color: #28c76f;
+  background-color: rgba(40, 199, 111, 0.12);
+}
+.statusDisabled {
+  color: #ea5455;
+  background-color: rgba(234, 84, 85, 0.12);
+}
+.status {
+  display: inline-block;
+  padding: 3px 0;
+  width: 80px;
+  text-align: center;
+  cursor: pointer;
+  border-radius: 1000px;
+  font-size: 14px;
+  font-weight: 500;
+}
+.checkBox {
+  margin: 5px 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  label {
+    cursor: pointer;
+  }
+}

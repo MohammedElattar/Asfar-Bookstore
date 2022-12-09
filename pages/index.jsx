@@ -8,6 +8,7 @@ import ProductsGrid from "../components/ProductsGrid/ProductsGrid";
 import Button from "../components/Button/Button";
 import { getPage } from "../json/products";
 import { apiHttp } from "../utils/utils";
+import axios from "axios";
 
 export default function Home({ products }) {
   return (
@@ -196,14 +197,17 @@ function MostSalled({ products }) {
 
 export async function getServerSideProps(ctx) {
   const products = getPage(5);
-  const cookies = ctx.req.cookies;
-  const stringCookies = ctx.req.headers.cookie;
-  try {
-    // const res = await apiHttp.get("/v1/books");
-    // console.log(`Response =>`, res);
-  } catch (err) {
-    console.log(`Error Occured =>`, err);
-  }
+  // const cookies = ctx.req.cookies;
+  // const stringCookies = ctx.req.headers.cookie;
+  // try {
+  //   const res = await apiHttp.get("http://127.0.0.1:8000/api/admin/v1/books", {
+  //     headers: { origin: "localhost", Cookie: stringCookies },
+  //   });
+  //   // const data = await res.json();
+  //   console.log(`Response =>`, res);
+  // } catch (err) {
+  //   console.log(`Error Occured =>`, err);
+  // }
 
   return {
     props: {
