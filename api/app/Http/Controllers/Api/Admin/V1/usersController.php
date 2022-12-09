@@ -5,9 +5,11 @@ namespace App\Http\Controllers\Api\Admin\V1;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\V1\Users\storeUsersRequest;
 use App\Http\Requests\Admin\V1\Users\updateUsersRequest;
+use App\Http\Resources\Api\admin\v1\usersCollection;
 use App\Http\Resources\Api\admin\v1\usersResource;
 use App\Http\Traits\HttpResponse;
 use App\Models\User;
+use Illuminate\Http\Request as HttpRequest;
 use Illuminate\Support\Facades\Hash;
 
 class usersController extends Controller
@@ -17,10 +19,11 @@ class usersController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return usersCollection
      */
-    public function index()
+    public function index(HttpRequest $req)
     {
+        return new usersCollection(User::paginate($this->paginateCnt($req->input('cnt'))));
     }
 
     /**
@@ -80,5 +83,16 @@ class usersController extends Controller
         $user->delete();
 
         return $this->success('User deleted successfully');
+    }
+
+    private function paginateCnt(int|null $cnt)
+    {
+        if ($cnt) {
+            if (is_numeric($cnt) && $cnt >= 5 && $cnt <= 50) {
+                return $cnt;
+            }
+        }
+
+        return 10;
     }
 }
