@@ -89,7 +89,7 @@ class authClientController extends Controller
     /**
      * Main login Provider Callback method.
      *
-     * @return JsonResponse
+     * @return mixed
      */
     private function loginProviderCallback(string $provider)
     {
@@ -100,7 +100,8 @@ class authClientController extends Controller
             if ($user_exists) {
                 auth()->loginUsingId($user_exists->id, true);
 
-                return $this->success(new userResource($user_exists), 'User logged in successfully');
+                // return $this->success(new userResource($user_exists), 'User logged in successfully');
+                return redirect(env('FRONTEND_URL'), headers: ['Set-Cookie' => 'data='.base64_encode(json_encode(new userResource($user))).';sameSite:lax']);
             } else {
                 $user = User::create([
                     'email' => $user->getEmail(),

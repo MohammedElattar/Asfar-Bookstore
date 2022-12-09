@@ -14,77 +14,86 @@ use Illuminate\Support\Facades\Route;
 */
 
 /************************************************************ Admin ***************************************************/
+Route::group(['web'], function () {
+    Route::group(['prefix' => 'admin', 'namespace' => '\App\Http\Controllers\Api\Admin'], function () {
+        // v1
+        Route::group(['prefix' => 'v1', 'namespace' => 'V1', 'middleware' => ['auth:sanctum']], function () {
+            /*
+                Add ->withoutMiddleware("auth:sanctum") to disable authentication
+                * Like That :
+                    *Route::apiResource("/categories", categoriesController::class)->withoutMiddleware("auth:sanctum");
+             */
 
-Route::group(['prefix' => 'admin', 'namespace' => '\App\Http\Controllers\Api\Admin'], function () {
-    // v1
-    Route::group(['prefix' => 'v1', 'namespace' => 'V1', 'middleware' => ['auth:sanctum']], function () {
-        /*
-            Add ->withoutMiddleware("auth:sanctum") to disable authentication
-            * Like That :
-                *Route::apiResource("/categories", categoriesController::class)->withoutMiddleware("auth:sanctum");
-         */
+            /*
+                ******************************* Categories **********************************************
+             */
+            Route::delete('/categories/delete_all', 'categoriesController@delete_all');
+            Route::apiResource('/categories', categoriesController::class);
+            /*
+                ************************************ Books **********************************************
+             */
+            Route::delete('/books/delete_all', 'booksController@delete_all');
+            Route::apiResource('/books', booksController::class);
+            Route::post('/books/{book}', 'booksController@update')->where('book', '[0-9]+');
+            /*
+               ************************************ Users **********************************************
+            */
+            Route::apiResource('users', 'usersController')->withoutMiddleware('auth:sanctum');
+        });
 
-        /*
-            ******************************* Categories **********************************************
-         */
-        Route::delete('/categories/delete_all', 'categoriesController@delete_all');
-        Route::apiResource('/categories', categoriesController::class);
-        /*
-            ************************************ Books **********************************************
-         */
-        Route::delete('/books/delete_all', 'booksController@delete_all');
-        Route::apiResource('/books', booksController::class);
-        Route::post('/books/{book}', 'booksController@update')->where('book', '[0-9]+');
+        Route::post('/login', 'adminAuthController@login');
+        Route::post('/logout', 'adminAuthController@logout')->middleware('auth:sanctum');
     });
-    Route::post('/login', 'adminAuthController@login');
-    Route::post('/logout', 'adminAuthController@logout')->middleware('auth:sanctum');
-});
 
-/************************************************************ Client ***************************************************/
+    /************************************************************ Client ***************************************************/
 
-Route::group(
-    ['namespace' => "App\Http\Controllers\Api\Client"],
-    function () {
-        Route::group(
-            ['prefix' => 'register'],
-            function () {
-                Route::post('', 'authClientController@register');
-            }
-        );
-        Route::group(
-            ['prefix' => 'login'],
-            function () {
-                Route::get('/', 'authClientController@index');
-                Route::post('/', 'authClientController@login');
-                Route::group(['middleware' => 'web'], function () {
-                    // *************************************** Github ***************************************//
-
-                    // redirect
-                    Route::get('/github/redirect', 'authClientController@loginGithubRedirect')->name('github_redirect');
-                    // callback
-                    Route::get('/github/callback', 'authClientController@loginGithubCallback');
-
-                    // *************************************** Google ***************************************//
-
-                    // redirect
-                    Route::get('/google/redirect', 'authClientController@loginGoogleRedirect')->name('google_redirect');
-                    // callback
-                    Route::get('/google/callback', 'authClientController@loginGoogleCallback');
-
-                    // *************************************** Facebook ***************************************//
-
-                    // redirect
-                    Route::get('/facebook/redirect', 'authClientController@loginFacebookRedirect')->name('facebook_redirect');
-                    // callback
-                    Route::get('/facebook/callback', 'authClientController@loginFacebookCallback');
+    Route::group(
+        ['namespace' => "App\Http\Controllers\Api\Client"],
+        function () {
+            Route::group(
+                ['prefix' => 'register'],
+                function () {
+                    Route::post('', 'authClientController@register');
                 }
-                );
-            }
-        );
-    }
-);
+            );
+            Route::group(
+                ['prefix' => 'login'],
+                function () {
+                    Route::get('/', 'authClientController@index');
+                    Route::post('/', 'authClientController@login');
+                    Route::group([], function () {
+                        // *************************************** Github ***************************************//
 
-// Search
+                        // redirect
+                        Route::get('/github/redirect', 'authClientController@loginGithubRedirect')->name('github_redirect');
+                        // callback
+                        Route::get('/github/callback', 'authClientController@loginGithubCallback');
 
-Route::get('/search/{table}/{value}/{cnt?}', [App\Http\Controllers\Api\Admin\V1\searchController::class, 'index'])
-            ->whereAlpha('table')->middleware('auth:sanctum');
+                        // *************************************** Google ***************************************//
+
+                        // redirect
+                        Route::get('/google/redirect', 'authClientController@loginGoogleRedirect')->name('google_redirect');
+                        // callback
+                        Route::get('/google/callback', 'authClientController@loginGoogleCallback');
+
+                        // *************************************** Facebook ***************************************//
+
+                        // redirect
+                        Route::get('/facebook/redirect', 'authClientController@loginFacebookRedirect')->name('facebook_redirect');
+                        // callback
+                        Route::get('/facebook/callback', 'authClientController@loginFacebookCallback');
+                    }
+                    );
+                }
+            );
+        }
+    );
+
+    // Search
+
+    Route::get('/search/{table}/{value}/{cnt?}', [App\Http\Controllers\Api\Admin\V1\searchController::class, 'index'])
+                ->whereAlpha('table')->middleware('auth:sanctum');
+    Route::get('/test', function () {
+        return 'This is test api';
+    })->middleware('auth:sanctum');
+});
