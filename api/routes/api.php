@@ -38,7 +38,7 @@ Route::group(['web'], function () {
             /*
                ************************************ Users **********************************************
             */
-            Route::apiResource('users', 'usersController')->withoutMiddleware('auth:sanctum');
+            Route::apiResource('users', 'usersController');
         });
 
         Route::post('/login', 'adminAuthController@login');
@@ -93,7 +93,5 @@ Route::group(['web'], function () {
 
     Route::get('/search/{table}/{value}/{cnt?}', [App\Http\Controllers\Api\Admin\V1\searchController::class, 'index'])
                 ->whereAlpha('table')->middleware('auth:sanctum');
-    Route::get('/test', function () {
-        return 'This is test api';
-    })->middleware('auth:sanctum');
 });
+Route::get('/login')->name('login');
