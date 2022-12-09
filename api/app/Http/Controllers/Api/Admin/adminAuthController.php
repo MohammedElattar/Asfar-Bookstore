@@ -16,10 +16,10 @@ class adminAuthController extends Controller
 
     public function login(authAdmin $req)
     {
-        $user = User::where('email', $req->email)->first(['id', 'email', 'password', 'user_role', 'password', 'name']);
+        $user = User::where('email', $req->email)->first(['id', 'email', 'password', 'user_role', 'password', 'name', 'active']);
         if ($user && $user->user_role == '1' && $user->active == '1') {
             if (Hash::check($req->password, $user->password)) {
-                Auth::loginUsingId($user->id, true);
+                Auth::guard('web')->loginUsingId($user->id, true);
                 unset($user->password);
 
                 return $this->success([

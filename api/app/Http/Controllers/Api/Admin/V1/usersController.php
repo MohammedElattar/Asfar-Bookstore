@@ -79,6 +79,8 @@ class usersController extends Controller
         $user->update();
         if ($logout) {
             $this->logout_user();
+
+            return $this->success('User logged out successfully');
         }
 
         return $this->success(new usersResource($user), 'Update updated successfully');
@@ -92,7 +94,8 @@ class usersController extends Controller
             'active.required' => 'active-required',
             'active',
         ])['active'];
-        $user_info = $this->get_user_data();
+        $user_info = $this->get_user_id();
+
         $user->active = $active == true ? '1' : '0';
         $user->update();
         if ($user->id != $user_info->id) {
@@ -103,11 +106,13 @@ class usersController extends Controller
 
     /**
      * Remove the specified resource from storage.
-     *
-     * @return \Illuminate\Http\JsonResponse
      */
     public function destroy(User $user)
     {
+        $id = $this->get_user_id();
+        if ($user->id == $id) {
+            return $this->error('Same logged user', 422);
+        }
         $user->delete();
 
         return $this->success('User deleted successfully');
@@ -126,20 +131,17 @@ class usersController extends Controller
 
     public function delete_all()
     {
-        $user_info = $this->get_user_data();
-        $id = $user_info->id;
+        $id = $this->get_user_id();
         DB::delete('DELETE FROM users WHERE id != ?', [$id]);
     }
 
-    private function get_user_data()
+    private function get_user_id()
     {
-        return Auth::user();
+        return Auth::user()['id'];
     }
 
     private function logout_user()
     {
         Auth::guard('web')->logout();
-
-        return redirect(env('FRONTEND_URL').'/admin/login');
     }
 }
