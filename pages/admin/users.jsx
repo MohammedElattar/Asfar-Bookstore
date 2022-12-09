@@ -41,7 +41,10 @@ const columns = [
     name: "الحالة",
     selector: (user) => (
       <span
-        className={[global.status, user.active ? global.statusActive : ""]
+        className={[
+          global.status,
+          user.active ? global.statusActive : global.statusDisabled,
+        ]
           .join(" ")
           .trim()}
       >
@@ -153,170 +156,150 @@ export default function Users() {
           setCurrentUser(null);
         }}
       ></div>
-      {/* <AddUserMenu {...{ addUserIsActive, setAddUserIsActive }} /> */}
+      <AddUserMenu {...{ addUserIsActive, setAddUserIsActive }} />
       <EditUserMenu {...{ currentUser, setCurrentUser }} />
     </>
   );
 }
 
-// function AddUserMenu({ addUserIsActive, setAddUserIsActive }) {
-//   const [nameProps, setNameError, setNameProps] = useInput("");
-//   const [writterProps, setWritterError, setWritterProps] = useInput("");
-//   const [publisherProps, setPublisherError, setPublisherProps] = useInput("");
-//   const [vendorProps, setVendorError, setVendorProps] = useInput("");
-//   const [priceProps, setPriceError, setPriceProps] = useInput("");
-//   const [quantityProps, setQuantityError, setQuantityProps] = useInput("");
-//   const [image, setImage] = useState(null);
-//   const [resultMsg, setResultMsg] = useState("");
-//   const [error, setError] = useState(null);
-//   const { setData } = useAdminContext();
+function AddUserMenu({ addUserIsActive, setAddUserIsActive }) {
+  const [nameProps, setNameError, setNameProps] = useInput("");
+  const [emailProps, setEmailError, setEmailProps] = useInput("");
+  const [passwordProps, setPasswordError, setPasswordProps] = useInput("");
+  const [isActive, setIsActive] = useState(true);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [resultMsg, setResultMsg] = useState("");
+  const [error, setError] = useState(null);
+  const { setData } = useAdminContext();
 
-//   const handlePress = async (evt, next) => {
-//     const check1 = nameProps.value.trim().length <= 4;
-//     const check2 = writterProps.value.trim().length <= 4;
-//     const check3 = publisherProps.value.trim().length <= 4;
-//     const check4 = vendorProps.value.trim().length <= 4;
-//     const check5 = /^[\d.]{1,}$/.test(priceProps.value.trim());
-//     const check6 = /^\d{1,}$/.test(quantityProps.value.trim());
-//     if (check1) {
-//       setNameError(true, "الاسم قصير جدا!");
-//     }
-//     if (check2) {
-//       setWritterError(true, "الاسم قصير جدا!");
-//     }
-//     if (check3) {
-//       setPublisherError(true, "الاسم قصير جدا!");
-//     }
-//     if (check4) {
-//       setVendorError(true, "الاسم قصير جدا!");
-//     }
-//     if (priceProps.value.trim().length <= 0) {
-//       setPriceError(true, "رقم واحد علي الاقل");
-//     } else if (!check5) {
-//       setPriceError(true, "ارقام فقط");
-//     }
-//     if (quantityProps.value.trim().length <= 0) {
-//       setQuantityError(true, "رقم واحد علي الاقل");
-//     } else if (!check6) {
-//       setQuantityError(true, "ارقام فقط");
-//     }
-//     if (check1 || check2 || check3 || check4 || !check5 || !check6) {
-//       setResultMsg("خطأ!");
-//       next();
-//       return;
-//     }
+  const handlePress = async (evt, next) => {
+    const nameCheck1 = nameProps.value.trim().length <= 4;
+    const nameCheck2 = nameProps.value.trim().length >= 25;
+    const emailCheck1 = !isValid(emailProps.value);
+    const passwordCheck1 = passwordProps.value.length <= 8;
+    const passwordCheck2 = passwordProps.value.length >= 25;
+    if (nameCheck1) {
+      setNameError(true, "الاسم قصير جدا!");
+    } else if (nameCheck2) {
+      setNameError(true, "الاسم طويل جدا!");
+    }
+    if (emailCheck1) {
+      setEmailError(true, "البريد الالكتروني غير صالح!");
+    }
+    if (passwordCheck1) {
+      setPasswordError(true, "كلمة السر قصيرة جدا!");
+    } else if (passwordCheck2) {
+      setPasswordError(true, "كلمة السر طويلة جدا!");
+    }
+    if (
+      nameCheck1 ||
+      nameCheck2 ||
+      emailCheck1 ||
+      passwordCheck1 ||
+      passwordCheck2
+    ) {
+      setResultMsg("خطأ!");
+      next();
+      return;
+    }
 
-//     try {
-//       const formData = new FormData();
-//       formData.append("title", nameProps.value);
-//       formData.append("writter", writterProps.value);
-//       formData.append("publisher", publisherProps.value);
-//       formData.append("vendor", vendorProps.value);
-//       formData.append("price", priceProps.value);
-//       formData.append("quantity", quantityProps.value);
-//       if (image) {
-//         formData.append("img", image);
-//       }
+    try {
+      const formData = new FormData();
+      formData.append("name", nameProps.value);
+      formData.append("email", emailProps.value);
+      formData.append("password", passwordProps.value);
+      formData.append("admin", isAdmin);
+      formData.append("active", isActive);
+      console.log(`Object To Send =>`, Object.fromEntries(formData.entries()));
 
-//       const res = await apiHttp.post("/v1/books", formData);
-//       console.log(`Create Book Response =>`, res);
+      const res = await apiHttp.post("/v1/users", formData);
+      console.log(`Create User Response =>`, res);
 
-//       const [newBook] = res.data.data;
+      const newUser = res.data.data;
 
-//       if (res.data.type === "success" && newBook) {
-//         setData((prevData) => {
-//           const clone = { ...prevData };
-//           prevData.data.push(newBook);
-//           return clone;
-//         });
-//       }
+      if (res.data.type === "success" && newUser) {
+        setData((prevData) => {
+          const clone = { ...prevData };
+          prevData.data.push(newUser);
+          return clone;
+        });
+      }
 
-//       setResultMsg("تم الاضافة");
-//       setError(null);
-//       next();
-//     } catch (err) {
-//       console.log(`Create Product Error =>`, err.response.data.data);
-//       setResultMsg("خطأ!");
-//       setError(`حدث خطأ اثناء القيام بالعملية`);
-//       next();
-//     }
-//   };
+      setResultMsg("تم الاضافة");
+      setError(null);
+      next();
+    } catch (err) {
+      console.log(`Create Product Error =>`, err.response.data.data);
+      setResultMsg("خطأ!");
+      setError(`حدث خطأ اثناء القيام بالعملية`);
+      next();
+    }
+  };
 
-//   useEffect(() => {
-//     [
-//       setNameProps,
-//       setWritterProps,
-//       setPublisherProps,
-//       setVendorProps,
-//       setPriceProps,
-//       setQuantityProps,
-//     ].forEach((e) =>
-//       e((prev) => ({ ...prev, error: false, helperText: "", value: "" }))
-//     );
-//     setImage(null);
-//     // eslint-disable-next-line
-//   }, [addProductIsActive]);
+  useEffect(() => {
+    [setNameProps, setPasswordProps, setEmailProps].forEach((e) =>
+      e((prev) => ({ ...prev, error: false, helperText: "", value: "" }))
+    );
+    setIsActive(true);
+    setIsAdmin(false);
+    // eslint-disable-next-line
+  }, [addUserIsActive]);
 
-//   return (
-//     <Menu
-//       title="اضافة منتج"
-//       className={[addProductIsActive ? "active" : "", s.menu].join(" ").trim()}
-//       onClose={() => setAddProductIsActive(false)}
-//     >
-//       <div className={s.menuBody}>
-//         <InputControl label="اسم المنتج" props={nameProps} />
-//         <InputControl label="اسم الكاتب" props={writterProps} />
-//         <InputControl label="اسم الناشر" props={publisherProps} />
-//         <InputControl label="اسم البائع" props={vendorProps} />
-//         <InputControl label="السعر" props={priceProps} />
-//         <InputControl label="الكمية" props={quantityProps} />
-//       </div>
-//       <div className={s.fileWrapper}>
-//         <label htmlFor="image">اختيار صورة</label>
-//         <span>{image?.name}</span>
-//         <input
-//           type="file"
-//           id="image"
-//           accept="image/*"
-//           hidden
-//           onChange={(e) => setImage(e.target.files[0])}
-//         />
-//       </div>
+  return (
+    <Menu
+      title="اضافة منتج"
+      className={[addUserIsActive ? "active" : "", s.menu].join(" ").trim()}
+      onClose={() => setAddUserIsActive(false)}
+    >
+      <div className={s.menuBody}>
+        <InputControl label="الاسم" props={nameProps} />
+        <InputControl label="البريد الالكتروني" props={emailProps} />
+        <InputControl label="كلمة السر" props={passwordProps} />
+      </div>
+      <div className={global.checkBox} style={{ marginTop: "20px" }}>
+        <input
+          type="checkbox"
+          id="admin"
+          checked={isAdmin}
+          onChange={(e) => setIsAdmin(e.target.checked)}
+        />
+        <label htmlFor="admin">ادمن</label>
+      </div>
+      <div className={global.checkBox}>
+        <input
+          type="checkbox"
+          id="active"
+          checked={isActive}
+          onChange={(e) => setIsActive(e.target.checked)}
+        />
+        <label htmlFor="active">نشط</label>
+      </div>
 
-//       {!!error && (
-//         <p
-//           style={{
-//             margin: "10px 0",
-//             color: "#b90000",
-//             fontSize: "18px",
-//             fontWeight: "500",
-//           }}
-//         >
-//           {error}
-//         </p>
-//       )}
+      {!!error && (
+        <p
+          style={{
+            margin: "10px 0",
+            color: "#b90000",
+            fontSize: "18px",
+            fontWeight: "500",
+          }}
+        >
+          {error}
+        </p>
+      )}
 
-//       {!!image && (
-//         <ImagePreview
-//           file={image}
-//           width={80}
-//           height={100}
-//           alt={"image preview"}
-//           className={s.imagePreview}
-//         />
-//       )}
-
-//       <AwesomeButtonProgress
-//         type="primary"
-//         onPress={handlePress}
-//         resultLabel={resultMsg}
-//         loadingLabel="جاري التحميل..."
-//       >
-//         اضافة المنتج
-//       </AwesomeButtonProgress>
-//     </Menu>
-//   );
-// }
+      <AwesomeButtonProgress
+        type="primary"
+        onPress={handlePress}
+        resultLabel={resultMsg}
+        loadingLabel="جاري التحميل..."
+        style={{ marginTop: "20px" }}
+      >
+        اضافة المستخدم
+      </AwesomeButtonProgress>
+    </Menu>
+  );
+}
 
 function EditUserMenu({ currentUser, setCurrentUser }) {
   const [nameProps, setNameError, setNameProps] = useInput("");
@@ -367,11 +350,11 @@ function EditUserMenu({ currentUser, setCurrentUser }) {
 
     try {
       const formData = new FormData();
-      formData.append("title", nameProps.value);
+      formData.append("name", nameProps.value);
       formData.append("email", emailProps.value);
       formData.append("password", passwordProps.value);
       formData.append("admin", isAdmin);
-      formData.append("adtive", isActive);
+      formData.append("active", isActive);
       console.log(`Object To Send =>`, Object.fromEntries(formData.entries()));
       const data = {
         name: nameProps.value,
