@@ -355,19 +355,14 @@ function EditUserMenu({ currentUser, setCurrentUser }) {
       const formData = new FormData();
       formData.append("name", nameProps.value);
       formData.append("email", emailProps.value);
+      formData.append("admin", isAdmin);
+      formData.append("active", isActive);
       if (passwordProps.value) {
         formData.append("password", passwordProps.value);
       }
-      formData.append("admin", isAdmin);
-      formData.append("active", isActive);
       console.log(`Object To Send =>`, Object.fromEntries(formData.entries()));
-      const data = {
-        name: nameProps.value,
-        email: emailProps.value,
-        password: passwordProps.value,
-      };
 
-      const res = await apiHttp.post(`/v1/user/${currentUser.id}`, data);
+      const res = await apiHttp.put(`/v1/user/${currentUser.id}`, formData);
       console.log(`Edit Book Response =>`, res);
 
       const editedUser = res.data.data;
@@ -388,7 +383,7 @@ function EditUserMenu({ currentUser, setCurrentUser }) {
       setError(null);
       next();
     } catch (err) {
-      console.log(`Edit Product Error =>`, err.response.data);
+      console.log(`Edit Product Error =>`, err);
       setResultMsg("خطأ!");
       setError(`حدث خطأ اثناء القيام بالعملية`);
       next();
