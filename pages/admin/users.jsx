@@ -2,7 +2,7 @@ import { AwesomeButton, AwesomeButtonProgress } from "react-awesome-button";
 import DataTable from "react-data-table-component";
 import { isValid } from "email-regexp";
 import global from "../../styles/pages/admin/global.module.scss";
-import s from "../../styles/pages/admin/products.module.scss";
+import s from "../../styles/pages/admin/users.module.scss";
 import { useAdminContext } from "../../context/AdminContext";
 import { apiHttp, tableCustomStyles } from "../../utils/utils";
 import { useState } from "react";
@@ -125,7 +125,10 @@ export default function Users() {
           </AwesomeButton>
         </div>
 
-        <form className={s.searchWrapper} onSubmit={(e) => e.preventDefault()}>
+        <form
+          className={global.searchWrapper}
+          onSubmit={(e) => e.preventDefault()}
+        >
           <InputControl
             props={searchProps}
             label="بحث"
@@ -320,7 +323,8 @@ function EditUserMenu({ currentUser, setCurrentUser }) {
     const nameCheck1 = nameProps.value.trim().length <= 4;
     const nameCheck2 = nameProps.value.trim().length >= 25;
     const emailCheck1 = !isValid(emailProps.value);
-    const passwordCheck1 = passwordProps.value.length <= 8;
+    const passwordCheck1 =
+      passwordProps.value.length <= 8 && passwordProps.value.length > 0;
     const passwordCheck2 = passwordProps.value.length >= 25;
     if (nameCheck1) {
       setNameError(true, "الاسم قصير جدا!");
@@ -351,7 +355,9 @@ function EditUserMenu({ currentUser, setCurrentUser }) {
       const formData = new FormData();
       formData.append("name", nameProps.value);
       formData.append("email", emailProps.value);
-      formData.append("password", passwordProps.value);
+      if (passwordProps.value) {
+        formData.append("password", passwordProps.value);
+      }
       formData.append("admin", isAdmin);
       formData.append("active", isActive);
       console.log(`Object To Send =>`, Object.fromEntries(formData.entries()));
