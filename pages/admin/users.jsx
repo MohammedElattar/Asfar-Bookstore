@@ -362,7 +362,7 @@ function EditUserMenu({ currentUser, setCurrentUser }) {
       }
       console.log(`Object To Send =>`, Object.fromEntries(formData.entries()));
 
-      const res = await apiHttp.put(`/v1/user/${currentUser.id}`, formData);
+      const res = await apiHttp.put(`/v1/users/${currentUser.id}`, formData);
       console.log(`Edit Book Response =>`, res);
 
       const editedUser = res.data.data;
@@ -430,7 +430,7 @@ function EditUserMenu({ currentUser, setCurrentUser }) {
         <input
           type="checkbox"
           id="admin"
-          value={isAdmin}
+          checked={isAdmin}
           onChange={(e) => setIsAdmin(e.target.checked)}
         />
         <label htmlFor="admin">ادمن</label>
@@ -439,7 +439,7 @@ function EditUserMenu({ currentUser, setCurrentUser }) {
         <input
           type="checkbox"
           id="active"
-          value={isActive}
+          checked={isActive}
           onChange={(e) => setIsActive(e.target.checked)}
         />
         <label htmlFor="active">نشط</label>
