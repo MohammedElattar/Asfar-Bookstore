@@ -3,14 +3,16 @@
 namespace App\Http\Controllers\Api\Admin\V1;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Admin\V1\Users\storeUsersRequest;
-use App\Http\Requests\Admin\V1\Users\updateUsersRequest;
+use App\Http\Requests\Admin\V1\Users\store_update_user_request;
 use App\Http\Resources\Api\admin\v1\usersCollection;
 use App\Http\Resources\Api\admin\v1\usersResource;
 use App\Http\Traits\HttpResponse;
 use App\Models\User;
 use Illuminate\Http\Request as HttpRequest;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rule as ValidationRule;
 
 class usersController extends Controller
 {
@@ -31,12 +33,14 @@ class usersController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function store(storeUsersRequest $request)
+    public function store(store_update_user_request $request)
     {
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
+            'user_role' => $request->admin == true ? '1' : '0',
+            'active' => '1',
         ]);
 
         return $this->success(new usersResource($user), 'User created successfully');
@@ -57,9 +61,13 @@ class usersController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function update(updateUsersRequest $request, User $user)
+    public function update(store_update_user_request $request, User $user)
     {
         $data = $request->all();
+        $logout = false;
+        if ($user->user_role != $request->admin) {
+            $logout = true;
+        }
         if ($request->has('password')) {
             $data['password'] = Hash::make($data['password']);
         }
@@ -69,8 +77,28 @@ class usersController extends Controller
             $user->password = Hash::make($request->password);
         }
         $user->update();
+        if ($logout) {
+            $this->logout_user();
+        }
 
         return $this->success(new usersResource($user), 'Update updated successfully');
+    }
+
+    public function changeStatus(HttpRequest $req, User $user)
+    {
+        $active = $req->validate([
+            'active' => ['required', ValidationRule::in(['true', 'false', true, false])],
+        ], [
+            'active.required' => 'active-required',
+            'active',
+        ])['active'];
+        $user_info = $this->get_user_data();
+        $user->active = $active == true ? '1' : '0';
+        $user->update();
+        if ($user->id != $user_info->id) {
+        }
+
+        return $this->success('User status Changed successfully');
     }
 
     /**
@@ -94,5 +122,24 @@ class usersController extends Controller
         }
 
         return 10;
+    }
+
+    public function delete_all()
+    {
+        $user_info = $this->get_user_data();
+        $id = $user_info->id;
+        DB::delete('DELETE FROM users WHERE id != ?', [$id]);
+    }
+
+    private function get_user_data()
+    {
+        return Auth::user();
+    }
+
+    private function logout_user()
+    {
+        Auth::guard('web')->logout();
+
+        return redirect(env('FRONTEND_URL').'/admin/login');
     }
 }

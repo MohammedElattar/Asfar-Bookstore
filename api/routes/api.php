@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 /************************************************************ Admin ***************************************************/
-Route::group(['web'], function () {
+Route::group(['middleware' => ['web']], function () {
     Route::group(['prefix' => 'admin', 'namespace' => '\App\Http\Controllers\Api\Admin'], function () {
         // v1
         Route::group(['prefix' => 'v1', 'namespace' => 'V1', 'middleware' => ['auth:sanctum']], function () {
@@ -39,6 +39,8 @@ Route::group(['web'], function () {
                ************************************ Users **********************************************
             */
             Route::apiResource('users', 'usersController');
+            Route::patch('/users/{user}', 'usersController@changeStatus');
+            Route::delete('/users/delete_all', 'usersController@delete_all');
         });
 
         Route::post('/login', 'adminAuthController@login');
