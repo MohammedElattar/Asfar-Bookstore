@@ -5,8 +5,9 @@ namespace App\Http\Requests\Admin\V1\Users;
 use App\Http\Traits\HttpResponse;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule as ValidationRule;
 
-class updateUsersRequest extends FormRequest
+class store_update_user_request extends FormRequest
 {
     use HttpResponse;
 
@@ -28,13 +29,17 @@ class updateUsersRequest extends FormRequest
     public function rules()
     {
         $reg = config('app.ar_en_reg');
-        $id = $this->route('user')->id;
+        $id = $this->route('user');
+        $id = $id ? $id->id : null;
 
-        return [
+        $validations = [
             'name' => "required|regex:$reg|not_regex:/^\d+$/",
-            'email' => 'required|email|unique:users,email,'.$id.',id',
-            'password' => 'sometimes|required|min:8',
+            'email' => 'required|email|unique:users,email'.($id ? ",$id,id" : ''),
+            'password' => ($id ? 'sometimes|' : '').'required|min:8',
+            'admin' => ['required', ValidationRule::in(['true', 'false'])],
         ];
+
+        return $validations;
     }
 
     public function messages()
@@ -48,6 +53,8 @@ class updateUsersRequest extends FormRequest
             'email.unique' => 'email-exists',
             'password.required' => 'password-required',
             'password.min' => 'password-short',
+            'admin.required' => 'type-required',
+            'admin.boolean' => 'type-invalid',
         ];
     }
 

@@ -28,6 +28,7 @@ class User extends Authenticatable
         'github_id',
         'facebook_id',
         'avatar',
+        'active',
     ];
 
     /**

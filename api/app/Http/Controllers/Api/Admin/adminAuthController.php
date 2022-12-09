@@ -17,7 +17,7 @@ class adminAuthController extends Controller
     public function login(authAdmin $req)
     {
         $user = User::where('email', $req->email)->first(['id', 'email', 'password', 'user_role', 'password', 'name']);
-        if ($user->user_role == '1') {
+        if ($user && $user->user_role == '1' && $user->active == '1') {
             if (Hash::check($req->password, $user->password)) {
                 Auth::loginUsingId($user->id, true);
                 unset($user->password);
@@ -37,6 +37,6 @@ class adminAuthController extends Controller
     {
         Auth::guard('web')->logout();
 
-        return $this->success(msg: 'User logged out successfully');
+        return redirect(env('FRONTEND_URL').'/admin/login');
     }
 }
