@@ -94,14 +94,16 @@ class usersController extends Controller
             'active.required' => 'active-required',
             'active',
         ])['active'];
-        $user_info = $this->get_user_id();
-
-        $user->active = $active == true ? '1' : '0';
+        $id = $this->get_user_id();
+        $user->active = $active == 'true' ? '1' : '0';
         $user->update();
-        if ($user->id != $user_info->id) {
-        }
+        if ($user->id != $id) {
+            return $this->success('User status Changed successfully');
+        } else {
+            $this->logout_user();
 
-        return $this->success('User status Changed successfully');
+            return $this->success('User status changed successfully , and the user logged_out');
+        }
     }
 
     /**
