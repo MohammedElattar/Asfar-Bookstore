@@ -47,6 +47,7 @@ const columns = [
         ]
           .join(" ")
           .trim()}
+        onClick={() => user.toggleUser(user)}
       >
         {user.active ? "مفعل" : "غير مفعل"}
       </span>
@@ -94,6 +95,7 @@ export default function Users() {
     searchProps,
     handleSearchKeyUp,
     deleteAll,
+    toggleUser,
   } = useUsersPage();
 
   return (
@@ -129,6 +131,7 @@ export default function Users() {
             ...user,
             setCurrentUser,
             deleteUser,
+            toggleUser,
           }))}
           pagination
           customStyles={tableCustomStyles}
@@ -589,6 +592,36 @@ function useUsersPage() {
     }
   };
 
+  const toggleUser = async (user) => {
+    let active;
+    const updateUser = (id) => {
+      setData((prevData) => {
+        const clone = { ...prevData };
+        const user = prevData.data.find((e) => e.id === id);
+        if (user.active === "false" || user.active === false) {
+          active = "true";
+          user.active = "true";
+        } else if (user.active === "true" || user.active === true) {
+          active = "false";
+          user.active = "false";
+        }
+        console.log(`clone =>`, clone);
+        return clone;
+      });
+    };
+
+    try {
+      updateUser(user.id);
+      const res = await apiHttp.patch(`/v1/users/${user.id}`, {
+        active,
+      });
+      console.log(`Toggle Response =>`, res);
+    } catch (err) {
+      console.log(`Toggle Error =>`, err);
+      updateUser(user.id);
+    }
+  };
+
   return {
     loading,
     addUserIsActive,
@@ -603,6 +636,7 @@ function useUsersPage() {
     searchProps,
     handleSearchKeyUp,
     deleteAll,
+    toggleUser,
   };
 }
 

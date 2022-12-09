@@ -25,8 +25,10 @@ const columns = [
       return (
         <div
           className={[
-            category.status === "1" ? s.statusActive : s.statusDisabled,
-            s.status,
+            category.status === "1"
+              ? global.statusActive
+              : global.statusDisabled,
+            global.status,
           ].join(" ")}
           onClick={() => category.toggleCategory(category)}
         >
