@@ -13,6 +13,14 @@ import { useEffect } from "react";
 import Loading from "../../components/Loading";
 import { useRouter } from "next/router";
 import { useRef } from "react";
+
+const isTrue = (e) => {
+  return e === "true" || e === true;
+};
+const isFalse = (e) => {
+  return e === "false" || e === false;
+};
+
 const columns = [
   {
     name: "الرقم التعريفي",
@@ -43,12 +51,13 @@ const columns = [
       <span
         className={[
           global.status,
-          user.active ? global.statusActive : global.statusDisabled,
+          isTrue(user.active) ? global.statusActive : global.statusDisabled,
         ]
           .join(" ")
           .trim()}
+        onClick={() => user.toggleUser(user)}
       >
-        {user.active ? "مفعل" : "غير مفعل"}
+        {isTrue(user.active) ? "مفعل" : "غير مفعل"}
       </span>
     ),
     wrap: true,
@@ -85,15 +94,16 @@ export default function Users() {
     addUserIsActive,
     setAddUserIsActive,
     currentUser,
-    users,
     setCurrentUser,
     deleteUser,
+    users,
     totalRows,
     handlePerRowsChange,
     fetchUsers,
     searchProps,
     handleSearchKeyUp,
     deleteAll,
+    toggleUser,
   } = useUsersPage();
 
   return (
@@ -129,6 +139,7 @@ export default function Users() {
             ...user,
             setCurrentUser,
             deleteUser,
+            toggleUser,
           }))}
           pagination
           customStyles={tableCustomStyles}
@@ -166,7 +177,6 @@ function AddUserMenu({ addUserIsActive, setAddUserIsActive }) {
   const [nameProps, setNameError, setNameProps] = useInput("");
   const [emailProps, setEmailError, setEmailProps] = useInput("");
   const [passwordProps, setPasswordError, setPasswordProps] = useInput("");
-  const [isActive, setIsActive] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
   const [resultMsg, setResultMsg] = useState("");
   const [error, setError] = useState(null);
@@ -209,7 +219,6 @@ function AddUserMenu({ addUserIsActive, setAddUserIsActive }) {
       formData.append("email", emailProps.value);
       formData.append("password", passwordProps.value);
       formData.append("admin", isAdmin);
-      formData.append("active", isActive);
       console.log(`Object To Send =>`, Object.fromEntries(formData.entries()));
 
       const res = await apiHttp.post("/v1/users", formData);
@@ -240,7 +249,6 @@ function AddUserMenu({ addUserIsActive, setAddUserIsActive }) {
     [setNameProps, setPasswordProps, setEmailProps].forEach((e) =>
       e((prev) => ({ ...prev, error: false, helperText: "", value: "" }))
     );
-    setIsActive(true);
     setIsAdmin(false);
     // eslint-disable-next-line
   }, [addUserIsActive]);
@@ -264,15 +272,6 @@ function AddUserMenu({ addUserIsActive, setAddUserIsActive }) {
           onChange={(e) => setIsAdmin(e.target.checked)}
         />
         <label htmlFor="admin">ادمن</label>
-      </div>
-      <div className={global.checkBox}>
-        <input
-          type="checkbox"
-          id="active"
-          checked={isActive}
-          onChange={(e) => setIsActive(e.target.checked)}
-        />
-        <label htmlFor="active">نشط</label>
       </div>
 
       {!!error && (
@@ -510,14 +509,13 @@ function useUsersPage() {
       console.log(`Page Change Response =>`, res);
       setData(res.data);
       setLoading(false);
-      console.log(router);
     } catch (err) {
       console.log(`Page Change Error`, err);
     }
   };
 
   const deleteUser = async (user) => {
-    const confirmed = window.confirm(`سيتم مسح ${user.title} نهائيا`);
+    const confirmed = window.confirm(`سيتم مسح ${user.name} نهائيا`);
     if (confirmed) {
       try {
         const res = await apiHttp.delete(`/v1/users/${user.id}`);
@@ -589,6 +587,39 @@ function useUsersPage() {
     }
   };
 
+  const toggleUser = async (user) => {
+    let active;
+    const updateUser = (id) => {
+      setData((prevData) => ({
+        ...prevData,
+        data: prevData.data.map((user) => {
+          if (user.id === id) {
+            if (isTrue(user.active)) {
+              active = "false";
+              user.active = "false";
+            } else {
+              active = "true";
+              user.active = "true";
+            }
+            return user;
+          }
+          return user;
+        }),
+      }));
+    };
+
+    try {
+      updateUser(user.id);
+      const res = await apiHttp.patch(`/v1/users/${user.id}`, {
+        active,
+      });
+      console.log(`Toggle Response =>`, res);
+    } catch (err) {
+      console.log(`Toggle Error =>`, err);
+      updateUser(user.id);
+    }
+  };
+
   return {
     loading,
     addUserIsActive,
@@ -603,6 +634,7 @@ function useUsersPage() {
     searchProps,
     handleSearchKeyUp,
     deleteAll,
+    toggleUser,
   };
 }
 
