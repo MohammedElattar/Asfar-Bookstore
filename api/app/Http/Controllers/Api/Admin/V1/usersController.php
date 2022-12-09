@@ -55,7 +55,7 @@ class usersController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @return usersResource
+     * @return \Illuminate\Http\JsonResponse
      */
     public function update(updateUsersRequest $request, User $user)
     {
