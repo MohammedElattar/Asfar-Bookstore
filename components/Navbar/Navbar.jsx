@@ -33,7 +33,11 @@ function Navbar({ data }) {
         )}
 
         <Link href="/" className={styles.logo}>
-          <img src={data.logo} alt="logo" priority />
+          <img
+            src={data?.logo || "/images/asfar-logo.png"}
+            alt="logo"
+            priority
+          />
         </Link>
         <Link href="/products/1" className={styles.searchBook}>
           <FaSearch />

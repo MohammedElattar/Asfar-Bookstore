@@ -1,0 +1,41 @@
+.wrapper {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 700px;
+  max-width: 100%;
+}
+.divider {
+  display: flex;
+  gap: 40px;
+}
+.submitBtn {
+  width: 200px;
+}
+.logoLabel {
+  padding-bottom: 3px;
+  border-bottom: 1px dotted #000;
+  cursor: pointer;
+  height: fit-content;
+}
+.preview {
+  padding: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  img {
+    max-width: 150px;
+    max-height: 100px;
+    object-fit: cover;
+  }
+}
+.inputControl {
+  width: 300px;
+  flex-grow: 1;
+  max-width: 100%;
+}
+.english {
+  input {
+    direction: ltr;
+    text-align: end;
+  }
+}
