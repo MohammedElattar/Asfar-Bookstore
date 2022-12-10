@@ -14,10 +14,10 @@ use Illuminate\Support\Facades\Route;
 */
 
 /************************************************************ Admin ***************************************************/
-Route::group(['middleware' => ['web']], function () {
+Route::group([ 'middleware' => ['web'] ], function () {
     Route::group(['prefix' => 'admin', 'namespace' => '\App\Http\Controllers\Api\Admin'], function () {
         // v1
-        Route::group(['prefix' => 'v1', 'namespace' => 'V1', 'middleware' => ['auth:sanctum']], function () {
+        Route::group(['prefix' => 'v1', 'namespace' => 'V1'/* 'middleware' => ['auth:sanctum'] */], function () {
             /*
                 Add ->withoutMiddleware("auth:sanctum") to disable authentication
                 * Like That :
@@ -49,8 +49,12 @@ Route::group(['middleware' => ['web']], function () {
             */
             Route::get('/settings', 'settingsController@index');
             Route::post('/settings', 'settingsController@update');
+            /*
+                   ************************************ Dashboard **********************************************
+                */
+            Route::get('/', 'dashboardController@index');
+            Route::get('/dashboard', 'dashboardController@index');
         });
-
         Route::post('/login', 'adminAuthController@login');
         Route::post('/logout', 'adminAuthController@logout')->middleware('auth:sanctum');
     });
