@@ -6,6 +6,8 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class settingResource extends JsonResource
 {
+    private array $contact = ['facebook', 'whatsapp', 'telegram', 'instagram'];
+
     /**
      * Transform the resource into an array.
      *
@@ -15,11 +17,16 @@ class settingResource extends JsonResource
      */
     public function toArray($request)
     {
-        return [
+        $data = [
             'title' => $this->title,
             'logo' => $this->logo ? (env('APP_URL', 'http://localhost:8000')."/storage/setting/{$this->logo}") : null,
             'email' => $this->email,
             'phone' => $this->phone_number,
         ];
+        foreach ($this->contact as $i) {
+            $data[$i] = $this->{"$i"};
+        }
+
+        return $data;
     }
 }

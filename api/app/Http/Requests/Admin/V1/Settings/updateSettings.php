@@ -26,19 +26,27 @@ class updateSettings extends FormRequest
      *
      * @return array<string, mixed>
      */
+    private array $contact = ['facebook', 'whatsapp', 'telegram', 'instagram'];
+
     public function rules()
     {
-        return [
+        $validation = [
             'title' => 'required|regex:'.config('app.ar_en_reg'),
             'email' => 'required|email',
             'phone' => ['required', 'regex:/^(\d{11}|(([+]{0,1})?(20)\d{10}))$/'],
             'logo' => 'sometimes|bail|required|image|mimes:png,jpeg,jpg|max:3072',
+            'support' => 'required|email',
         ];
+        foreach ($this->contact as $i) {
+            $validation[$i] = 'required|url';
+        }
+
+        return $validation;
     }
 
     public function messages()
     {
-        return [
+        $messages = [
             'title.required' => 'title-required',
             'title.regex' => 'title-invalid',
             'email.required' => 'email-required',
@@ -48,7 +56,15 @@ class updateSettings extends FormRequest
             'logo.image' => 'logo-not-image',
             'logo.mimes' => 'logo-extension',
             'logo.max' => 'logo-big',
+            'support.required' => 'support-required',
+            'support.email' => 'support-not-email',
         ];
+        foreach ($this->contact as $i) {
+            $messages["$i.required"] = "$i-required";
+            $messages["$i.url"] = "$i-invalid";
+        }
+
+        return $messages;
     }
 
     protected function failedValidation(Validator $validator)
