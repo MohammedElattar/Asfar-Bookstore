@@ -65,7 +65,7 @@ class usersController extends Controller
     {
         $data = $request->all();
         $logout = false;
-        if ($user->user_role != $request->admin) {
+        if (($this->get_user_id() == $user->id) && ($user->user_role != $request->admin)) {
             $logout = true;
         }
         if ($request->has('password')) {
@@ -80,7 +80,7 @@ class usersController extends Controller
         if ($logout) {
             $this->logout_user();
 
-            return $this->success('User logged out successfully');
+            return $this->success(['redirect' => true], 'User Administration changed successfully and logged out');
         }
 
         return $this->success(new usersResource($user), 'Update updated successfully');

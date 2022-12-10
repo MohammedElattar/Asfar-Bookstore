@@ -47,4 +47,8 @@ trait HttpResponse
                 ->header('Accept', 'application/vnd.api+json')
                 ->header('Content-Type', 'application/vnd.api+json');
     }
+
+    public function not_authorized(){
+        return $this->error('You are not authenticated', 401 , ['redirect' => true]);
+    }
 }
