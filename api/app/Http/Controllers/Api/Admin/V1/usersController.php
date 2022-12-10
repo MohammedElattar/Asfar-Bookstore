@@ -39,7 +39,7 @@ class usersController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'user_role' => $request->admin == true ? '1' : '0',
+            'user_role' => $request->admin == 'true' ? '1' : '0',
             'active' => '1',
         ]);
 
