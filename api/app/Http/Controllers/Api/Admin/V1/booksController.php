@@ -84,7 +84,7 @@ class booksController extends Controller
     public function update(bookRequest $request, Book $book)
     {
         if ($request->isMethod('post')) {
-            $cat = Category::where('id', $request->category)->where('status', '1')->frist('id');
+            $cat = Category::where('id', $request->category)->where('status', '1')->first('id');
             if (isset($cat->id)) {
                 $book->title = $request->title;
                 $book->writter = $request->writter;
@@ -99,12 +99,12 @@ class booksController extends Controller
                     }
                     $book->img = $this->storeImage($request);
                 }
-                $book->save();
+                $book->update();
 
                 return $this->success(new booksResource($book), 'Book updated successfully');
-            } else {
-                return $this->error('This route is not found', 404);
             }
+        } else {
+            return $this->error('This route is not found', 404);
         }
 
         return $this->error('Categrory is not found', 422);
