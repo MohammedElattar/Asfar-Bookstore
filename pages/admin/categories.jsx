@@ -68,10 +68,7 @@ const columns = [
 ];
 
 export default function Categories() {
-  const {
-    data: { data: categories },
-    setData,
-  } = useAdminContext();
+  const { data: { data: categories } = {}, setData } = useAdminContext();
 
   const [currentCategory, setCurrentCategory] = useState(null);
   const [addCategory, setAddCategory] = useState(false);

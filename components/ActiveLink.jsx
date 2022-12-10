@@ -6,6 +6,7 @@ function ActiveLink({
   href,
   activeClassName = "active",
   tag,
+  className = "",
   ...props
 }) {
   const router = useRouter();
@@ -13,9 +14,10 @@ function ActiveLink({
   return (
     <Link
       href={href}
-      className={`${router.asPath === href ? activeClassName : ""} ${
-        props.className || ""
-      }`}
+      className={`${
+        router.asPath === href ? activeClassName : ""
+      } ${className}`}
+      {...props}
     >
       {children}
     </Link>

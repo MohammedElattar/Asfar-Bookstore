@@ -9,6 +9,7 @@ export default function ImagePreview({
   alt,
   width,
   height,
+  style,
   ...other
 }) {
   const [src, setSrc] = useState(url);
@@ -21,7 +22,7 @@ export default function ImagePreview({
   }, [file, url]);
   return (
     <div {...other}>
-      <Image src={src || url} alt={alt} width={width} height={height} />
+      <img src={src || url} alt={alt} style={style} />
     </div>
   );
 }

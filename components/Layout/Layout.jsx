@@ -10,7 +10,7 @@ import Sidebar from "../Admin/Layout/Sidebar/Sidebar";
 import RequireAdmin from "../Admin/RequireAdmin/RequireAdmin";
 import { useAdminContext } from "../../context/AdminContext";
 import Loading from "../Loading";
-function Layout({ children, admin = false, sidebar = true, ...props }) {
+function Layout({ children, admin = false, sidebar = true, data, ...props }) {
   const [cartOpen, setCartOpen] = useState(false);
   const { loading } = useAdminContext();
   if (admin) {
@@ -36,7 +36,7 @@ function Layout({ children, admin = false, sidebar = true, ...props }) {
 
   return (
     <>
-      <Navbar />
+      <Navbar data={data} />
       {children}
       <div className={s.btns}>
         <button
