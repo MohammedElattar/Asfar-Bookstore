@@ -307,7 +307,6 @@ function EditUserMenu({ currentUser, setCurrentUser }) {
   const [nameProps, setNameError, setNameProps] = useInput("");
   const [emailProps, setEmailError, setEmailProps] = useInput("");
   const [passwordProps, setPasswordError, setPasswordProps] = useInput("");
-  const [isActive, setIsActive] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
   const [resultMsg, setResultMsg] = useState("");
   const [error, setError] = useState(null);
@@ -356,13 +355,15 @@ function EditUserMenu({ currentUser, setCurrentUser }) {
       formData.append("name", nameProps.value);
       formData.append("email", emailProps.value);
       formData.append("admin", isAdmin);
-      formData.append("active", isActive);
       if (passwordProps.value) {
         formData.append("password", passwordProps.value);
       }
-      console.log(`Object To Send =>`, Object.fromEntries(formData.entries()));
+      console.log(`Object To Send =>`, formData);
 
-      const res = await apiHttp.put(`/v1/users/${currentUser.id}`, formData);
+      const res = await apiHttp.put(
+        `/v1/users/${currentUser.id}`,
+        formData.entries()
+      );
       console.log(`Edit Book Response =>`, res);
 
       const editedUser = res.data.data;
@@ -410,8 +411,8 @@ function EditUserMenu({ currentUser, setCurrentUser }) {
       helperText: "",
       value: "",
     }));
-    setIsActive(currentUser.active);
     setIsAdmin(currentUser.admin);
+    setError(null);
     // eslint-disable-next-line
   }, [currentUser]);
 
@@ -423,8 +424,16 @@ function EditUserMenu({ currentUser, setCurrentUser }) {
     >
       <div className={s.menuBody}>
         <InputControl label="الاسم" props={nameProps} />
-        <InputControl label="البريد الالكتروني" props={emailProps} />
-        <InputControl label="كلمة السر" props={passwordProps} />
+        <InputControl
+          label="البريد الالكتروني"
+          props={emailProps}
+          className="mt-2"
+        />
+        <InputControl
+          label="كلمة السر"
+          props={passwordProps}
+          className="mt-2"
+        />
       </div>
       <div className={global.checkBox} style={{ marginTop: "20px" }}>
         <input
@@ -434,15 +443,6 @@ function EditUserMenu({ currentUser, setCurrentUser }) {
           onChange={(e) => setIsAdmin(e.target.checked)}
         />
         <label htmlFor="admin">ادمن</label>
-      </div>
-      <div className={global.checkBox}>
-        <input
-          type="checkbox"
-          id="active"
-          checked={isActive}
-          onChange={(e) => setIsActive(e.target.checked)}
-        />
-        <label htmlFor="active">نشط</label>
       </div>
 
       {!!error && (

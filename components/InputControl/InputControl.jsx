@@ -9,11 +9,14 @@ function InputControl({
   type = "text",
   onKeyUp = () => {},
   options,
+  className = "",
   ...otherProps
 }) {
   return (
     <div
-      className={`${s.inputControl} ${props.error ? s.error : ""}`}
+      className={[s.inputControl, props.error ? s.error : "", className]
+        .join(" ")
+        .trim()}
       {...otherProps}
     >
       {!!label && (
