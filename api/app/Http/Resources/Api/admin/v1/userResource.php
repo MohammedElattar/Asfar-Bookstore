@@ -19,9 +19,9 @@ class userResource extends JsonResource
             'id' => $this->id,
             'email' => $this->email,
             'name' => $this->name,
-            'admin' => $this->user_role ? true : false,
+            'admin' => $this->user_role == '1' ? true : false,
             'avatar' => $this->avatar,
-            'active' => $this->active ? true : false,
+            'active' => $this->active == '1' ? true : false,
         ];
     }
 }
