@@ -5,21 +5,19 @@ import { SiBookstack } from "react-icons/si";
 import { BiCategory } from "react-icons/bi";
 import { BsFillPenFill } from "react-icons/bs";
 import { useAdminContext } from "../../context/AdminContext";
-import { useEffect } from "react";
-import axios from "axios";
 
 export default function Dashboard() {
   const {
-    data: { info },
+    data: { books, categories, users },
   } = useAdminContext();
 
   return (
     <>
       <div className={s.wrapper}>
-        <Box icon={<FaUser />} title="المستخدمين" value={info?.users} />
-        <Box icon={<SiBookstack />} title="المنتجات" value={info?.products} />
-        <Box icon={<BiCategory />} title="الاقسام" value={info?.categories} />
-        <Box icon={<BsFillPenFill />} title="الكتاب" value={info?.writters} />
+        <Box icon={<FaUser />} title="المستخدمين" value={users} />
+        <Box icon={<SiBookstack />} title="المنتجات" value={books} />
+        <Box icon={<BiCategory />} title="الاقسام" value={categories} />
+        {/* <Box icon={<BsFillPenFill />} title="الكتاب" value={info?.writters} /> */}
       </div>
     </>
   );
