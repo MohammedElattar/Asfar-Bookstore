@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\Admin\V1;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Api\admin\v1\booksCollection;
+use App\Http\Resources\Api\admin\v1\usersCollection;
 use App\Http\Traits\HttpResponse;
 use App\Models\Api\Admin\V1\Book;
 use App\Models\Api\Admin\V1\Category;
@@ -26,7 +27,7 @@ class searchController extends Controller
     ];
 
     /**
-     * @return booksCollection|jsonResponse
+     * @return booksCollection|usersCollection|jsonResponse
      */
     public function index(Request $req, string $table = null, mixed $value = null, $cnt = 10)
     {
@@ -53,8 +54,11 @@ class searchController extends Controller
                 }
             }
             $rows = $t == 'books' ? $this->books($value, $cnt) : ($t == 'categories' ? $this->categories($value, $cnt) : ($t == 'users' ? $this->users($value, $cnt) : []));
-
-            return new booksCollection($rows);
+            if ($t == 'books') {
+                return new booksCollection($rows);
+            } elseif ($t == 'users') {
+                return new usersCollection($rows);
+            }
         } else {
             return $this->error('Not found', 404);
         }
