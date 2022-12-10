@@ -16,14 +16,21 @@ class SettingFactory extends Factory
      * @return array<string, mixed>
      */
     protected $model = Setting::class;
+    private array $contact = ['facebook', 'whatsapp', 'telegram', 'instagram'];
 
     public function definition()
     {
-        return [
+        $definitions = [
             'title' => fake()->name(),
             'logo' => null,
             'email' => fake()->safeEmail(),
             'phone_number' => fake()->phoneNumber(),
+            'support' => fake()->safeEmail(),
         ];
+        foreach ($this->contact as $i) {
+            $definitions[$i] = fake()->url();
+        }
+
+        return $definitions;
     }
 }

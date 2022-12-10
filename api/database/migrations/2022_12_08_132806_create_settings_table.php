@@ -10,12 +10,18 @@ return new class() extends Migration {
      *
      * @return void
      */
+    private array $contact = ['facebook', 'whatsapp', 'telegram', 'instagram'];
+
     public function up()
     {
         Schema::create('settings', function (Blueprint $table) {
             $table->id();
             $table->string('logo')->nullable();
             $table->string('email')->nullable();
+            foreach ($this->contact as $i) {
+                $table->string($i)->nullable();
+            }
+            $table->string('support');
             $table->string('phone_number')->nullable();
             $table->string('title')->default('asfar');
             $table->timestamps();

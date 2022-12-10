@@ -11,6 +11,7 @@ use App\Models\Api\Admin\V1\Setting;
 class settingsController extends Controller
 {
     use HttpResponse;
+    private array $contact = ['facebook', 'whatsapp', 'telegram', 'instagram'];
 
     /**
      * Display a listing of the resource.
@@ -32,6 +33,10 @@ class settingsController extends Controller
         $setting = Setting::find(1);
         $setting->title = $request->title;
         $setting->email = $request->email;
+        foreach ($this->contact as $i) {
+            $setting->{"$i"} = $request->{"$i"};
+        }
+        $setting->support = $request->support;
         $setting->phone_number = $request->phone;
         if ($request->has('logo')) {
             if ($setting->logo && file_exists("storage/setting/{$setting->logo}")) {
