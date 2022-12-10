@@ -5,9 +5,8 @@ import { FaSearch, FaBars } from "react-icons/fa";
 import styles from "./Navbar.module.scss";
 import { IoClose } from "react-icons/io5";
 import { useRouter } from "next/router";
-import { useSelector } from "react-redux";
 
-function Navbar() {
+function Navbar({ data }) {
   const [isOpen, setIsOpen] = useState(false);
   const open = () => {
     setIsOpen(true);
@@ -34,13 +33,7 @@ function Navbar() {
         )}
 
         <Link href="/" className={styles.logo}>
-          <Image
-            src="/images/asfar-logo.png"
-            width={130}
-            height={40}
-            alt="logo"
-            priority
-          />
+          <img src={data.logo} alt="logo" priority />
         </Link>
         <Link href="/products/1" className={styles.searchBook}>
           <FaSearch />
@@ -60,7 +53,6 @@ function MenuWithUser({ isOpen, user, close }) {
   const router = useRouter();
 
   const signout = () => {
-    signOut(auth);
     close();
     router.reload();
   };

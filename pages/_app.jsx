@@ -9,7 +9,11 @@ import AuthProvider from "../context/AuthContext";
 function MyApp({ Component, pageProps }) {
   return (
     <>
-      <Head>{pageProps.title ? <title>{pageProps.title}</title> : null}</Head>
+      {pageProps.title ? (
+        <Head>
+          <title>{pageProps.title}</title>
+        </Head>
+      ) : null}
 
       <AuthProvider>
         <AdminProvider>

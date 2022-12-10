@@ -10,6 +10,7 @@ function InputControl({
   onKeyUp = () => {},
   options,
   className = "",
+  inputStyle = {},
   ...otherProps
 }) {
   return (
@@ -36,11 +37,15 @@ function InputControl({
           onChange={props.onChange}
           value={props.value}
           placeholder={placeholder}
-          style={{ fontSize: "18px" }}
+          style={{ fontSize: "18px", ...inputStyle }}
           onKeyUp={onKeyUp}
         />
       ) : (
-        <select value={props.value} onChange={props.onChange}>
+        <select
+          value={props.value}
+          onChange={props.onChange}
+          style={inputStyle}
+        >
           {options?.map((option) => (
             <option key={option} value={option}>
               {option}

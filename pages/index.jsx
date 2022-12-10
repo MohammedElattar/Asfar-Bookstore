@@ -8,13 +8,13 @@ import ProductsGrid from "../components/ProductsGrid/ProductsGrid";
 import Button from "../components/Button/Button";
 import { getPage } from "../json/products";
 import { apiHttp } from "../utils/utils";
-import axios from "axios";
 
-export default function Home({ products }) {
+export default function Home({ products, data }) {
+  console.log(`Data =>`, data);
   return (
     <>
       <Head>
-        <title>أسفار - كل كتبك عندنا</title>
+        <title>{`${data.title} - كل كتبك عندنا`}</title>
       </Head>
       <Landing />
       <HelpingTools />
@@ -195,23 +195,18 @@ function MostSalled({ products }) {
   );
 }
 
-export async function getServerSideProps(ctx) {
+export async function getStaticProps() {
   const products = getPage(5);
-  // const cookies = ctx.req.cookies;
-  // const stringCookies = ctx.req.headers.cookie;
-  // try {
-  //   const res = await apiHttp.get("http://127.0.0.1:8000/api/admin/v1/books", {
-  //     headers: { origin: "localhost", Cookie: stringCookies },
-  //   });
-  //   // const data = await res.json();
-  //   console.log(`Response =>`, res);
-  // } catch (err) {
-  //   console.log(`Error Occured =>`, err);
-  // }
+
+  const res = await apiHttp.get(
+    `${process.env.PHP_SERVER_URL}/api/admin/v1/settings`
+  );
 
   return {
     props: {
       products,
+      data: res.data.data,
     },
+    revalidate: 120,
   };
 }
