@@ -14,7 +14,7 @@ export default function Home({ products, data }) {
   return (
     <>
       <Head>
-        <title>{`${data.title} - كل كتبك عندنا`}</title>
+        <title>{`${data?.title} - كل كتبك عندنا`}</title>
       </Head>
       <Landing />
       <HelpingTools />
@@ -198,14 +198,14 @@ function MostSalled({ products }) {
 export async function getStaticProps() {
   const products = getPage(5);
 
-  const res = await apiHttp.get(
-    `${process.env.PHP_SERVER_URL}/api/admin/v1/settings`
-  );
+  // const res = await apiHttp.get(
+  //   `${process.env.PHP_SERVER_URL}/api/admin/v1/settings`
+  // );
 
   return {
     props: {
       products,
-      data: res.data.data,
+      // data: res.data.data,
     },
     revalidate: 120,
   };
