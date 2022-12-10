@@ -9,6 +9,7 @@ use Illuminate\Foundation\Http\FormRequest;
 class books extends FormRequest
 {
     use HttpResponse;
+    protected $stopOnFirstFailure = true;
 
     /**
      * Determine if the user is authorized to make this request.
@@ -35,6 +36,7 @@ class books extends FormRequest
         return [
             'title' => 'bail|required|regex:'.$ar_en_reg."|not_regex:/^^\d+$/|max:$mx|unique:books,title".($id != null ? ",$id,id" : ''),
             'writter' => 'bail|required|regex:'.$ar_en_reg."|not_regex:/^\d+$/|max:$mx",
+            'category' => 'bail|required|regex:/\d+/',
             'publisher' => 'bail|required|regex:'.$ar_en_reg."|not_regex:/^\d+$/|max:$mx",
             'vendor' => 'bail|required|regex:'.$ar_en_reg."|not_regex:/^\d+$/|max:$mx",
             'quantity' => 'bail|required|numeric|min:1',
@@ -50,6 +52,9 @@ class books extends FormRequest
             'title.regex' => 'title-not-valid',
             'title.not_regex' => 'title-only_numbers',
             'title.unique' => 'title-exists',
+            'category.required' => 'cat-required',
+            'category.regex' => 'cat-invalid',
+            'category.min' => 'cat-invalid',
             'writter.required' => 'writter-required',
             'writter.regex' => 'writter-not-valid',
             'writter.not_regex' => '-only_numbers',

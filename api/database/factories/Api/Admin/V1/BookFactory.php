@@ -19,6 +19,7 @@ class BookFactory extends Factory
         return [
             "title" => "testTitle" ,
             "writter" => "testwritter" ,
+            "category_id" => fake()->numberBetween(1,100),
             "publisher" => "test publisher",
             "vendor" => "testvendor" ,
             "quantity" => fake()->numberBetween(1,300),

@@ -9,6 +9,8 @@ use Illuminate\Foundation\Http\FormRequest;
 class authAdmin extends FormRequest
 {
     use HttpResponse;
+    protected $stopOnFirstFailure = true;
+
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -27,22 +29,22 @@ class authAdmin extends FormRequest
     public function rules()
     {
         return [
-            "email"  => "bail|required|email" ,
-            "password" => "bail|required"
+            'email' => 'bail|required|email',
+            'password' => 'bail|required',
         ];
     }
+
     public function messages()
     {
         return [
-            "email.required" => "Email cannot be empty" ,
-            "email.email"    => "You must type a valid Email" ,
-            "password.required" => "Password cannot be empty"
+            'email.required' => 'Email cannot be empty',
+            'email.email' => 'You must type a valid Email',
+            'password.required' => 'Password cannot be empty',
         ];
     }
+
     protected function failedValidation(Validator $validator)
     {
-        throw new \Illuminate\Validation\ValidationException($validator , $this->error("validation errors" , 422 , [
-            "errors" => $validator->errors()
-        ]));
+        throw new \Illuminate\Validation\ValidationException($validator, $this->error('validation errors', 422, ['errors' => $validator->errors()]));
     }
 }

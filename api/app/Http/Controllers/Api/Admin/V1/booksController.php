@@ -4,10 +4,12 @@ namespace App\Http\Controllers\Api\Admin\V1;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\V1\Books\books as bookRequest;
+use App\Http\Resources\Api\admin\v1\booksCategoriesCollection;
 use App\Http\Resources\Api\admin\v1\booksCollection;
 use App\Http\Resources\Api\admin\v1\booksResource;
 use App\Http\Traits\HttpResponse;
 use App\Models\Api\Admin\V1\Book;
+use App\Models\Api\Admin\V1\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -42,20 +44,26 @@ class booksController extends Controller
      */
     public function store(bookRequest $request)
     {
-        $imageName = $this->storeImage($request);
-        $book = Book::create([
-            'title' => $request->title,
-            'writter' => $request->writter,
-            'publisher' => $request->publisher,
-            'vendor' => $request->vendor,
-            'quantity' => $request->quantity,
-            'price' => $request->price,
-            'img' => $imageName ? $imageName : null,
-        ]);
+        $cat = Category::where('id', $request->category)->where('status', '1')->first('id');
+        if (isset($cat->id)) {
+            $imageName = $this->storeImage($request);
+            $book = Book::create([
+                'title' => $request->title,
+                'writter' => $request->writter,
+                'category_id' => $request->category,
+                'publisher' => $request->publisher,
+                'vendor' => $request->vendor,
+                'quantity' => $request->quantity,
+                'price' => $request->price,
+                'img' => $imageName ? $imageName : null,
+            ]);
 
-        return $this->success([
-            new booksResource($book),
-        ], 'Book created successfully');
+            return $this->success([
+                new booksResource($book),
+            ], 'Book created successfully');
+        }
+
+        return $this->error('Category is not found', 422);
     }
 
     /**
@@ -76,24 +84,30 @@ class booksController extends Controller
     public function update(bookRequest $request, Book $book)
     {
         if ($request->isMethod('post')) {
-            $book->title = $request->title;
-            $book->writter = $request->writter;
-            $book->publisher = $request->publisher;
-            $book->vendor = $request->vendor;
-            $book->quantity = $request->quantity;
-            $book->price = $request->price;
-            if ($request->hasFile('img') && $request->file('img')) {
-                if ($book->img && file_exists('storage/books/'.$book->img)) {
-                    unlink('storage/books/'.$book->img);
+            $cat = Category::where('id', $request->category)->where('status', '1')->frist('id');
+            if (isset($cat->id)) {
+                $book->title = $request->title;
+                $book->writter = $request->writter;
+                $book->category_id = $request->category;
+                $book->publisher = $request->publisher;
+                $book->vendor = $request->vendor;
+                $book->quantity = $request->quantity;
+                $book->price = $request->price;
+                if ($request->hasFile('img') && $request->file('img')) {
+                    if ($book->img && file_exists('storage/books/'.$book->img)) {
+                        unlink('storage/books/'.$book->img);
+                    }
+                    $book->img = $this->storeImage($request);
                 }
-                $book->img = $this->storeImage($request);
-            }
-            $book->save();
+                $book->save();
 
-            return $this->success(new booksResource($book), 'Book updated successfully');
-        } else {
-            return $this->error('This route is not found', 404);
+                return $this->success(new booksResource($book), 'Book updated successfully');
+            } else {
+                return $this->error('This route is not found', 404);
+            }
         }
+
+        return $this->error('Categrory is not found', 422);
     }
 
     /**
@@ -127,5 +141,10 @@ class booksController extends Controller
         DB::delete('DELETE FROM books');
 
         return $this->success(msg: 'All books deleted successfully');
+    }
+
+    public function categories()
+    {
+        return new booksCategoriesCollection(Category::where('status', '1')->get());
     }
 }

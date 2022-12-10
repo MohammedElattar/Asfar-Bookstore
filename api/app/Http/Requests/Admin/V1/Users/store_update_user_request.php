@@ -10,6 +10,7 @@ use Illuminate\Validation\Rule as ValidationRule;
 class store_update_user_request extends FormRequest
 {
     use HttpResponse;
+    protected $stopOnFirstFailure = true;
 
     /**
      * Determine if the user is authorized to make this request.
