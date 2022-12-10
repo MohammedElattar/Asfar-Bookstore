@@ -73,6 +73,7 @@ class usersController extends Controller
         }
         $user->name = $request->name;
         $user->email = $request->email;
+        $user->user_role = $request->admin == 'true' ? '1' : '0';
         if ($request->has('password')) {
             $user->password = Hash::make($request->password);
         }
@@ -98,7 +99,7 @@ class usersController extends Controller
         $user->active = $active == 'true' ? '1' : '0';
         $user->update();
         if ($user->id != $id) {
-            return $this->success('User status Changed successfully');
+            return $this->success(msg: 'User status Changed successfully');
         } else {
             $this->logout_user();
 
