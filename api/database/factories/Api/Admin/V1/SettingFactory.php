@@ -25,7 +25,6 @@ class SettingFactory extends Factory
             'logo' => null,
             'email' => fake()->safeEmail(),
             'phone_number' => fake()->phoneNumber(),
-            'support' => fake()->safeEmail(),
         ];
         foreach ($this->contact as $i) {
             $definitions[$i] = fake()->url();

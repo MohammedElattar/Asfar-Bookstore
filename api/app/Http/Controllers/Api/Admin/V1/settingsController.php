@@ -36,7 +36,6 @@ class settingsController extends Controller
         foreach ($this->contact as $i) {
             $setting->{"$i"} = $request->{"$i"};
         }
-        $setting->support = $request->support;
         $setting->phone_number = $request->phone;
         if ($request->has('logo')) {
             if ($setting->logo && file_exists("storage/setting/{$setting->logo}")) {

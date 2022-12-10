@@ -21,7 +21,6 @@ return new class() extends Migration {
             foreach ($this->contact as $i) {
                 $table->string($i)->nullable();
             }
-            $table->string('support');
             $table->string('phone_number')->nullable();
             $table->string('title')->default('asfar');
             $table->timestamps();
