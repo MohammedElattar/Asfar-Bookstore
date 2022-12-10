@@ -362,7 +362,10 @@ function EditUserMenu({ currentUser, setCurrentUser }) {
       }
       console.log(`Object To Send =>`, Object.fromEntries(formData.entries()));
 
-      const res = await apiHttp.put(`/v1/users/${currentUser.id}`, formData);
+      const res = await apiHttp.put(
+        `/v1/users/${currentUser.id}`,
+        Object.fromEntries(formData.entries())
+      );
       console.log(`Edit Book Response =>`, res);
 
       const editedUser = res.data.data;
