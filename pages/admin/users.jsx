@@ -17,9 +17,6 @@ import { useRef } from "react";
 const isTrue = (e) => {
   return e === "true" || e === true;
 };
-const isFalse = (e) => {
-  return e === "false" || e === false;
-};
 
 const columns = [
   {
@@ -354,7 +351,7 @@ function EditUserMenu({ currentUser, setCurrentUser }) {
       const data = {
         name: nameProps.value,
         email: emailProps.value,
-        admin: isAdmin,
+        admin: String(isAdmin),
       };
       if (passwordProps.value) {
         data.password = passwordProps.value;
@@ -364,19 +361,19 @@ function EditUserMenu({ currentUser, setCurrentUser }) {
       const res = await apiHttp.put(`/v1/users/${currentUser.id}`, data);
       console.log(`Edit Book Response =>`, res);
 
-      // const editedUser = res.data.data;
+      const editedUser = res.data.data;
 
-      // if (res.data.type === "success" && editedUser) {
-      //   setData((prevData) => ({
-      //     ...prevData,
-      //     data: prevData.data.map((book) => {
-      //       if (book.id == editedUser.id) {
-      //         return editedUser;
-      //       }
-      //       return book;
-      //     }),
-      //   }));
-      // }
+      if (res.data.type === "success" && editedUser) {
+        setData((prevData) => ({
+          ...prevData,
+          data: prevData.data.map((user) => {
+            if (user.id === editedUser.id) {
+              return editedUser;
+            }
+            return user;
+          }),
+        }));
+      }
 
       setResultMsg("تم التعديل");
       setError(null);
@@ -414,11 +411,9 @@ function EditUserMenu({ currentUser, setCurrentUser }) {
     // eslint-disable-next-line
   }, [currentUser]);
 
-  console.log(`is admin =>`, currentUser);
-
   return (
     <Menu
-      title="تعديل منتج"
+      title="تعديل مستخدم"
       className={[currentUser ? "active" : "", s.menu].join(" ").trim()}
       onClose={() => setCurrentUser(false)}
     >
@@ -555,7 +550,6 @@ function useUsersPage() {
 
   const handleSearchKeyUp = (e) => {
     const text = e.currentTarget.value;
-    console.log(`Text => ${text}`);
 
     if (timer.current) {
       clearTimeout(timer.current);
@@ -589,17 +583,14 @@ function useUsersPage() {
   };
 
   const toggleUser = async (user) => {
-    let active;
     const updateUser = (id) => {
       setData((prevData) => ({
         ...prevData,
         data: prevData.data.map((user) => {
           if (user.id === id) {
             if (isTrue(user.active)) {
-              active = "false";
               user.active = "false";
             } else {
-              active = "true";
               user.active = "true";
             }
             return user;
@@ -612,7 +603,7 @@ function useUsersPage() {
     try {
       updateUser(user.id);
       const res = await apiHttp.patch(`/v1/users/${user.id}`, {
-        active,
+        active: isTrue(user.active) ? "false" : "true",
       });
       console.log(`Toggle Response =>`, res);
     } catch (err) {
