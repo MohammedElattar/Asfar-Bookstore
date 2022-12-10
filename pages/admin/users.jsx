@@ -351,34 +351,32 @@ function EditUserMenu({ currentUser, setCurrentUser }) {
     }
 
     try {
-      const formData = new FormData();
-      formData.append("name", nameProps.value);
-      formData.append("email", emailProps.value);
-      formData.append("admin", isAdmin);
+      const data = {
+        name: nameProps.value,
+        email: emailProps.value,
+        admin: isAdmin,
+      };
       if (passwordProps.value) {
-        formData.append("password", passwordProps.value);
+        data.password = passwordProps.value;
       }
-      console.log(`Object To Send =>`, formData);
+      console.log(`Object To Send =>`, data);
 
-      const res = await apiHttp.put(
-        `/v1/users/${currentUser.id}`,
-        formData.entries()
-      );
+      const res = await apiHttp.put(`/v1/users/${currentUser.id}`, data);
       console.log(`Edit Book Response =>`, res);
 
-      const editedUser = res.data.data;
+      // const editedUser = res.data.data;
 
-      if (res.data.type === "success" && editedUser) {
-        setData((prevData) => ({
-          ...prevData,
-          data: prevData.data.map((book) => {
-            if (book.id == editedUser.id) {
-              return editedUser;
-            }
-            return book;
-          }),
-        }));
-      }
+      // if (res.data.type === "success" && editedUser) {
+      //   setData((prevData) => ({
+      //     ...prevData,
+      //     data: prevData.data.map((book) => {
+      //       if (book.id == editedUser.id) {
+      //         return editedUser;
+      //       }
+      //       return book;
+      //     }),
+      //   }));
+      // }
 
       setResultMsg("تم التعديل");
       setError(null);
@@ -411,10 +409,12 @@ function EditUserMenu({ currentUser, setCurrentUser }) {
       helperText: "",
       value: "",
     }));
-    setIsAdmin(currentUser.admin);
+    setIsAdmin(isTrue(currentUser.admin));
     setError(null);
     // eslint-disable-next-line
   }, [currentUser]);
+
+  console.log(`is admin =>`, currentUser);
 
   return (
     <Menu
