@@ -6,6 +6,7 @@ namespace Database\Seeders;
 
 use Database\Seeders\Api\Admin\V1\bookSeeder;
 use Database\Seeders\Api\Admin\V1\categorySeeder;
+use Database\Seeders\Api\Admin\V1\settingsSeeder;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -24,6 +25,7 @@ class DatabaseSeeder extends Seeder
         //     'email' => 'test@example.com',
         // ]);
         $this->call([
+            settingsSeeder::class,
             userSeeder::class,
             categorySeeder::class,
             bookSeeder::class,

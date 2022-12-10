@@ -14,7 +14,10 @@ return new class() extends Migration {
     {
         Schema::create('settings', function (Blueprint $table) {
             $table->id();
-            $table->boolean('allow_email_verification')->default(false);
+            $table->string('logo')->nullable();
+            $table->string('email')->nullable();
+            $table->string('phone_number')->nullable();
+            $table->string('title')->default('asfar');
             $table->timestamps();
         });
     }

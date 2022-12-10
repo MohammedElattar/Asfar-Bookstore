@@ -41,6 +41,12 @@ Route::group(['middleware' => ['web']], function () {
             Route::apiResource('users', 'usersController');
             Route::patch('/users/{user}', 'usersController@changeStatus');
             Route::delete('/users/delete_all', 'usersController@delete_all');
+
+            /*
+               ************************************ Settings **********************************************
+            */
+            Route::get('/settings', 'settingsController@index');
+            Route::post('/settings', 'settingsController@update');
         });
 
         Route::post('/login', 'adminAuthController@login');
