@@ -49,7 +49,7 @@ class Handler extends ExceptionHandler
         // Handle User not authenticated
         $this->renderable(function (\Illuminate\Auth\AuthenticationException $e, $request) {
             if ($request->is('api/*')) {
-                $this->not_authorized();
+                return $this->not_authorized();
             }
         });
 

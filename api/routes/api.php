@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 /************************************************************ Admin ***************************************************/
-Route::group([ 'middleware' => ['web'] ], function () {
+Route::group([/* 'middleware' => ['web'] */], function () {
     Route::group(['prefix' => 'admin', 'namespace' => '\App\Http\Controllers\Api\Admin'], function () {
         // v1
         Route::group(['prefix' => 'v1', 'namespace' => 'V1'/* 'middleware' => ['auth:sanctum'] */], function () {
@@ -100,6 +100,10 @@ Route::group([ 'middleware' => ['web'] ], function () {
                     );
                 }
             );
+            // Books
+            Route::group(['namespace' => 'V1'], function () {
+                Route::get('/books', 'clientBooks@index');
+            });
         }
     );
 
