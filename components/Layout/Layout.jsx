@@ -63,7 +63,7 @@ function Layout({ children, admin = false, sidebar = true, data, ...props }) {
         onClick={() => setCartOpen(false)}
       ></div>
 
-      <Footer />
+      <Footer {...data} />
     </>
   );
 }

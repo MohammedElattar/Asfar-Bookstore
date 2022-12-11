@@ -10,7 +10,7 @@ import {
   FaWhatsapp,
 } from "react-icons/fa";
 
-function Footer() {
+function Footer({ facebook, whatsapp, instagram, telegram, email }) {
   return (
     <footer id="footer">
       <div className="container py-5">
@@ -27,41 +27,86 @@ function Footer() {
           <h5 className="fw-bold">خدمة العملاء</h5>
           <p className="text-dark">اضغط على الوسيلة للتحدث إلينا مباشرة</p>
           <div className="d-flex gap-4 justify-content-center flex-wrap">
-            <a href="#" className="d-flex align-items-center gap-2 fs-5">
+            <a
+              href={whatsapp}
+              target={"_blank"}
+              rel="noreferrer"
+              className="d-flex align-items-center gap-2 fs-5"
+            >
               <FaWhatsapp />
               WhatsApp
             </a>
-            <a href="#" className="d-flex align-items-center gap-2 fs-5">
+            <a
+              href={facebook}
+              target={"_blank"}
+              rel="noreferrer"
+              className="d-flex align-items-center gap-2 fs-5"
+            >
               <FaFacebookMessenger />
-              Facebook
+              Messenger
             </a>
-            <a href="#" className="d-flex align-items-center gap-2 fs-5">
+            <a
+              href={`mailto:${email}`}
+              target={"_blank"}
+              rel="noreferrer"
+              className="d-flex align-items-center gap-2 fs-5"
+            >
               <FaEnvelope />
-              fulfill@asfar.io
+              {email}
             </a>
           </div>
         </div>
         <div className="social">
-          <a href="#" style={{ backgroundColor: "#3b5998" }}>
+          <a
+            href={facebook}
+            target={"_blank"}
+            rel="noreferrer"
+            style={{ backgroundColor: "#3b5998" }}
+          >
             <FaFacebook />
           </a>
-          <a href="#" style={{ backgroundColor: "#f56040" }}>
+          <a
+            href={instagram}
+            target={"_blank"}
+            rel="noreferrer"
+            style={{ backgroundColor: "#f56040" }}
+          >
             <FaInstagram />
           </a>
-          <a href="#" style={{ backgroundColor: "#229ed9" }}>
+          <a
+            href={telegram}
+            target={"_blank"}
+            rel="noreferrer"
+            style={{ backgroundColor: "#229ed9" }}
+          >
             <FaTelegram />
           </a>
         </div>
         <div className="d-flex justify-content-center gap-3 flex-wrap">
-          <Link href="#" className="d-flex align-items-center gap-2">
+          <Link
+            href="#"
+            target={"_blank"}
+            rel="noreferrer"
+            className="d-flex align-items-center gap-2"
+          >
             <FaCircleNotch />
             شروط الخدمة
           </Link>
-          <Link href="#" className="d-flex align-items-center gap-2">
+          <Link
+            href="#"
+            target={"_blank"}
+            rel="noreferrer"
+            className="d-flex align-items-center gap-2"
+          >
             <FaCircleNotch />
             تتبع طلباتك
           </Link>
-          <Link href="#" className="d-flex align-items-center gap-2">
+          <Link
+            href="#"
+            target={"_blank"}
+            rel="noreferrer"
+            className="d-flex align-items-center gap-2"
+          >
             <FaCircleNotch />
             سياسة الاسترجاع والاستبدال
           </Link>
