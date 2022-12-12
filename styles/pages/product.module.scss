@@ -30,6 +30,7 @@
   .btns {
     display: flex;
     gap: 10px;
+    margin-bottom: 30px;
     .addToCart {
       color: #fff;
       font-weight: 500;
@@ -49,6 +50,14 @@
       width: 100px;
       font-size: 20px;
       text-align: center;
+    }
+  }
+  .info {
+    margin: 5px 0;
+    font-weight: 600;
+    span {
+      font-weight: normal;
+      margin-right: 10px;
     }
   }
 }

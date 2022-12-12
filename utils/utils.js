@@ -43,6 +43,10 @@ export const tableCustomStyles = {
   },
 };
 
+export const cls = (...classes) => {
+  return classes.join(" ").trim();
+};
+
 // [].forEach(async (product) => {
 // const formData = new FormData();
 // formData.append("title", product.title);

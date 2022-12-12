@@ -30,31 +30,6 @@
   }
 }
 
-.cart {
-  position: fixed;
-  top: 0;
-  bottom: 0;
-  right: 100vw;
-  width: 400px;
-  background-color: #fff;
-  z-index: 50;
-  padding: 20px;
-  transition: right 0.4s, opacity 0.2s;
-  opacity: 0;
-  &.cartActive {
-    opacity: 1;
-    right: calc(100vw - 417px);
-  }
-  header {
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    button {
-      background-color: transparent;
-      font-size: 35px;
-    }
-  }
-}
 .overlay {
   position: fixed;
   top: 0;

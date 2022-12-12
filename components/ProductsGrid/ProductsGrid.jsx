@@ -4,9 +4,9 @@ import s from "./ProductsGrid.module.scss";
 function ProductsGrid({ products }) {
   return (
     <div className="row">
-      {products?.map(({ title, publisher, img, vendors, index, titleEn }) => (
+      {products?.map(({ title, img, vendor, index, slug }) => (
         <Link
-          href={`/product/${titleEn}`}
+          href={`/product/${slug}`}
           className={`${s.product} col-12 col-md-6 col-lg-3 p-3`}
           key={index}
         >
@@ -22,14 +22,12 @@ function ProductsGrid({ products }) {
               />
             )}
           </div>
-          <div
-            className={`${s.info} d-flex flex-column justify-content-between`}
-          >
+          <div className={`${s.info} d-flex flex-column justify-content-between`}>
             <div>
               <h3 className={s.productTitle}>{title}</h3>
               <p className={s.productSeller}>
                 البائع:
-                <span>{publisher?.at(0) || vendors?.at(0)}</span>
+                <span>{vendor}</span>
               </p>
             </div>
             <button className={s.addToCart}>إضافة إلى السلة</button>

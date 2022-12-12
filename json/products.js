@@ -16,5 +16,5 @@ export const getPagesPaths = () => {
 };
 
 export const getProduct = (title) => {
-  return products.find((e) => e.titleEn === title);
+  return products.find((e) => e.slug === title);
 };

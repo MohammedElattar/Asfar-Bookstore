@@ -1,0 +1,82 @@
+@import "../../styles/variables.scss";
+.cart {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  right: 100vw;
+  width: 400px;
+  background-color: #fff;
+  z-index: 50;
+  padding: 20px;
+  transition: right 0.4s, opacity 0.2s;
+  opacity: 0;
+  &.cartActive {
+    opacity: 1;
+    right: calc(100vw - 400px);
+  }
+  header {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    button {
+      background-color: transparent;
+      font-size: 35px;
+    }
+  }
+  .body {
+    .product {
+      display: flex;
+      gap: 10px;
+      padding: 10px 0;
+      .text {
+        flex: 1;
+        .title {
+          color: $green;
+        }
+        .vendorWrapper {
+          margin: 10px 0;
+          .vendor {
+            color: $green;
+          }
+        }
+        .quantity {
+          color: #888;
+          font-size: 17px;
+        }
+        .delete {
+          background-color: transparent;
+          font-size: 22px;
+          color: #777;
+        }
+      }
+    }
+  }
+  .total {
+    font-size: 25px;
+    font-weight: 500;
+    padding: 15px 0;
+    text-align: center;
+    border: 2px solid #ccc {
+      left: none;
+      right: none;
+    }
+  }
+  .btns {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+    a {
+      flex-grow: 1;
+      padding: 10px 0;
+      font-size: 18px;
+      border-radius: 5px;
+      background-color: #f0f0f0;
+      text-decoration: none;
+      text-align: center;
+      color: #000;
+      &:hover {
+        background-color: #dbdbdb;
+      }
+    }
+  }
+}
