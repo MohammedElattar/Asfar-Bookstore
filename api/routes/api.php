@@ -100,9 +100,14 @@ Route::group([/* 'middleware' => ['web'] */], function () {
                     );
                 }
             );
-            // Books
             Route::group(['namespace' => 'V1'], function () {
+                // Books
                 Route::get('/books', 'clientBooks@index');
+                // Cart
+                // Route::apiResource('/cart', 'cartController');
+                Route::get('/cart', 'cartController@index');
+                Route::match(['post', 'put'], '/cart', 'cartController@validate_books_response');
+                Route::delete('/cart', 'cartController@destroy');
             });
         }
     );

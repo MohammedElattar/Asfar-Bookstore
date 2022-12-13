@@ -49,7 +49,7 @@ class Handler extends ExceptionHandler
         // Handle User not authenticated
         $this->renderable(function (\Illuminate\Auth\AuthenticationException $e, $request) {
             if ($request->is('api/*')) {
-                return $this->not_authorized();
+                return $this->redirect_login($request->is('api/admin/*') ? (env('APP_URL', 'http://localhost:8000').'/api/admin/login') : null);
             }
         });
 

@@ -51,4 +51,7 @@ trait HttpResponse
     public function not_authorized(){
         return $this->error('You are not authenticated', 401 , ['redirect' => true]);
     }
+    public function redirect_login($url = null){
+        return redirect()->away($url ? $url : env("FRONTEND_URL", "http://localhost:3000"));
+    }
 }
