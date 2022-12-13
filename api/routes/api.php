@@ -14,10 +14,10 @@ use Illuminate\Support\Facades\Route;
 */
 
 /************************************************************ Admin ***************************************************/
-Route::group([/* 'middleware' => ['web'] */], function () {
+Route::group(['middleware' => ['web']], function () {
     Route::group(['prefix' => 'admin', 'namespace' => '\App\Http\Controllers\Api\Admin'], function () {
         // v1
-        Route::group(['prefix' => 'v1', 'namespace' => 'V1'/* 'middleware' => ['auth:sanctum'] */], function () {
+        Route::group(['prefix' => 'v1', 'namespace' => 'V1', 'middleware' => ['auth:sanctum']], function () {
             /*
                 Add ->withoutMiddleware("auth:sanctum") to disable authentication
                 * Like That :
@@ -104,7 +104,6 @@ Route::group([/* 'middleware' => ['web'] */], function () {
                 // Books
                 Route::get('/books', 'clientBooks@index');
                 // Cart
-                // Route::apiResource('/cart', 'cartController');
                 Route::get('/cart', 'cartController@index');
                 Route::match(['post', 'put'], '/cart', 'cartController@validate_books_response');
                 Route::delete('/cart', 'cartController@destroy');

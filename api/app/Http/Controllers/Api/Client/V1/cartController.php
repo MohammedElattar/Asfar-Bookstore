@@ -109,7 +109,7 @@ class cartController extends Controller
     {
         $id = Auth::guard('web')->user();
 
-        return $id ? $id->id : 1;
+        return $id->id;
     }
 
     private function validate_books($data)
