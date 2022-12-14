@@ -4,7 +4,7 @@ import ImageZoom from "../../components/ImageZoom";
 import global from "../../styles/pages/admin/global.module.scss";
 import s from "../../styles/pages/admin/products.module.scss";
 import { useAdminContext } from "../../context/AdminContext";
-import { apiHttp, tableCustomStyles } from "../../utils/utils";
+import { apiHttp, cls, tableCustomStyles } from "../../utils/utils";
 import { useState } from "react";
 
 import Menu from "../../components/Admin/Menu";
@@ -69,21 +69,31 @@ const columns = [
     name: "الادوات",
     selector: (product) => {
       return (
-        <div className="d-flex gap-2 flex-wrap">
+        <div className="d-flex gap-1 flex-wrap">
           <AwesomeButton
             type="secondary"
-            size="small"
+            size="x-small"
+            style={{ height: "35px", width: "100%" }}
             onPress={() => product.setCurrentProduct(product)}
           >
             تعديل
           </AwesomeButton>
           <AwesomeButton
             type="secondary"
-            size="small"
+            size="x-small"
+            style={{ height: "35px", width: "100%" }}
             className={global.deleteButton}
             onPress={() => product.deleteProduct(product)}
           >
             حذف
+          </AwesomeButton>
+          <AwesomeButton
+            type="secondary"
+            size="x-small"
+            style={{ height: "35px", width: "100%" }}
+            onPress={() => product.setAdditionalInfo(product)}
+          >
+            معلومات اضافية
           </AwesomeButton>
         </div>
       );
@@ -93,20 +103,122 @@ const columns = [
 
 export default function Products() {
   const {
-    loading,
-    addProductIsActive,
-    currentProduct,
-    products,
-    setAddProductIsActive,
-    setCurrentProduct,
-    deleteProduct,
-    totalRows,
-    handlePerRowsChange,
-    fetchProducts,
-    searchProps,
-    handleSearchKeyUp,
-    deleteAll,
-  } = useProductsPage();
+    data: { data: products, meta },
+    setData,
+  } = useAdminContext();
+
+  const [loading, setLoading] = useState(false);
+  const [perPage, setPerPage] = useState(10);
+  const [addProductIsActive, setAddProductIsActive] = useState(false);
+  const [currentProduct, setCurrentProduct] = useState(null);
+  const [additionalInfo, setAdditionalInfo] = useState(null);
+  const [searchProps, setSearchError, setSearchProps] = useInput();
+  const [searchData, setSearchData] = useState(null);
+  const [searchTotal, setSearchTotal] = useState(0);
+  const router = useRouter();
+  const waitTime = 500;
+  const timer = useRef();
+  let total = meta?.total;
+
+  const handlePerRowsChange = async (newRows, page) => {
+    setLoading(true);
+
+    try {
+      const res = await apiHttp.get(`/v1/books?page=${page}&cnt=${newRows}`);
+      console.log(`Rows Per Page Change Response =>`, res);
+      setData(res.data);
+      setLoading(false);
+      setPerPage(newRows);
+    } catch (err) {
+      console.log(`Fetch Rows Error`, err);
+    }
+  };
+
+  const fetchProducts = async (page) => {
+    setLoading(true);
+    try {
+      const res = await apiHttp.get(`/v1/books?page=${page}&cnt=${perPage}`);
+      console.log(`Page Change Response =>`, res);
+      setData(res.data);
+      setLoading(false);
+      console.log(router);
+    } catch (err) {
+      console.log(`Page Change Error`, err);
+    }
+  };
+
+  const deleteProduct = async (product) => {
+    const confirmed = window.confirm(`سيتم مسح ${product.title} نهائيا`);
+    if (confirmed) {
+      try {
+        const res = await apiHttp.delete(`/v1/books/${product.id}`);
+        console.log(`Delete Response =>`, res);
+
+        if (res.data.type === "success") {
+          setData((prev) => {
+            const clone = { ...prev };
+            clone.data = clone.data.filter((e) => e.id !== product.id);
+            return clone;
+          });
+        }
+      } catch (err) {
+        console.log(`Delete Error =>`, err);
+      }
+    }
+  };
+
+  const search = async (text) => {
+    setLoading(true);
+    try {
+      const url = `http://localhost:8000/api/search/books/${
+        text || searchProps.value
+      }?cnt=${perPage}`;
+      console.log(`URL =>`, url);
+      const res = await apiHttp.get(url);
+      console.log(`Search Response =>`, res);
+      setSearchData(res.data.data);
+      setSearchTotal(res.data.meta.total);
+    } catch (err) {
+      console.log(`Search Error =>`, err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSearchKeyUp = (e) => {
+    const text = e.currentTarget.value;
+    console.log(`Text => ${text}`);
+
+    if (timer.current) {
+      clearTimeout(timer.current);
+    }
+
+    timer.current = setTimeout(() => {
+      if (text !== "") {
+        search(text);
+      } else {
+        setSearchError(false);
+        setSearchData(null);
+        setSearchTotal(null);
+      }
+    }, waitTime);
+  };
+
+  const deleteAll = async () => {
+    if (!window.confirm(`سيتم حذف المنتجات نهائيا`)) return;
+    setLoading(true);
+    try {
+      const res = await apiHttp.delete("/v1/books/delete_all");
+      console.log(`Delete All Response =>`, res);
+      if (res.data.type === "success") {
+        setData({ data: [] });
+      }
+    } catch (err) {
+      console.log(`Delete All Error =>`, err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <>
@@ -144,6 +256,7 @@ export default function Products() {
             ...product,
             setCurrentProduct,
             deleteProduct,
+            setAdditionalInfo,
           }))}
           pagination
           customStyles={tableCustomStyles}
@@ -154,7 +267,7 @@ export default function Products() {
             </div>
           }
           paginationServer
-          paginationTotalRows={totalRows}
+          paginationTotalRows={total || searchTotal}
           onChangeRowsPerPage={handlePerRowsChange}
           onChangePage={fetchProducts}
           noDataComponent={<h3>لا يوجد بيانات لعرضها</h3>}
@@ -164,15 +277,19 @@ export default function Products() {
       <div
         className={[
           "overlay",
-          addProductIsActive || currentProduct ? "active" : "",
+          addProductIsActive || currentProduct || additionalInfo
+            ? "active"
+            : "",
         ].join(" ")}
         onClick={() => {
           setAddProductIsActive(false);
           setCurrentProduct(null);
+          setAdditionalInfo(null);
         }}
       ></div>
       <AddProductMenu {...{ addProductIsActive, setAddProductIsActive }} />
       <EditProductMenu {...{ currentProduct, setCurrentProduct }} />
+      <AdditionalInfoMenu {...{ additionalInfo, setAdditionalInfo }} />
     </>
   );
 }
@@ -537,139 +654,24 @@ function EditProductMenu({ currentProduct, setCurrentProduct }) {
   );
 }
 
-function useProductsPage() {
-  const {
-    data: { data: products, meta },
-    setData,
-  } = useAdminContext();
-
-  const [loading, setLoading] = useState(false);
-  const [perPage, setPerPage] = useState(10);
-  const [addProductIsActive, setAddProductIsActive] = useState(false);
-  const [currentProduct, setCurrentProduct] = useState(null);
-  const [searchProps, setSearchError, setSearchProps] = useInput();
-  const [searchData, setSearchData] = useState(null);
-  const [searchTotal, setSearchTotal] = useState(0);
-  const router = useRouter();
-  const waitTime = 500;
-  const timer = useRef();
-  let total = meta?.total;
-
-  const handlePerRowsChange = async (newRows, page) => {
-    setLoading(true);
-
-    try {
-      const res = await apiHttp.get(`/v1/books?page=${page}&cnt=${newRows}`);
-      console.log(`Rows Per Page Change Response =>`, res);
-      setData(res.data);
-      setLoading(false);
-      setPerPage(newRows);
-    } catch (err) {
-      console.log(`Fetch Rows Error`, err);
-    }
-  };
-
-  const fetchProducts = async (page) => {
-    setLoading(true);
-    try {
-      const res = await apiHttp.get(`/v1/books?page=${page}&cnt=${perPage}`);
-      console.log(`Page Change Response =>`, res);
-      setData(res.data);
-      setLoading(false);
-      console.log(router);
-    } catch (err) {
-      console.log(`Page Change Error`, err);
-    }
-  };
-
-  const deleteProduct = async (product) => {
-    const confirmed = window.confirm(`سيتم مسح ${product.title} نهائيا`);
-    if (confirmed) {
-      try {
-        const res = await apiHttp.delete(`/v1/books/${product.id}`);
-        console.log(`Delete Response =>`, res);
-
-        if (res.data.type === "success") {
-          setData((prev) => {
-            const clone = { ...prev };
-            clone.data = clone.data.filter((e) => e.id !== product.id);
-            return clone;
-          });
-        }
-      } catch (err) {
-        console.log(`Delete Error =>`, err);
-      }
-    }
-  };
-
-  const search = async (text) => {
-    setLoading(true);
-    try {
-      const url = `http://localhost:8000/api/search/books/${
-        text || searchProps.value
-      }?cnt=${perPage}`;
-      console.log(`URL =>`, url);
-      const res = await apiHttp.get(url);
-      console.log(`Search Response =>`, res);
-      setSearchData(res.data.data);
-      setSearchTotal(res.data.meta.total);
-    } catch (err) {
-      console.log(`Search Error =>`, err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleSearchKeyUp = (e) => {
-    const text = e.currentTarget.value;
-    console.log(`Text => ${text}`);
-
-    if (timer.current) {
-      clearTimeout(timer.current);
-    }
-
-    timer.current = setTimeout(() => {
-      if (text !== "") {
-        search(text);
-      } else {
-        setSearchError(false);
-        setSearchData(null);
-        setSearchTotal(null);
-      }
-    }, waitTime);
-  };
-
-  const deleteAll = async () => {
-    if (!window.confirm(`سيتم حذف المنتجات نهائيا`)) return;
-    setLoading(true);
-    try {
-      const res = await apiHttp.delete("/v1/books/delete_all");
-      console.log(`Delete All Response =>`, res);
-      if (res.data.type === "success") {
-        setData({ data: [] });
-      }
-    } catch (err) {
-      console.log(`Delete All Error =>`, err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  return {
-    loading,
-    addProductIsActive,
-    currentProduct,
-    products: searchData || products,
-    setAddProductIsActive,
-    setCurrentProduct,
-    deleteProduct,
-    totalRows: searchTotal && searchData ? searchTotal : total,
-    handlePerRowsChange,
-    fetchProducts,
-    searchProps,
-    handleSearchKeyUp,
-    deleteAll,
-  };
+function AdditionalInfoMenu({ additionalInfo, setAdditionalInfo }) {
+  return (
+    <Menu
+      title="معلومات اضافية"
+      className={cls(additionalInfo ? "active" : "", s.menu)}
+      onClose={() => setCurrentProduct(false)}
+    >
+      {[
+        { key: "isbn", value: "132456789" },
+        { key: "pages", value: "520" },
+      ].map((info) => (
+        <p key={info.key} className="py-2 fs-5 d-flex justify-content-between">
+          <span>{info.key}</span>
+          <span>{info.value}</span>
+        </p>
+      ))}
+    </Menu>
+  );
 }
 
 export async function getStaticProps() {

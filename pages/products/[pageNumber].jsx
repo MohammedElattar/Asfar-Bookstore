@@ -10,6 +10,7 @@ import { getPublishers } from "../../json/publishers";
 import { getWritters } from "../../json/writters";
 import s from "../../styles/pages/products.module.scss";
 import useMediaQuery from "../../hooks/useMediaQuery";
+import { apiHttp } from "../../utils/utils";
 
 const Context = createContext();
 
@@ -17,8 +18,9 @@ export default function FindProduct({
   publishers,
   writters,
   categories,
-  products: pageProducts,
+  pageProducts,
 }) {
+  console.log(pageProducts);
   const [searchText, setSearchText] = useState("");
   const router = useRouter();
   const [products, setProducts] = useState(pageProducts);
@@ -218,68 +220,25 @@ export async function getStaticPaths() {
   };
 }
 
-export async function getStaticProps(context) {
-  const { pageNumber } = context.params;
-  const pageProducts = getPage(pageNumber);
+export async function getStaticProps({ params: { pageNumber } }) {
+  if (!pageNumber) {
+    return { notFound: true };
+  }
+  const res = await apiHttp.get(
+    `${process.env.PHP_SERVER_URL}/api/books?page=${pageNumber}`
+  );
+  if (!res.data.data?.length) {
+    return { notFound: true };
+  }
   const writters = getWritters();
   const publishers = getPublishers();
   const categories = getCategories();
   return {
     props: {
-      products: pageProducts,
+      pageProducts: res.data.data,
       writters,
       publishers,
       categories,
     },
   };
 }
-
-// export async function getServerSideProps(context) {
-//   const queryObject = url.parse(context.req.url, true).query;
-//   const page = queryObject.pageNumber;
-//   const searchString = queryObject.q;
-//   const writtersArray = queryObject.writters?.split(",").filter((e) => e) || [];
-//   const publishersArray =
-//     queryObject.publishers?.split(",").filter((e) => e) || [];
-
-//   try {
-//     const props = {};
-
-//     props.publishers = getPublishers();
-//     props.writters = getWritters();
-//     props.categories = getCategories();
-
-//     if (searchString || writtersArray.length || publishersArray.length) {
-//       const all = getAll();
-//       const filtered = all
-//         .filter((e) => (searchString ? e.title.includes(searchString) : true))
-//         .filter((e) =>
-//           writtersArray.length ? writtersArray.includes(e.writter?.at(0)) : true
-//         )
-//         .filter((e) =>
-//           publishersArray.length
-//             ? publishersArray.includes(e.publisher?.at(0)) ||
-//               publishersArray.includes(e.vendors?.at(0))
-//             : true
-//         );
-//       props.products = filtered.slice(0, 20);
-//     } else {
-//       const pageProducts = getPage(page);
-//       if (!pageProducts) {
-//         return {
-//           notFound: true,
-//         };
-//       }
-//       props.products = pageProducts;
-//     }
-
-//     return {
-//       props,
-//     };
-//   } catch (err) {
-//     console.error(err);
-//     return {
-//       notFound: true,
-//     };
-//   }
-// }

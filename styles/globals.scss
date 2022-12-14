@@ -48,6 +48,11 @@ html {
   color: $green;
   position: relative;
   margin-bottom: 30px;
+  &.no-line {
+    &::before {
+      display: none;
+    }
+  }
   &::before {
     content: "";
     position: absolute;

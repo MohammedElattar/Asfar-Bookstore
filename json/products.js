@@ -16,5 +16,8 @@ export const getPagesPaths = () => {
 };
 
 export const getProduct = (title) => {
+  if (title === "random") {
+    return products[Math.floor(Math.random() * products.length)];
+  }
   return products.find((e) => e.slug === title);
 };

@@ -1,4 +1,4 @@
-import Message from "../../Message/Message";
+import Message from "../../Message";
 import s from "./Downloads.module.scss";
 import { FaRegWindowMaximize } from "react-icons/fa";
 

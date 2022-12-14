@@ -6,7 +6,7 @@ import styles from "./Navbar.module.scss";
 import { IoClose } from "react-icons/io5";
 import { useRouter } from "next/router";
 
-function Navbar({ data }) {
+function Navbar({ logo }) {
   const [isOpen, setIsOpen] = useState(false);
   const open = () => {
     setIsOpen(true);
@@ -33,11 +33,7 @@ function Navbar({ data }) {
         )}
 
         <Link href="/" className={styles.logo}>
-          <img
-            src={data?.logo || "/images/asfar-logo.png"}
-            alt="logo"
-            priority
-          />
+          <img src={logo || "/images/asfar-logo.png"} alt="logo" />
         </Link>
         <Link href="/products/1" className={styles.searchBook}>
           <FaSearch />
@@ -62,10 +58,7 @@ function MenuWithUser({ isOpen, user, close }) {
   };
 
   return (
-    <ul
-      className={`${styles.menu} ${isOpen ? styles.active : ""}`}
-      onClick={close}
-    >
+    <ul className={`${styles.menu} ${isOpen ? styles.active : ""}`} onClick={close}>
       <li>
         <Link href="/">الصفحة الرئيسية</Link>
       </li>
@@ -97,10 +90,7 @@ function MenuWithUser({ isOpen, user, close }) {
 }
 function MenuWithoutUser({ isOpen, close }) {
   return (
-    <ul
-      className={`${styles.menu} ${isOpen ? styles.active : ""}`}
-      onClick={close}
-    >
+    <ul className={`${styles.menu} ${isOpen ? styles.active : ""}`} onClick={close}>
       <li>
         <Link href="/">الصفحة الرئيسية</Link>
       </li>

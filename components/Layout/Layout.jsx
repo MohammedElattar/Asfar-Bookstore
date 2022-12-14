@@ -4,20 +4,19 @@ import Navbar from "../Navbar/Navbar";
 import s from "./Layout.module.scss";
 import { BsCart3 } from "react-icons/bs";
 import { FaWhatsapp } from "react-icons/fa";
-import Container from "../Admin/Layout/Container/Container";
 import Sidebar from "../Admin/Layout/Sidebar/Sidebar";
 import RequireAdmin from "../Admin/RequireAdmin/RequireAdmin";
 import { useAdminContext } from "../../context/AdminContext";
 import Loading from "../Loading";
 import Cart from "../Cart/Cart";
-function Layout({ children, admin = false, sidebar = true, data, cartProducts, ...props }) {
+function Layout({ children, admin = false, sidebar = true, websiteInfo, cartProducts, ...props }) {
   const [cartOpen, setCartOpen] = useState(false);
   const { loading } = useAdminContext();
   if (admin) {
     if (sidebar) {
       return (
         <RequireAdmin {...props}>
-          <Container>
+          <div className={s.container}>
             <Sidebar />
             {loading ? (
               <div className={s.loadingContainer}>
@@ -26,7 +25,7 @@ function Layout({ children, admin = false, sidebar = true, data, cartProducts, .
             ) : (
               children
             )}
-          </Container>
+          </div>
         </RequireAdmin>
       );
     } else {
@@ -36,7 +35,7 @@ function Layout({ children, admin = false, sidebar = true, data, cartProducts, .
 
   return (
     <>
-      <Navbar data={data} />
+      <Navbar {...websiteInfo} />
       {children}
       <div className={s.btns}>
         <button className={s.cartButton} type="button" onClick={() => setCartOpen(true)}>
@@ -52,7 +51,7 @@ function Layout({ children, admin = false, sidebar = true, data, cartProducts, .
         onClick={() => setCartOpen(false)}
       ></div>
 
-      <Footer {...data} />
+      <Footer {...websiteInfo} />
     </>
   );
 }

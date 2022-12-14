@@ -47,24 +47,13 @@ export const cls = (...classes) => {
   return classes.join(" ").trim();
 };
 
-// [].forEach(async (product) => {
-// const formData = new FormData();
-// formData.append("title", product.title);
-// formData.append(
-//   "writter",
-//   product.author !== "user"
-//     ? product.author
-//     : product.writter
-//     ? product.writter
-//     : "غير معرف"
-// );
-// formData.append("publisher", product.publisher || "غير معرف");
-// formData.append("vendor", product.vendor?.at(0) || "غير معرف");
-// formData.append("quantity", 300);
-// formData.append("price", Math.floor(Math.random() * 300 + 100));
-// if (product.img) {
-//   const file = await urlToFile(product.img);
-//   formData.append("img", file);
-// }
-// apiHttp.post(`/v1/books`, formData);
-// });
+export const getWebsiteInfo = async () => {
+  try {
+    const res = await apiHttp.get(
+      `${process.env.PHP_SERVER_URL}/api/admin/v1/settings`
+    );
+    return res.data.data;
+  } catch (err) {
+    return {};
+  }
+};

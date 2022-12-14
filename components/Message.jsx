@@ -1,7 +1,9 @@
-$color: #1e85be;
-.message {
+import Link from "next/link";
+import styled from "styled-components";
+
+const MessageWrapper = styled.div`
   background-color: #eee;
-  border-top: 3px solid $color;
+  border-top: 3px solid ${(props) => props.color};
   padding: 15px 20px;
   display: flex;
   align-items: center;
@@ -24,4 +26,18 @@ $color: #1e85be;
       background-color: transparent;
     }
   }
+`;
+
+function Message({ icon, text, button, color = "#1e85be" }) {
+  return (
+    <MessageWrapper color={color}>
+      <div className="wrapper">
+        {icon}
+        {text}
+      </div>
+      {button ? <Link href={button.href}>{button.text}</Link> : null}
+    </MessageWrapper>
+  );
 }
+
+export default Message;

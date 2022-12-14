@@ -7,14 +7,13 @@ import CounterBox from "../components/CounterBox/CounterBox";
 import ProductsGrid from "../components/ProductsGrid/ProductsGrid";
 import Button from "../components/Button/Button";
 import { getPage, getProduct } from "../json/products";
-import { apiHttp } from "../utils/utils";
+import { apiHttp, getWebsiteInfo } from "../utils/utils";
 
-export default function Home({ products, data }) {
-  console.log(`Data =>`, data);
+export default function Home({ products, websiteInfo }) {
   return (
     <>
       <Head>
-        <title>{`${data?.title} - كل كتبك عندنا`}</title>
+        <title>{`${websiteInfo?.title} - كل كتبك عندنا`}</title>
       </Head>
       <Landing />
       <HelpingTools />
@@ -184,7 +183,7 @@ function MostSalled({ products }) {
 export async function getStaticProps() {
   const products = getPage(5);
 
-  const res = await apiHttp.get(`${process.env.PHP_SERVER_URL}/api/admin/v1/settings`);
+  const websiteInfo = await getWebsiteInfo();
 
   const cartItem = getProduct("searching-for-ferdinan-de-saussure-book");
   cartItem.quantity = 3;
@@ -192,7 +191,7 @@ export async function getStaticProps() {
   return {
     props: {
       products,
-      data: res.data.data,
+      websiteInfo,
       cartProducts: [cartItem, cartItem],
     },
     revalidate: 120,

@@ -6,7 +6,7 @@ import Layout from "../components/Layout/Layout";
 import Head from "next/head";
 import AdminProvider from "../context/AdminContext";
 import AuthProvider from "../context/AuthContext";
-function MyApp({ Component, pageProps }) {
+export default function MyApp({ Component, pageProps }) {
   return (
     <>
       {pageProps.title ? (
@@ -25,5 +25,3 @@ function MyApp({ Component, pageProps }) {
     </>
   );
 }
-
-export default MyApp;

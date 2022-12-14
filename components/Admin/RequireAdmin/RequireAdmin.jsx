@@ -30,7 +30,8 @@ function RequireAdmin({ children, ...props }) {
   useEffect(() => {
     if (!props.url) return;
     fetchData();
-  }, [JSON.stringify(props)]);
+    // eslint-disable-next-line
+  }, [props.url]);
 
   return loading ? (
     <div className={s.loadingContainer}>

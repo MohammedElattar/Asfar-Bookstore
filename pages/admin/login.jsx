@@ -54,12 +54,9 @@ function Login() {
         password: passwordProps.value,
       });
 
-      const csrf = await axios.get(
-        "http://localhost:8000/sanctum/csrf-cookie",
-        {
-          withCredentials: true,
-        }
-      );
+      await axios.get("http://localhost:8000/sanctum/csrf-cookie", {
+        withCredentials: true,
+      });
       const res = await apiHttp.post("/login", data);
       console.log(`Login Response =>`, res);
       router.push("/admin/dashboard");
