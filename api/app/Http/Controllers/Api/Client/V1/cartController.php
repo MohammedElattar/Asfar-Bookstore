@@ -206,8 +206,3 @@ class cartController extends Controller
         return $this->error('validation errors', 422, $response);
     }
 }
-/*
-
-book 1 is good
-
-*/

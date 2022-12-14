@@ -13,7 +13,7 @@ return new class() extends Migration {
     public function up()
     {
         Schema::create('books', function (Blueprint $table) {
-            $str_len = 150;
+            $str_len = 250;
             $table->id();
             $table->string('title', $str_len);
             $table->unsignedBigInteger('category_id');
