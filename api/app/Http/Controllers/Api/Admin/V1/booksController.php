@@ -41,6 +41,7 @@ class booksController extends Controller
                     ->join('categories', 'categories.id', '=', 'books.category_id')
                     ->select('books.*', 'categories.status as status')
                     ->where('status', '1')
+                    ->orderByDesc('books.created_at')
                     ->paginate($cnt);
 
         return new booksCollection($books);

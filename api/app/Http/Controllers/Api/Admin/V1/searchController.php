@@ -17,7 +17,7 @@ class searchController extends Controller
     use HttpResponse;
     private array $allowed_tables = ['books' => 'books', 'categories' => 'categories', 'users' => 'users'];
     private array $allowed_columns = [
-        'books' => ['title', 'writter', 'publisher', 'vendor', 'quantity', 'price'],
+        'books' => ['title', 'writter', 'publisher', 'vendor', 'quantity', 'price', 'category_id'],
         'categories' => ['name'],
         'users' => [
             'id',
