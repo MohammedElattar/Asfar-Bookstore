@@ -7,9 +7,10 @@ import CounterBox from "../components/CounterBox/CounterBox";
 import ProductsGrid from "../components/ProductsGrid/ProductsGrid";
 import Button from "../components/Button/Button";
 import { getPage, getProduct } from "../json/products";
-import { apiHttp, getWebsiteInfo } from "../utils/utils";
+import { getWebsiteInfo } from "../utils/utils";
 
 export default function Home({ products, websiteInfo }) {
+  console.log(websiteInfo);
   return (
     <>
       <Head>
@@ -34,9 +35,18 @@ function Landing() {
         backgroundImage: "linear-gradient(135deg, #f7be29, #055250)",
       }}
     >
-      <div className={"container d-flex flex-column flex-md-row gap-5 align-items-center h-100"}>
+      <div
+        className={
+          "container d-flex flex-column flex-md-row gap-5 align-items-center h-100"
+        }
+      >
         <div>
-          <Image src="/images/landing.png" width={321.5} height={500} alt="Nahdet Masr" />
+          <Image
+            src="/images/landing.png"
+            width={321.5}
+            height={500}
+            alt="Nahdet Masr"
+          />
         </div>
         <div className={"text-white text"}>
           <div className="d-flex align-items-end gap-5">
@@ -44,7 +54,8 @@ function Landing() {
           </div>
           <h1 className="fw-bold fs-1">نهضة مصر للصحافة</h1>
           <p className="my-4 fs-5">
-            اطلب جميع إصدارات نهضة مصر للصحافة، من أي مكان في العالم تصلك أينما كنت في زمن قياسي.
+            اطلب جميع إصدارات نهضة مصر للصحافة، من أي مكان في العالم تصلك أينما
+            كنت في زمن قياسي.
           </p>
           <Link href="#" className={`landingButton font`}>
             تصفح الإصدارات
@@ -102,7 +113,10 @@ function HelpingTools() {
 
 function Partners() {
   return (
-    <div className="partners py-5" style={{ backgroundColor: "rgba(0, 0, 0, 0.05)" }}>
+    <div
+      className="partners py-5"
+      style={{ backgroundColor: "rgba(0, 0, 0, 0.05)" }}
+    >
       <h1 className="title">شركاؤنا الناشرون</h1>
       <div className="container">
         <div className="row m-0 justify-content-center gap-2">
@@ -128,8 +142,8 @@ function UsedBooksStore() {
       <div className="container text-center text-white">
         <h3>نوادر الكتب والمجلات القديمة</h3>
         <p className="mt-5 fs-4">
-          نتجول في الأسواق ونستقبل الكتب من المكتبات الشخصية ونجمع لك نوادر الإصدارات وقديم الكتب
-          بأسعار مخفضة.
+          نتجول في الأسواق ونستقبل الكتب من المكتبات الشخصية ونجمع لك نوادر
+          الإصدارات وقديم الكتب بأسعار مخفضة.
         </p>
 
         <Button color="#f7be29" href={"#"} centered>
@@ -147,9 +161,10 @@ function Program() {
       <div className="container text-center">
         <h3 className="my-5">اربح من التسويق بالعمولة</h3>
         <p className="fs-4 mx-auto mt-4" style={{ maxWidth: "550px" }}>
-          هل لديك جروب أو صفحة على فيسبوك تتخصص في الكتب والمحتوى الثقافي، أو لديك إمكانية الوصول
-          لجمهور القراء من خلال متابعيك على حسابك الشخصي في فيسبوك أو موقعك الإلكتروني؟ .. هذا
-          البرنامج قد يكون طريقك لتحسين الدخل.
+          هل لديك جروب أو صفحة على فيسبوك تتخصص في الكتب والمحتوى الثقافي، أو
+          لديك إمكانية الوصول لجمهور القراء من خلال متابعيك على حسابك الشخصي في
+          فيسبوك أو موقعك الإلكتروني؟ .. هذا البرنامج قد يكون طريقك لتحسين
+          الدخل.
         </p>
         <Button href="ambassadors-program-asfar/" centered className="mt-5">
           اطلع على تفاصيل البرنامج
@@ -183,7 +198,7 @@ function MostSalled({ products }) {
 export async function getStaticProps() {
   const products = getPage(5);
 
-  const websiteInfo = await getWebsiteInfo();
+  const websiteInfo = (await getWebsiteInfo()) || null;
 
   const cartItem = getProduct("searching-for-ferdinan-de-saussure-book");
   cartItem.quantity = 3;

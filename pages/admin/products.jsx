@@ -87,14 +87,14 @@ const columns = [
           >
             حذف
           </AwesomeButton>
-          <AwesomeButton
+          {/* <AwesomeButton
             type="secondary"
             size="x-small"
             style={{ height: "35px", width: "100%" }}
             onPress={() => product.setAdditionalInfo(product)}
           >
             معلومات اضافية
-          </AwesomeButton>
+          </AwesomeButton> */}
         </div>
       );
     },
@@ -119,7 +119,7 @@ export default function Products() {
   const waitTime = 500;
   const timer = useRef();
   let total = meta?.total;
-
+  const { data: categories } = useFetchCategories();
   const handlePerRowsChange = async (newRows, page) => {
     setLoading(true);
 
@@ -220,6 +220,8 @@ export default function Products() {
     }
   };
 
+  const data = searchData || products;
+
   return (
     <>
       <div className={global.wrapper}>
@@ -252,7 +254,7 @@ export default function Products() {
 
         <DataTable
           columns={columns}
-          data={products?.map((product) => ({
+          data={data?.map((product) => ({
             ...product,
             setCurrentProduct,
             deleteProduct,
@@ -287,24 +289,30 @@ export default function Products() {
           setAdditionalInfo(null);
         }}
       ></div>
-      <AddProductMenu {...{ addProductIsActive, setAddProductIsActive }} />
-      <EditProductMenu {...{ currentProduct, setCurrentProduct }} />
+      <AddProductMenu
+        {...{ addProductIsActive, setAddProductIsActive, categories }}
+      />
+      <EditProductMenu {...{ currentProduct, setCurrentProduct, categories }} />
       <AdditionalInfoMenu {...{ additionalInfo, setAdditionalInfo }} />
     </>
   );
 }
 
-function AddProductMenu({ addProductIsActive, setAddProductIsActive }) {
+function AddProductMenu({
+  addProductIsActive,
+  setAddProductIsActive,
+  categories,
+}) {
   const [nameProps, setNameError, setNameProps] = useInput("");
   const [writterProps, setWritterError, setWritterProps] = useInput("");
   const [publisherProps, setPublisherError, setPublisherProps] = useInput("");
   const [vendorProps, setVendorError, setVendorProps] = useInput("");
   const [priceProps, setPriceError, setPriceProps] = useInput("");
   const [quantityProps, setQuantityError, setQuantityProps] = useInput("");
+  const [categoryProps, setCategoryError, setCategoryProps] = useInput();
   const [image, setImage] = useState(null);
   const [resultMsg, setResultMsg] = useState("");
   const [error, setError] = useState(null);
-  const { setData } = useAdminContext();
 
   const handlePress = async (evt, next) => {
     const check1 = nameProps.value.trim().length <= 4;
@@ -349,22 +357,18 @@ function AddProductMenu({ addProductIsActive, setAddProductIsActive }) {
       formData.append("vendor", vendorProps.value);
       formData.append("price", priceProps.value);
       formData.append("quantity", quantityProps.value);
+      formData.append("category", categoryProps.value);
       if (image) {
         formData.append("img", image);
       }
 
+      console.log(
+        `Form Data To Send =>`,
+        Object.fromEntries(formData.entries())
+      );
+
       const res = await apiHttp.post("/v1/books", formData);
       console.log(`Create Book Response =>`, res);
-
-      const [newBook] = res.data.data;
-
-      if (res.data.type === "success" && newBook) {
-        setData((prevData) => {
-          const clone = { ...prevData };
-          prevData.data.push(newBook);
-          return clone;
-        });
-      }
 
       setResultMsg("تم الاضافة");
       setError(null);
@@ -389,6 +393,11 @@ function AddProductMenu({ addProductIsActive, setAddProductIsActive }) {
       e((prev) => ({ ...prev, error: false, helperText: "", value: "" }))
     );
     setImage(null);
+    setCategoryProps((e) => ({
+      ...e,
+      value: categories?.at(0)?.id,
+      error: false,
+    }));
     // eslint-disable-next-line
   }, [addProductIsActive]);
 
@@ -405,6 +414,14 @@ function AddProductMenu({ addProductIsActive, setAddProductIsActive }) {
         <InputControl label="اسم البائع" props={vendorProps} />
         <InputControl label="السعر" props={priceProps} />
         <InputControl label="الكمية" props={quantityProps} />
+        <InputControl
+          label="القسم"
+          props={categoryProps}
+          style={{ gridColumn: "span 2" }}
+          select
+          options={categories}
+          defaultValue={categories?.data?.at(0)}
+        />
       </div>
       <div className={s.fileWrapper}>
         <label htmlFor="image">اختيار صورة</label>
@@ -453,13 +470,14 @@ function AddProductMenu({ addProductIsActive, setAddProductIsActive }) {
   );
 }
 
-function EditProductMenu({ currentProduct, setCurrentProduct }) {
+function EditProductMenu({ currentProduct, setCurrentProduct, categories }) {
   const [nameProps, setNameError, setNameProps] = useInput("");
   const [writterProps, setWritterError, setWritterProps] = useInput("");
   const [publisherProps, setPublisherError, setPublisherProps] = useInput("");
   const [vendorProps, setVendorError, setVendorProps] = useInput("");
   const [priceProps, setPriceError, setPriceProps] = useInput("");
   const [quantityProps, setQuantityError, setQuantityProps] = useInput("");
+  const [categoryProps, setCategoryError, setCategoryProps] = useInput("");
   const [image, setImage] = useState(null);
   const [resultMsg, setResultMsg] = useState("");
   const [error, setError] = useState(null);
@@ -584,6 +602,13 @@ function EditProductMenu({ currentProduct, setCurrentProduct }) {
       helperText: "",
       value: String(currentProduct.quantity) || "",
     }));
+    setCategoryProps((prev) => ({
+      ...prev,
+      error: false,
+      helperText: "",
+      value: currentProduct.category_id || "",
+    }));
+
     setImage(null);
 
     // eslint-disable-next-line
@@ -602,6 +627,13 @@ function EditProductMenu({ currentProduct, setCurrentProduct }) {
         <InputControl label="اسم البائع" props={vendorProps} />
         <InputControl label="السعر" props={priceProps} />
         <InputControl label="الكمية" props={quantityProps} />
+        <InputControl
+          label="القسم"
+          props={categoryProps}
+          select
+          options={categories}
+          style={{ gridColumn: "span 2" }}
+        />
       </div>
       <div className={s.fileWrapper}>
         <label htmlFor="editImage">اختيار صورة</label>
@@ -672,6 +704,27 @@ function AdditionalInfoMenu({ additionalInfo, setAdditionalInfo }) {
       ))}
     </Menu>
   );
+}
+
+function useFetchCategories() {
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(null);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const res = await apiHttp.get(`/v1/books/categories`);
+        console.log(`Fetch Categories Response =>`, res);
+        setData(res.data.data);
+      } catch (err) {
+        console.log(`Fetch Categories Error =>`, err);
+      } finally {
+        setLoading(false);
+      }
+    })();
+  }, []);
+
+  return { loading, data };
 }
 
 export async function getStaticProps() {

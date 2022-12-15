@@ -54,6 +54,7 @@ export const getWebsiteInfo = async () => {
     );
     return res.data.data;
   } catch (err) {
+    console.log(err);
     return {};
   }
 };

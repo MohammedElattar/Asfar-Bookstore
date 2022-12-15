@@ -11,6 +11,7 @@ function InputControl({
   options,
   className = "",
   inputStyle = {},
+  defaultValue = "",
   ...otherProps
 }) {
   return (
@@ -47,8 +48,8 @@ function InputControl({
           style={inputStyle}
         >
           {options?.map((option) => (
-            <option key={option} value={option}>
-              {option}
+            <option key={option.id} value={option.id}>
+              {option.name}
             </option>
           ))}
         </select>
