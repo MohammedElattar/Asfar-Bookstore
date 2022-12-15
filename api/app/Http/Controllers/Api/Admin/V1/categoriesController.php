@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\Admin\V1;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\V1\Categories\categoryRequest;
+use App\Http\Resources\Api\admin\v1\booksCategoriesCollection;
 use App\Http\Resources\Api\admin\v1\categoriesCollection;
 use App\Http\Resources\Api\admin\v1\categoriesResource;
 use App\Http\Traits\HttpResponse;
@@ -92,5 +93,14 @@ class categoriesController extends Controller
         DB::delete('DELETE FROM categories');
 
         return $this->success(msg: 'All categories deleted successfully');
+    }
+
+    public static function get_category_status($cat_id)
+    {
+        return Category::where('id', $cat_id)->where('status', '1')->first('id');
+    }
+    public function get_all_enabled_categories()
+    {
+        return new booksCategoriesCollection(Category::where('status', '1')->get());
     }
 }

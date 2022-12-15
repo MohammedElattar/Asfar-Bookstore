@@ -21,7 +21,7 @@ Route::group(['middleware' => ['web']], function () {
             /*
                 Add ->withoutMiddleware("auth:sanctum") to disable authentication
                 * Like That :
-                    *Route::apiResource("/categories", categoriesController::class)->withoutMiddleware("auth:sanctum");
+                    * Route::apiResource("/categories", categoriesController::class)->withoutMiddleware("auth:sanctum");
              */
 
             /*
@@ -32,7 +32,7 @@ Route::group(['middleware' => ['web']], function () {
             /*
                 ************************************ Books **********************************************
              */
-            Route::get('/books/categories', 'booksController@categories');
+            Route::get('/books/categories', 'booksController@get_all_enabled_categories');
             Route::delete('/books/delete_all', 'booksController@delete_all');
             Route::apiResource('/books', booksController::class);
             Route::post('/books/{book}', 'booksController@update')->where('book', '[0-9]+');
@@ -100,9 +100,10 @@ Route::group(['middleware' => ['web']], function () {
                     );
                 }
             );
-            Route::group(['namespace' => 'V1'], function () {
+            Route::group(['namespace' => 'V1', 'middleware' => 'auth:sanctum'], function () {
                 // Books
-                Route::get('/books', 'clientBooks@index');
+                Route::get('/books', 'clientBooks@index')->withoutMiddleware('auth:sanctum');
+                Route::get('/books/{book}', 'clientBooks@show')->withoutMiddleware('auth:sanctum');
                 // Cart
                 Route::get('/cart', 'cartController@index');
                 Route::match(['post', 'put'], '/cart', 'cartController@validate_books_response');

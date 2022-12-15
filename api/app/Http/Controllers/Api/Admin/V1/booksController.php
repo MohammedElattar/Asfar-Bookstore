@@ -8,6 +8,7 @@ use App\Http\Resources\Api\admin\v1\booksCategoriesCollection;
 use App\Http\Resources\Api\admin\v1\booksCollection;
 use App\Http\Resources\Api\admin\v1\booksResource;
 use App\Http\Traits\HttpResponse;
+use App\Http\Traits\storeImage;
 use App\Models\Api\Admin\V1\Book;
 use App\Models\Api\Admin\V1\Category;
 use Illuminate\Http\Request;
@@ -16,14 +17,18 @@ use Illuminate\Support\Facades\DB;
 class booksController extends Controller
 {
     use HttpResponse;
+    use storeImage;
 
     /**
      * Display all books.
+     *
+     * @param Request ($req)
      *
      * @return booksCollection
      */
     public function index(Request $req)
     {
+        // count if books in one pagination page
         $cnt = 10;
         if ($req->has('cnt')) {
             $t = $req->input('cnt');
@@ -31,22 +36,28 @@ class booksController extends Controller
                 $cnt = $t;
             }
         }
+        // Fetch all books with enabled category
+        $books = DB::table('books')
+                    ->join('categories', 'categories.id', '=', 'books.category_id')
+                    ->select('books.*', 'categories.status as status')
+                    ->where('status', '1')
+                    ->paginate($cnt);
 
-        return new booksCollection(Book::paginate($cnt));
+        return new booksCollection($books);
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Store a new book.
      *
-     * @param \Illuminate\Http\Request $request
+     * @param bookRequest ($request)
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return \Symfony\Component\HttpFoundation\JsonResponse|booksResource
      */
     public function store(bookRequest $request)
     {
-        $cat = Category::where('id', $request->category)->where('status', '1')->first('id');
+        $cat = categoriesController::get_category_status($request->category);
         if (isset($cat->id)) {
-            $imageName = $this->storeImage($request);
+            $imageName = $this->storeImage($request, 'public/books');
             $book = Book::create([
                 'title' => $request->title,
                 'writter' => $request->writter,
@@ -67,24 +78,28 @@ class booksController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Fetch one book.
      *
-     * @return booksResource
+     * @return \Symfony\Component\HttpFoundation\JsonResponse|booksResource
      */
     public function show(Book $book)
     {
-        return new booksResource($book);
+        if (categoriesController::get_category_status($book->category_id)) {
+            return new booksResource($book);
+        }
+
+        return $this->not_found();
     }
 
     /**
-     * Update the specified resource in storage.
+     * Update book.
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
      */
     public function update(bookRequest $request, Book $book)
     {
         if ($request->isMethod('post')) {
-            $cat = Category::where('id', $request->category)->where('status', '1')->first('id');
+            $cat = categoriesController::get_category_status($book->category_id);
             if (isset($cat->id)) {
                 $book->title = $request->title;
                 $book->writter = $request->writter;
@@ -97,14 +112,14 @@ class booksController extends Controller
                     if ($book->img && file_exists('storage/books/'.$book->img)) {
                         unlink('storage/books/'.$book->img);
                     }
-                    $book->img = $this->storeImage($request);
+                    $book->img = $this->storeImage($request, 'public/books');
                 }
                 $book->update();
 
                 return $this->success(new booksResource($book), 'Book updated successfully');
             }
         } else {
-            return $this->error('This route is not found', 404);
+            return $this->not_found();
         }
 
         return $this->error('Categrory is not found', 422);
@@ -123,17 +138,6 @@ class booksController extends Controller
         $book->delete();
 
         return $this->success(msg: 'Book deleted successfully');
-    }
-
-    private function storeImage($request, string $path = 'public/books')
-    {
-        if ($request->hasFile('img')) {
-            $imageName = explode('/', $request->file('img')->store($path))[2];
-
-            return $imageName;
-        }
-
-        return false;
     }
 
     public function delete_all()

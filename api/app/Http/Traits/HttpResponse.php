@@ -43,15 +43,19 @@ trait HttpResponse
         if (!$includeData) {
             array_unshift($payload, $data);
         }
+
         return response()->json($payload, $code)
                 ->header('Accept', 'application/vnd.api+json')
                 ->header('Content-Type', 'application/vnd.api+json');
     }
 
-    public function not_authorized(){
-        return $this->error('You are not authenticated', 401 , ['redirect' => true]);
+    public function redirect_login(bool $isClient = false)
+    {
+        return redirect()->away(env('FRONTEND_URL', 'http://localhost:3000').($isClient ? '/login' : '/admin/login'));
     }
-    public function redirect_login($url = null){
-        return redirect()->away($url ? $url : env("FRONTEND_URL", "http://localhost:3000"));
+
+    public function not_found()
+    {
+        return $this->error('This page is not found', 404);
     }
 }

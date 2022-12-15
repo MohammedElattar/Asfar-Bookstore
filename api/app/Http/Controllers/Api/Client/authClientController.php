@@ -7,10 +7,10 @@ use App\Http\Requests\Client\Auth\loginClient;
 use App\Http\Requests\Client\Auth\registerClient;
 use App\Http\Resources\Api\admin\v1\userResource;
 use App\Http\Traits\HttpResponse;
+use App\Http\Traits\thirdPartyAuthentication;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Laravel\Socialite\Facades\Socialite;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 /**
@@ -19,7 +19,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 class authClientController extends Controller
 {
     use HttpResponse;
-    private array $allowed_providers = ['github', 'google', 'facebook'];
+    use thirdPartyAuthentication;
 
     /**
      * Return all third party links.
@@ -28,10 +28,7 @@ class authClientController extends Controller
      */
     public function index()
     {
-        $payload = [];
-        foreach ($this->allowed_providers as $i) {
-            $payload[$i] = route($i.'_redirect');
-        }
+        $payload = $this->getAllThirdPartyLinks();
 
         return $this->success($payload, 'Redirect URI fetched successfully');
     }
@@ -44,7 +41,7 @@ class authClientController extends Controller
     public function register(registerClient $req)
     {
         $user = new User();
-        $user = User::create([
+        $user = $this->create_user([
             'name' => $req->name,
             'email' => $req->email,
             'active' => 1,
@@ -55,7 +52,9 @@ class authClientController extends Controller
     }
 
     /**
-     * Login User Using normal credentials.
+     * Authenticate client.
+     *
+     * @param loginClient ($req)
      *
      * @return JsonResponse
      */
@@ -77,47 +76,6 @@ class authClientController extends Controller
     }
 
     /**
-     * Main Login Provider Redirect method.
-     *
-     * @return mixed
-     */
-    private function loginProviderRedirect(string $provider)
-    {
-        return Socialite::driver($provider)->redirect();
-    }
-
-    /**
-     * Main login Provider Callback method.
-     *
-     * @return mixed
-     */
-    private function loginProviderCallback(string $provider)
-    {
-        try {
-            $user = Socialite::driver($provider)->user();
-            // check if the email is exists
-            $user_exists = User::where('email', $user->email)->first();
-            if ($user_exists) {
-                auth()->loginUsingId($user_exists->id, true);
-
-                // return $this->success(new userResource($user_exists), 'User logged in successfully');
-                return redirect(env('FRONTEND_URL'), headers: ['Set-Cookie' => 'data='.base64_encode(json_encode(new userResource($user))).';sameSite:lax']);
-            } else {
-                $user = User::create([
-                    'email' => $user->getEmail(),
-                    'name' => $user->getName(),
-                    $provider.'_id' => $user->getId(),
-                    'avatar' => $user->getAvatar(),
-                ]);
-
-                return $this->success(new userResource($user), 'User logged in successfully');
-            }
-        } catch (\Exception $e) {
-            return $this->error('Failed to login to '.ucfirst($provider), 419, ['msg' => $e->getMessage() ? $e->getMessage() : 'Invalid Credentials']);
-        }
-    }
-
-    /**
      *  Github Redirect Method.
      *
      * @return mixed
@@ -130,7 +88,7 @@ class authClientController extends Controller
     /**
      *  Github Callback function.
      *
-     * @return JsonResponse
+     * @return mixed
      */
     public function loginGithubCallback()
     {
@@ -150,7 +108,7 @@ class authClientController extends Controller
     /**
      *  Google Callback.
      *
-     * @return JsonResponse
+     * @return mixed
      */
     public function loginGoogleCallback()
     {
@@ -170,7 +128,7 @@ class authClientController extends Controller
     /**
      * Facebook Callback Function.
      *
-     * @return JsonResponse
+     * @return mixed
      */
     public function loginFacebookCallback()
     {

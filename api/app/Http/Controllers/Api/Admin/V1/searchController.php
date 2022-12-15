@@ -59,9 +59,9 @@ class searchController extends Controller
             } elseif ($t == 'users') {
                 return new usersCollection($rows);
             }
-        } else {
-            return $this->error('Not found', 404);
         }
+
+        return $this->not_found();
     }
 
     /**

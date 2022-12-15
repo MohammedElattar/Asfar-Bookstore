@@ -5,20 +5,20 @@ namespace App\Http\Controllers\Api\Client\V1;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Api\clients\v1\cart\cartCollection;
 use App\Http\Traits\HttpResponse;
-use App\Models\Api\Admin\V1\Book;
+use App\Http\Traits\userTrait;
 use App\Models\Api\Client\V1\Cart;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class cartController extends Controller
 {
     use HttpResponse;
+    use userTrait;
 
     /**
-     * Display a listing of the resource.
+     * Fetch all cart items of authenticated user.
      *
-     * @return mixed
+     * @return cartCollection
      */
     public function index()
     {
@@ -33,9 +33,11 @@ class cartController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Store a new cart item of authenticated user.
      *
-     * @return \Illuminate\Http\JsonResponse
+     *  @param array ($data)
+     *
+     *  @return \Illuminate\Http\JsonResponse
      */
     private function store(array $data)
     {
@@ -49,9 +51,11 @@ class cartController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * Update existing cart item of authenticated user.
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @param array ($data)
+     *
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
      */
     private function update(array $data)
     {
@@ -78,16 +82,17 @@ class cartController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Delete one or more cart items of authenticated user.
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @param Request ($req)
+     *
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
      */
     public function destroy(Request $req)
     {
         $req = $req->all();
         $cnt = 0;
         $book_ids = [];
-
         foreach ($req as $book_id) {
             if (is_numeric($book_id)) {
                 $cartItem = Cart::where('user_id', $this->user_id())->where('book_id', $book_id)->first('id');
@@ -105,13 +110,6 @@ class cartController extends Controller
         return $this->success(["books'ids" => $book_ids], msg: "$cnt ".' book'.($cnt > 1 ? 's' : '').' deleted successfully');
     }
 
-    private function user_id()
-    {
-        $id = Auth::guard('web')->user();
-
-        return $id->id;
-    }
-
     private function validate_books($data)
     {
         // check if the comming data are bulk or one cart_item
@@ -121,6 +119,7 @@ class cartController extends Controller
         foreach ($keys as $key) {
             $ar = $data[$key];
             if (is_numeric($key)) {
+                // prevent existing key's errors
                 if (isset($errors[$key])) {
                     continue;
                 }
@@ -169,7 +168,6 @@ class cartController extends Controller
                     ->get();
 
                 // validate fetched data
-                // return $book_info;
                 if (isset($book_info[0])) {
                     $book_info = $book_info[0];
                     if ($book_info->qty >= $response['data'][$key]['qty']) {

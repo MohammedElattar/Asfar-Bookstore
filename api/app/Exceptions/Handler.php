@@ -49,7 +49,7 @@ class Handler extends ExceptionHandler
         // Handle User not authenticated
         $this->renderable(function (\Illuminate\Auth\AuthenticationException $e, $request) {
             if ($request->is('api/*')) {
-                return $this->redirect_login($request->is('api/admin/*') ? (env('APP_URL', 'http://localhost:8000').'/api/admin/login') : null);
+                return $this->redirect_login($request->is('api/admin/*') ? false : true);
             }
         });
 
@@ -64,7 +64,7 @@ class Handler extends ExceptionHandler
 
         $this->renderable(function (\Symfony\Component\HttpKernel\Exception\NotFoundHttpException $e, $request) {
             if ($request->is('api/*')) {
-                return $this->error('This page is not found', 404);
+                return $this->not_found();
             }
         });
 
