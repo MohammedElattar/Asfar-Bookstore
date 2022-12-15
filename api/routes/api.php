@@ -32,7 +32,7 @@ Route::group(['middleware' => ['web']], function () {
             /*
                 ************************************ Books **********************************************
              */
-            Route::get('/books/categories', 'booksController@get_all_enabled_categories');
+            Route::get('/books/categories', 'categoriesController@get_all_enabled_categories');
             Route::delete('/books/delete_all', 'booksController@delete_all');
             Route::apiResource('/books', booksController::class);
             Route::post('/books/{book}', 'booksController@update')->where('book', '[0-9]+');
