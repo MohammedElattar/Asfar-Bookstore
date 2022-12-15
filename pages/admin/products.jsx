@@ -221,6 +221,7 @@ export default function Products() {
   };
 
   const data = searchData || products;
+  console.log(`Data =>`, data);
 
   return (
     <>
