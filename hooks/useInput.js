@@ -16,6 +16,10 @@ function useInput(defaultValue = "") {
     },
   });
 
+  useEffect(() => {
+    setProps((e) => ({ ...e, setProps }));
+  }, []);
+
   const setError = (error, helperText) => {
     if (!error) {
       setProps((prevProps) => ({ ...prevProps, error: false, helperText: "" }));

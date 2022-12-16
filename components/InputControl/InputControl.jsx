@@ -1,6 +1,8 @@
+import Select from "react-select";
+import { cls } from "../../utils/utils";
 import s from "./InputControl.module.scss";
 
-function InputControl({
+export default function InputControl({
   props,
   label,
   required = false,
@@ -31,32 +33,77 @@ function InputControl({
           )}
         </label>
       )}
-      {!select ? (
-        <input
-          type={type}
-          id="nameInput"
-          onChange={props.onChange}
-          value={props.value}
-          placeholder={placeholder}
-          style={{ fontSize: "18px", ...inputStyle }}
-          onKeyUp={onKeyUp}
-        />
-      ) : (
-        <select
-          value={props.value}
-          onChange={props.onChange}
-          style={inputStyle}
-        >
-          {options?.map((option) => (
-            <option key={option.id} value={option.id}>
-              {option.name}
-            </option>
-          ))}
-        </select>
-      )}
+      <input
+        type={type}
+        id="nameInput"
+        onChange={props.onChange}
+        value={props.value}
+        placeholder={placeholder}
+        style={{ fontSize: "18px", ...inputStyle }}
+        onKeyUp={onKeyUp}
+      />
       {props.error ? <p className={s.helperText}>{props.helperText}</p> : null}
     </div>
   );
 }
 
-export default InputControl;
+export function SelectInput({
+  options,
+  label,
+  props,
+  placeholder,
+  required,
+  className,
+  defaultValue,
+  ...other
+}) {
+  const customStyles = {
+    control: (styles) => {
+      if (props.error) {
+        styles.borderColor = "red";
+      }
+      return { ...styles, zIndex: "50" };
+    },
+    input: (styles) => ({ ...styles, height: "35px" }),
+  };
+
+  return (
+    <div
+      className={cls(
+        s.inputControl,
+        s.select,
+        props.error ? s.error : "",
+        className
+      )}
+      {...other}
+    >
+      {!!label && (
+        <label htmlFor="nameInput">
+          {label}
+          {required ? (
+            <span style={{ color: "red", marginRight: "5px" }}>*</span>
+          ) : (
+            ""
+          )}
+        </label>
+      )}
+      <Select
+        options={options}
+        isRtl
+        placeholder={placeholder}
+        className={s.select}
+        onChange={(option) =>
+          props.setProps((prev) => ({
+            ...prev,
+            error: false,
+            helperText: "",
+            value: option,
+          }))
+        }
+        styles={customStyles}
+        value={props.value}
+      />
+      {props.error ? <p className={s.helperText}>{props.helperText}</p> : null}
+    </div>
+  );
+}

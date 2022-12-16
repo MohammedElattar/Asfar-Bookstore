@@ -8,13 +8,16 @@ import { apiHttp, cls, tableCustomStyles } from "../../utils/utils";
 import { useState } from "react";
 
 import Menu from "../../components/Admin/Menu";
-import InputControl from "../../components/InputControl/InputControl";
+import InputControl, {
+  SelectInput,
+} from "../../components/InputControl/InputControl";
 import useInput from "../../hooks/useInput";
 import { useEffect } from "react";
 import ImagePreview from "../../components/Admin/ImagePreview";
 import Loading from "../../components/Loading";
 import { useRouter } from "next/router";
 import { useRef } from "react";
+import Select from "react-select";
 const defaultImg =
   "https://assets.asfar.io/uploads/2022/01/19092920/woocommerce-placeholder-300x300.png";
 const columns = [
@@ -52,6 +55,11 @@ const columns = [
   {
     name: "البائع",
     selector: (product) => product.vendor,
+    wrap: true,
+  },
+  {
+    name: "القسم",
+    selector: (product) => product.category,
     wrap: true,
   },
   {
@@ -100,6 +108,10 @@ const columns = [
     },
   },
 ];
+
+const makeCategories = (categories) => {
+  return categories?.map((e) => ({ label: e.name, value: e.id }));
+};
 
 export default function Products() {
   const {
@@ -220,8 +232,13 @@ export default function Products() {
     }
   };
 
-  const data = searchData || products;
-  console.log(`Data =>`, data);
+  const tableData = (searchData || products)?.map((product) => ({
+    ...product,
+    setCurrentProduct,
+    deleteProduct,
+    setAdditionalInfo,
+    category: categories?.find((e) => e.id == product.category_id)?.name,
+  }));
 
   return (
     <>
@@ -255,12 +272,7 @@ export default function Products() {
 
         <DataTable
           columns={columns}
-          data={data?.map((product) => ({
-            ...product,
-            setCurrentProduct,
-            deleteProduct,
-            setAdditionalInfo,
-          }))}
+          data={tableData}
           pagination
           customStyles={tableCustomStyles}
           progressPending={loading}
@@ -314,6 +326,7 @@ function AddProductMenu({
   const [image, setImage] = useState(null);
   const [resultMsg, setResultMsg] = useState("");
   const [error, setError] = useState(null);
+  const { setData } = useAdminContext();
 
   const handlePress = async (evt, next) => {
     const check1 = nameProps.value.trim().length <= 4;
@@ -322,6 +335,7 @@ function AddProductMenu({
     const check4 = vendorProps.value.trim().length <= 4;
     const check5 = /^[\d.]{1,}$/.test(priceProps.value.trim());
     const check6 = /^\d{1,}$/.test(quantityProps.value.trim());
+    const check7 = !!categoryProps.value;
     if (check1) {
       setNameError(true, "الاسم قصير جدا!");
     }
@@ -344,7 +358,10 @@ function AddProductMenu({
     } else if (!check6) {
       setQuantityError(true, "ارقام فقط");
     }
-    if (check1 || check2 || check3 || check4 || !check5 || !check6) {
+    if (!check7) {
+      setCategoryError(true, "يرجي اختيار قسم");
+    }
+    if (check1 || check2 || check3 || check4 || !check5 || !check6 || !check7) {
       setResultMsg("خطأ!");
       next();
       return;
@@ -358,7 +375,7 @@ function AddProductMenu({
       formData.append("vendor", vendorProps.value);
       formData.append("price", priceProps.value);
       formData.append("quantity", quantityProps.value);
-      formData.append("category", categoryProps.value);
+      formData.append("category", categoryProps.value?.value);
       if (image) {
         formData.append("img", image);
       }
@@ -371,6 +388,10 @@ function AddProductMenu({
       const res = await apiHttp.post("/v1/books", formData);
       console.log(`Create Book Response =>`, res);
 
+      const [newBook] = res.data.data;
+      if (res.data.type === "success" && newBook) {
+        setData((prev) => ({ ...prev, data: [newBook, ...prev.data] }));
+      }
       setResultMsg("تم الاضافة");
       setError(null);
       next();
@@ -390,15 +411,11 @@ function AddProductMenu({
       setVendorProps,
       setPriceProps,
       setQuantityProps,
+      setCategoryProps,
     ].forEach((e) =>
       e((prev) => ({ ...prev, error: false, helperText: "", value: "" }))
     );
     setImage(null);
-    setCategoryProps((e) => ({
-      ...e,
-      value: categories?.at(0)?.id,
-      error: false,
-    }));
     // eslint-disable-next-line
   }, [addProductIsActive]);
 
@@ -415,13 +432,11 @@ function AddProductMenu({
         <InputControl label="اسم البائع" props={vendorProps} />
         <InputControl label="السعر" props={priceProps} />
         <InputControl label="الكمية" props={quantityProps} />
-        <InputControl
-          label="القسم"
+        <SelectInput
           props={categoryProps}
-          style={{ gridColumn: "span 2" }}
-          select
-          options={categories}
-          defaultValue={categories?.data?.at(0)}
+          label="اختيار القسم"
+          placeholder={""}
+          options={makeCategories(categories)}
         />
       </div>
       <div className={s.fileWrapper}>
@@ -483,6 +498,19 @@ function EditProductMenu({ currentProduct, setCurrentProduct, categories }) {
   const [resultMsg, setResultMsg] = useState("");
   const [error, setError] = useState(null);
   const { setData } = useAdminContext();
+  useSetDataOnMenuToggle({
+    setNameProps,
+    setWritterProps,
+    setPublisherProps,
+    setVendorProps,
+    setPriceProps,
+    setQuantityProps,
+    setCategoryProps,
+    setImage,
+    setError,
+    currentProduct,
+    categories,
+  });
 
   const handlePress = async (evt, next) => {
     if (!currentProduct) return;
@@ -492,6 +520,7 @@ function EditProductMenu({ currentProduct, setCurrentProduct, categories }) {
     const check4 = vendorProps.value.trim().length <= 4;
     const check5 = /^[\d.]{1,}$/.test(priceProps.value.trim());
     const check6 = /^\d{1,}$/.test(quantityProps.value.trim());
+    const check7 = !!categoryProps.value;
     if (check1) {
       setNameError(true, "الاسم قصير جدا!");
     }
@@ -514,7 +543,10 @@ function EditProductMenu({ currentProduct, setCurrentProduct, categories }) {
     } else if (!check6) {
       setQuantityError(true, "ارقام فقط");
     }
-    if (check1 || check2 || check3 || check4 || !check5 || !check6) {
+    if (!check7) {
+      setCategoryError(true, "يرجي اختيار قسم");
+    }
+    if (check1 || check2 || check3 || check4 || !check5 || !check6 || !check7) {
       setResultMsg("خطأ!");
       next();
       return;
@@ -528,6 +560,7 @@ function EditProductMenu({ currentProduct, setCurrentProduct, categories }) {
       formData.append("vendor", vendorProps.value);
       formData.append("price", priceProps.value);
       formData.append("quantity", quantityProps.value);
+      formData.append("category", categoryProps.value?.value);
       if (image) {
         formData.append("img", image);
       }
@@ -565,56 +598,6 @@ function EditProductMenu({ currentProduct, setCurrentProduct, categories }) {
     }
   };
 
-  useEffect(() => {
-    if (!currentProduct) return;
-    setNameProps((prev) => ({
-      ...prev,
-      error: false,
-      helperText: "",
-      value: currentProduct.title || "",
-    }));
-    setWritterProps((prev) => ({
-      ...prev,
-      error: false,
-      helperText: "",
-      value: currentProduct.writter || "",
-    }));
-    setPublisherProps((prev) => ({
-      ...prev,
-      error: false,
-      helperText: "",
-      value: currentProduct.publisher || "",
-    }));
-    setVendorProps((prev) => ({
-      ...prev,
-      error: false,
-      helperText: "",
-      value: currentProduct.vendor || "",
-    }));
-    setPriceProps((prev) => ({
-      ...prev,
-      error: false,
-      helperText: "",
-      value: String(currentProduct.price) || "",
-    }));
-    setQuantityProps((prev) => ({
-      ...prev,
-      error: false,
-      helperText: "",
-      value: String(currentProduct.quantity) || "",
-    }));
-    setCategoryProps((prev) => ({
-      ...prev,
-      error: false,
-      helperText: "",
-      value: currentProduct.category_id || "",
-    }));
-
-    setImage(null);
-
-    // eslint-disable-next-line
-  }, [currentProduct]);
-
   return (
     <Menu
       title="تعديل منتج"
@@ -628,12 +611,11 @@ function EditProductMenu({ currentProduct, setCurrentProduct, categories }) {
         <InputControl label="اسم البائع" props={vendorProps} />
         <InputControl label="السعر" props={priceProps} />
         <InputControl label="الكمية" props={quantityProps} />
-        <InputControl
-          label="القسم"
+        <SelectInput
           props={categoryProps}
-          select
-          options={categories}
-          style={{ gridColumn: "span 2" }}
+          label="اختيار القسم"
+          placeholder={""}
+          options={makeCategories(categories)}
         />
       </div>
       <div className={s.fileWrapper}>
@@ -726,6 +708,73 @@ function useFetchCategories() {
   }, []);
 
   return { loading, data };
+}
+
+function useSetDataOnMenuToggle({
+  setNameProps,
+  setWritterProps,
+  setPublisherProps,
+  setVendorProps,
+  setPriceProps,
+  setQuantityProps,
+  setCategoryProps,
+  setImage,
+  setError,
+  currentProduct,
+  categories,
+}) {
+  useEffect(() => {
+    if (!currentProduct) return;
+    setNameProps((prev) => ({
+      ...prev,
+      error: false,
+      helperText: "",
+      value: currentProduct.title || "",
+    }));
+    setWritterProps((prev) => ({
+      ...prev,
+      error: false,
+      helperText: "",
+      value: currentProduct.writter || "",
+    }));
+    setPublisherProps((prev) => ({
+      ...prev,
+      error: false,
+      helperText: "",
+      value: currentProduct.publisher || "",
+    }));
+    setVendorProps((prev) => ({
+      ...prev,
+      error: false,
+      helperText: "",
+      value: currentProduct.vendor || "",
+    }));
+    setPriceProps((prev) => ({
+      ...prev,
+      error: false,
+      helperText: "",
+      value: String(currentProduct.price) || "",
+    }));
+    setQuantityProps((prev) => ({
+      ...prev,
+      error: false,
+      helperText: "",
+      value: String(currentProduct.quantity) || "",
+    }));
+    setCategoryProps((prev) => ({
+      ...prev,
+      error: false,
+      helperText: "",
+      value:
+        makeCategories(categories)?.find(
+          (e) => e.value == currentProduct.category_id
+        ) || "",
+    }));
+
+    setImage(null);
+    setError(null);
+    // eslint-disable-next-line
+  }, [currentProduct]);
 }
 
 export async function getStaticProps() {

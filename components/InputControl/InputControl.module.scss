@@ -4,9 +4,15 @@
       color: red;
     }
     input {
-      border-color: red;
+      border-color: red !important;
     }
   }
+  // &.select.error {
+  //   & > div > div:first-of-type {
+  //     border-color: red !important;
+  //     // display: none;
+  //   }
+  // }
   label {
     display: block;
     margin-bottom: 5px;
@@ -23,4 +29,9 @@
   .helperText {
     color: red;
   }
+}
+
+.select {
+  grid-column: span 2;
+  z-index: 50;
 }
