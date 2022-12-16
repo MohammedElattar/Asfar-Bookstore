@@ -37,6 +37,6 @@ class adminAuthController extends Controller
     {
         Auth::guard('web')->logout();
 
-        return $this->redirect_login(false);
+        $this->not_authorized();
     }
 }
