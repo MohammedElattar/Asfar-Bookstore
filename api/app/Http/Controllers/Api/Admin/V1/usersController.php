@@ -7,6 +7,7 @@ use App\Http\Requests\Admin\V1\Users\store_update_user_request;
 use App\Http\Resources\Api\admin\v1\usersCollection;
 use App\Http\Resources\Api\admin\v1\usersResource;
 use App\Http\Traits\HttpResponse;
+use App\Http\Traits\userTrait;
 use App\Models\User;
 use Illuminate\Http\Request as HttpRequest;
 use Illuminate\Support\Facades\Auth;
@@ -17,6 +18,7 @@ use Illuminate\Validation\Rule as ValidationRule;
 class usersController extends Controller
 {
     use HttpResponse;
+    use userTrait;
 
     /**
      * Display a listing of the resource.
@@ -65,7 +67,8 @@ class usersController extends Controller
     {
         $data = $request->all();
         $logout = false;
-        if (($this->get_user_id() == $user->id) && ($user->user_role != $request->admin)) {
+        $tmp_role = $request->admin == 'true' ? '1' : '0';
+        if (($this->user_id() == $user->id) && ($tmp_role != $user->user_role || (($request->has('password') && !Hash::check($request->password, $user->password)) || ($request->email != $user->email)))) {
             $logout = true;
         }
         if ($request->has('password')) {
@@ -84,7 +87,7 @@ class usersController extends Controller
             return $this->success(['redirect' => true], 'User Administration changed successfully and logged out');
         }
 
-        return $this->success(new usersResource($user), 'Update updated successfully');
+        return $this->success(new usersResource($user), 'User updated successfully');
     }
 
     public function changeStatus(HttpRequest $req, User $user)
@@ -95,7 +98,7 @@ class usersController extends Controller
             'active.required' => 'active-required',
             'active',
         ])['active'];
-        $id = $this->get_user_id();
+        $id = $this->user_id();
         $user->active = $active == 'true' ? '1' : '0';
         $user->update();
         if ($user->id != $id) {
@@ -112,11 +115,12 @@ class usersController extends Controller
      */
     public function destroy(User $user)
     {
-        $id = $this->get_user_id();
-        if ($user->id == $id) {
-            return $this->error('Same logged user', 422);
-        }
+        $id = $this->user_id();
+        $same = $user->id == $id ? true : false;
         $user->delete();
+        if ($same) {
+            $this->not_authorized();
+        }
 
         return $this->success('User deleted successfully');
     }
@@ -134,17 +138,15 @@ class usersController extends Controller
 
     public function delete_all()
     {
-        $id = $this->get_user_id();
+        $id = $this->user_id();
         DB::delete('DELETE FROM users WHERE id != ?', [$id]);
-    }
 
-    private function get_user_id()
-    {
-        return Auth::user()['id'];
+        $this->logout_user();
     }
 
     private function logout_user()
     {
         Auth::guard('web')->logout();
+        $this->not_authorized();
     }
 }

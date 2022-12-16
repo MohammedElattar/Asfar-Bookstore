@@ -41,8 +41,7 @@ class categoriesController extends Controller
             'status' => $request->status,
         ]);
 
-        return response()->json($this->success(
-            new categoriesResource($category), 'Category created successfully'));
+        return response()->json($this->success(new categoriesResource($category), 'Category created successfully'));
     }
 
     /**
@@ -99,6 +98,7 @@ class categoriesController extends Controller
     {
         return Category::where('id', $cat_id)->where('status', '1')->first('id');
     }
+
     public function get_all_enabled_categories()
     {
         return new booksCategoriesCollection(Category::where('status', '1')->get());

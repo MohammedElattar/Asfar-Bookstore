@@ -37,6 +37,6 @@ class adminAuthController extends Controller
     {
         Auth::guard('web')->logout();
 
-        return redirect(env('FRONTEND_URL').'/admin/login');
+        return $this->redirect_login(false);
     }
 }

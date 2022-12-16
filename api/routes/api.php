@@ -40,14 +40,16 @@ Route::group(['middleware' => ['web']], function () {
             /*
                ************************************ Users **********************************************
             */
+            Route::delete('/users/delete_all', 'usersController@delete_all');
             Route::apiResource('users', 'usersController');
             Route::patch('/users/{user}', 'usersController@changeStatus');
-            Route::delete('/users/delete_all', 'usersController@delete_all');
 
             /*
                ************************************ Settings **********************************************
             */
-            Route::get('/settings', 'settingsController@index');
+            Route::get('/settings', 'settingsController@index')
+                                            ->withoutMiddleware('auth:sanctum')
+                                            ->withoutMiddleware('web');
             Route::post('/settings', 'settingsController@update');
             /*
                    ************************************ Dashboard **********************************************

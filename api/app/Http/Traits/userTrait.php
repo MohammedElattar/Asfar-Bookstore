@@ -9,9 +9,7 @@ trait userTrait
 {
     public function user_id()
     {
-        $id = Auth::guard('web')->user();
-
-        return $id->id;
+        return Auth::guard('web')->user()->id;
     }
 
     /**

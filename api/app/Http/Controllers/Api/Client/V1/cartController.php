@@ -169,7 +169,7 @@ class cartController extends Controller
 
                 // validate fetched data
                 if (isset($book_info[0])) {
-                    $book_info = $book_info[0];
+                    $book_info = is_object($book_info[0]) ? $book_info[0] : (object) [$book_info[0]];
                     if ($book_info->qty >= $response['data'][$key]['qty']) {
                         // check if the cart_item is already exists
                         $cartItem = Cart::where('book_id', $key)->where('user_id', $this->user_id())->first('book_id');
@@ -177,7 +177,6 @@ class cartController extends Controller
                         if (!$cartItem) {
                             $store_data = $response['data'][$key];
                             $store_data['book_id'] = $key;
-
                             return $this->store($store_data);
                         } else {
                             // Handle if cart item exists
@@ -193,7 +192,7 @@ class cartController extends Controller
                 }
             }
         } else {
-            return $this->error('validation errors', 422, $response);
+            return $this->validation_errors($response);
         }
         unset($response['data']);
 
@@ -201,6 +200,6 @@ class cartController extends Controller
             return $this->update($update_book_response);
         }
 
-        return $this->error('validation errors', 422, $response);
+        return $this->validation_errors($response);
     }
 }
