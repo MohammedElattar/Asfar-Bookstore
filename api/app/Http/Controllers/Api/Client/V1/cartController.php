@@ -177,6 +177,7 @@ class cartController extends Controller
                         if (!$cartItem) {
                             $store_data = $response['data'][$key];
                             $store_data['book_id'] = $key;
+
                             return $this->store($store_data);
                         } else {
                             // Handle if cart item exists
@@ -193,6 +194,7 @@ class cartController extends Controller
             }
         } else {
             return $this->validation_errors($response);
+            // echo "Data is not here";
         }
         unset($response['data']);
 

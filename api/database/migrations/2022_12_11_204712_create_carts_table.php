@@ -14,7 +14,7 @@ return new class() extends Migration {
     {
         Schema::create('carts', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id')->unique();
+            $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('book_id');
             $table->integer('quantity', unsigned: true);
             $table->foreign('user_id')

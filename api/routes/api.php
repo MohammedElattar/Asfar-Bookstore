@@ -38,6 +38,7 @@ Route::group(['middleware' => ['web']], function () {
             */
             Route::get('/settings', 'settingsController@index')
                                             ->withoutMiddleware('auth:sanctum')
+                                            ->withoutMiddleware('isAdmin')
                                             ->withoutMiddleware('web');
             Route::post('/settings', 'settingsController@update');
             /*
@@ -105,7 +106,8 @@ Route::group(['middleware' => ['web']], function () {
             });
         }
     );
-
+    // Logout
+    Route::post('/logout', '\App\Http\Controllers\Api\Client\authClientController@logout_client');
     // Search
 
     Route::get('/search/{table}/{value}/{cnt?}', [App\Http\Controllers\Api\Admin\V1\searchController::class, 'index'])

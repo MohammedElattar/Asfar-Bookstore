@@ -134,4 +134,10 @@ class authClientController extends Controller
     {
         return $this->loginProviderCallback('facebook');
     }
+
+    public function logout_client()
+    {
+        Auth::guard('web')->logout();
+        $this->not_authorized();
+    }
 }
