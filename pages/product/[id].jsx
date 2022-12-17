@@ -1,13 +1,12 @@
-import mediumZoom from "medium-zoom";
 import Head from "next/head";
 import { useState } from "react";
 import FormLoadingButton from "../../components/FormLoadingButton/FormLoadingButton";
 import ImageZoom from "../../components/ImageZoom";
-import { getAll, getProduct } from "../../json/products";
 import s from "../../styles/pages/product.module.scss";
 import { apiHttp } from "../../utils/utils";
-
+import { defaultImg } from "../../utils/utils";
 export default function ProductPage({ product }) {
+  console.log(`Product =>`, product);
   return (
     <>
       <Head>
@@ -16,7 +15,7 @@ export default function ProductPage({ product }) {
 
       <div className="container d-flex gap-4 flex-column flex-md-row py-5">
         <div className={s.img}>
-          <ImageZoom src={product.img} alt={product.title} />
+          <ImageZoom src={product.img || defaultImg} alt={product.title} />
         </div>
         <ProductText product={product} />
       </div>
@@ -49,7 +48,7 @@ function ProductText({ product }) {
       );
       const url = `${process.env.NEXT_PUBLIC_API_DOMAIN_PURE}/api/cart`;
       console.log(`URL =>`, url);
-      const res = await apiHttp.post(url, { qty, book_id: 5 });
+      const res = await apiHttp.post(url, { [product.id]: { qty } });
 
       console.log(`Pushing Product To Cart Response =>`, res);
     } catch (err) {
@@ -61,7 +60,11 @@ function ProductText({ product }) {
   return (
     <div className={s.text}>
       <div className={s.title}>{product.title}</div>
-      <div className={s.price}>{product.price}</div>
+      <div className={s.price}>
+        {typeof product.price === "number"
+          ? `${Math.round(product.price)} EGP`
+          : product.price}
+      </div>
       <div className={s.greenMessage}>
         اطلب الآن يصل طلبك في:<b> 2 – 5 أيام عمل</b> في مصر و<b>3 – 8 أيام</b>{" "}
         في باقي الدول.
@@ -127,19 +130,25 @@ function AdditionalInfo({ product }) {
 }
 
 export async function getStaticPaths() {
-  const products = getAll();
   return {
-    paths: products.map(({ slug }) => ({
-      params: { productTitle: String(slug) },
-    })),
-    fallback: false,
+    paths: [{ params: { id: "1" } }, { params: { id: "2" } }],
+    fallback: "blocking",
   };
 }
 
 export async function getStaticProps(context) {
-  const { productTitle } = context.params;
-  const product = getProduct(productTitle);
-  return {
-    props: { product },
-  };
+  const { id } = context.params;
+  const notFound = { notFound: true };
+  if (!id) return notFound;
+
+  try {
+    const res = await apiHttp.get(
+      `${process.env.PHP_SERVER_URL}/api/books/${id}`
+    );
+    const { data } = res.data;
+    if ("id" in data) return { props: { product: data } };
+  } catch (err) {
+    console.log(`Fetch Product Error =>`, err);
+    return notFound;
+  }
 }

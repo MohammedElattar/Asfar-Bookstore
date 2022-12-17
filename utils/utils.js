@@ -10,6 +10,9 @@ export const apiHttp = axios.create({
   },
 });
 
+export const defaultImg =
+  "https://assets.asfar.io/uploads/2022/01/19092920/woocommerce-placeholder-300x300.png";
+
 if (typeof window !== "undefined") {
   window.axios = axios;
   window.apiHttp = apiHttp;
@@ -55,6 +58,18 @@ export const getWebsiteInfo = async () => {
     return res.data.data;
   } catch (err) {
     console.log(err);
+    return {};
+  }
+};
+
+export const getUser = async () => {
+  try {
+    const res = await apiHttp.get(
+      `${process.env.NEXT_PUBLIC_API_DOMAIN_PURE}/api/user`
+    );
+    return res.data.data;
+  } catch (err) {
+    console.log(err.message);
     return {};
   }
 };

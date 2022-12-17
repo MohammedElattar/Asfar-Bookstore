@@ -1,12 +1,13 @@
-import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { FaSearch, FaBars } from "react-icons/fa";
 import styles from "./Navbar.module.scss";
 import { IoClose } from "react-icons/io5";
 import { useRouter } from "next/router";
+import { useAuthContext } from "../../context/AuthContext";
 
 function Navbar({ logo }) {
+  const { user } = useAuthContext();
   const [isOpen, setIsOpen] = useState(false);
   const open = () => {
     setIsOpen(true);
@@ -40,7 +41,7 @@ function Navbar({ logo }) {
           ابحث عن كتاب
         </Link>
       </div>
-      {false ? (
+      {user ? (
         <MenuWithUser isOpen={isOpen} close={close} user={user} />
       ) : (
         <MenuWithoutUser isOpen={isOpen} close={close} />
@@ -58,7 +59,10 @@ function MenuWithUser({ isOpen, user, close }) {
   };
 
   return (
-    <ul className={`${styles.menu} ${isOpen ? styles.active : ""}`} onClick={close}>
+    <ul
+      className={`${styles.menu} ${isOpen ? styles.active : ""}`}
+      onClick={close}
+    >
       <li>
         <Link href="/">الصفحة الرئيسية</Link>
       </li>
@@ -90,7 +94,10 @@ function MenuWithUser({ isOpen, user, close }) {
 }
 function MenuWithoutUser({ isOpen, close }) {
   return (
-    <ul className={`${styles.menu} ${isOpen ? styles.active : ""}`} onClick={close}>
+    <ul
+      className={`${styles.menu} ${isOpen ? styles.active : ""}`}
+      onClick={close}
+    >
       <li>
         <Link href="/">الصفحة الرئيسية</Link>
       </li>
