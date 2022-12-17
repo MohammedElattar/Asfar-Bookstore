@@ -1,5 +1,5 @@
 import { FaRegWindowMaximize } from "react-icons/fa";
-import Message from "../../Message/Message";
+import Message from "../../Message";
 import s from "./PayMethods.module.scss";
 function PayMethods() {
   return (

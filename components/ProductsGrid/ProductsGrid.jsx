@@ -4,11 +4,11 @@ import { useState } from "react";
 import { apiHttp } from "../../utils/utils";
 import Loading from "../Loading";
 import s from "./ProductsGrid.module.scss";
-function ProductsGrid({ products }) {
+export default function ProductsGrid({ products }) {
   return (
     <div className="row">
       {products?.map((product) => (
-        <Product key={product.slug} {...product} />
+        <Product key={product.id} {...product} />
       ))}
     </div>
   );
@@ -41,11 +41,8 @@ function Product({ slug, title, img, vendor, id }) {
   };
 
   return (
-    <div
-      href={`/product/${slug}`}
-      className={`${s.product} col-12 col-md-6 col-lg-3 p-3`}
-    >
-      <Link className={s.img} href={`/product/${slug}`}>
+    <div className={`${s.product} col-12 col-md-6 col-lg-3 p-3`}>
+      <Link className={s.img} href={`/product/${id}`}>
         {img ? (
           <Image src={img} alt={title} width={200} height={350} />
         ) : (
@@ -59,7 +56,7 @@ function Product({ slug, title, img, vendor, id }) {
       </Link>
       <div className={`${s.info} d-flex flex-column justify-content-between`}>
         <div>
-          <Link className={s.productTitle} href={`/product/${slug}`}>
+          <Link className={s.productTitle} href={`/product/${id}`}>
             {title}
           </Link>
           <p className={s.productSeller}>
@@ -80,5 +77,3 @@ function Product({ slug, title, img, vendor, id }) {
     </div>
   );
 }
-
-export default ProductsGrid;
