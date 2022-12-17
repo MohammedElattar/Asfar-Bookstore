@@ -147,7 +147,9 @@ class usersController extends Controller
         Auth::guard('web')->logout();
         $this->not_authorized();
     }
-    public function get_user(){
+
+    public function get_user()
+    {
         return $this->get_logged_user_info();
     }
 }

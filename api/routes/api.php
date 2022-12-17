@@ -50,6 +50,7 @@ Route::group(['middleware' => ['web']], function () {
         Route::post('/logout', 'adminAuthController@logout')
             ->middleware('auth:sanctum')
             ->middleware('isAdmin');
+        Route::get('/user', [usersController::class, 'get_user'])->middleware('auth:sanctum');
     });
 
     /************************************************************ Client ***************************************************/
