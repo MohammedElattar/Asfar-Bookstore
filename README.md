@@ -1,4 +1,4 @@
-# Booking Management System
+# Book Store
 
 ## Client Side
 
