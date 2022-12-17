@@ -1,5 +1,5 @@
-import Message from "../../Message/Message";
-import s from "./Orders.module.scss";
+// import Message from "../../Message/Message";
+// import s from "./Orders.module.scss";
 import { FaCheck } from "react-icons/fa";
 
 function Orders() {
