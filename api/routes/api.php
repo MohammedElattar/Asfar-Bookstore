@@ -1,17 +1,7 @@
 <?php
 
+use App\Http\Controllers\Api\Admin\V1\usersController;
 use Illuminate\Support\Facades\Route;
-
-/*
-|--------------------------------------------------------------------------
-| API Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register API routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| is assigned the "api" middleware group. Enjoy building your API!
-|
-*/
 
 /************************************************************ Admin ***************************************************/
 Route::group(['middleware' => ['web']], function () {
@@ -43,7 +33,6 @@ Route::group(['middleware' => ['web']], function () {
             Route::delete('/users/delete_all', 'usersController@delete_all');
             Route::apiResource('users', 'usersController');
             Route::patch('/users/{user}', 'usersController@changeStatus');
-
             /*
                ************************************ Settings **********************************************
             */
@@ -120,5 +109,6 @@ Route::group(['middleware' => ['web']], function () {
 
     Route::get('/search/{table}/{value}/{cnt?}', [App\Http\Controllers\Api\Admin\V1\searchController::class, 'index'])
                 ->whereAlpha('table')->middleware('auth:sanctum');
+    Route::get('/user', [usersController::class, 'get_user'])->middleware('auth:sanctum');
 });
 Route::get('/login')->name('login');

@@ -140,13 +140,14 @@ class usersController extends Controller
     {
         $id = $this->user_id();
         DB::delete('DELETE FROM users WHERE id != ?', [$id]);
-
-        $this->logout_user();
     }
 
     private function logout_user()
     {
         Auth::guard('web')->logout();
         $this->not_authorized();
+    }
+    public function get_user(){
+        return $this->get_logged_user_info();
     }
 }

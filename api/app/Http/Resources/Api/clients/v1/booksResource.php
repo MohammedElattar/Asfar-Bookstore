@@ -7,11 +7,11 @@ use Illuminate\Http\Resources\Json\JsonResource;
 class booksResource extends JsonResource
 {
     /**
-     * Transform the resource into an array.
+     * Return books resource.
      *
-     * @param \Illuminate\Http\Request $request
+     * @param mixed $request
      *
-     * @return array|\Illuminate\Contracts\Support\Arrayable|\JsonSerializable
+     * @return array
      */
     public function toArray($request)
     {

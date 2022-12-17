@@ -20,7 +20,7 @@ class isAdmin
     public function handle(Request $request, \Closure $next)
     {
         $user = Auth::user();
-        if ($user && $user->user_role != '1') {
+        if (!$user || $user->user_role != '1' || $user->active != '1') {
             return $this->not_authorized_response();
         }
 
