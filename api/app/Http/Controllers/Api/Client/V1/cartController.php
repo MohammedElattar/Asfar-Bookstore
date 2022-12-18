@@ -28,7 +28,7 @@ class cartController extends Controller
                                         ->where('users.id', 1);
                                 })
                                 ->join('books', 'books.id', '=', 'carts.book_id')
-                                ->select('carts.quantity as qty', 'books.title as book_name', 'books.img as img', 'books.price as price')
+                                ->select('carts.quantity as qty', 'books.title as book_name', 'books.img as img', 'books.price as price', 'books.vendor as vendor')
                                 ->get());
     }
 

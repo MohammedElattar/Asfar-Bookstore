@@ -20,6 +20,7 @@ class cartResource extends JsonResource
             'qty' => $this->qty,
             'price' => $this->price,
             'img' => filter_var($this->img, FILTER_VALIDATE_URL) ? $this->img : ($this->img ? env('APP_URL', 'http://localhost:8000').("/api/storage/books/{$this->img}") : null),
+            'vendor' => $this->vendor
         ];
     }
 }
