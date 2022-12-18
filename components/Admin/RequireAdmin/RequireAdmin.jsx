@@ -23,7 +23,7 @@ function RequireAdmin({ children, ...props }) {
       setAdminLoading(false);
     } catch (err) {
       console.log(`Error =>`, err.response);
-      push("/admin/login");
+      // push("/admin/login");
     }
   };
 
