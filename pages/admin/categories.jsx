@@ -77,7 +77,9 @@ export default function Categories() {
     const confirmed = window.confirm(`سيتم حذف القسم ${category.name} نهائيا!`);
     if (confirmed) {
       try {
-        const res = await apiHttp.delete(`/v1/categories/${category.id}`);
+        const res = await apiHttp.delete(
+          `${process.env.NEXT_PUBLIC_ADMIN_CATEGORIES}/${category.id}`
+        );
         console.log(`Delete Response =>`, res);
 
         setData((prevData) => ({
@@ -103,10 +105,13 @@ export default function Categories() {
 
     try {
       updateCategory(category.id);
-      const res = await apiHttp.put(`/v1/categories/${category.id}`, {
-        name: category.name,
-        status: category.status === "1" ? "0" : "1",
-      });
+      const res = await apiHttp.put(
+        `${process.env.NEXT_PUBLIC_ADMIN_CATEGORIES}/${category.id}`,
+        {
+          name: category.name,
+          status: category.status === "1" ? "0" : "1",
+        }
+      );
       console.log(`Toggle Response =>`, res);
     } catch (err) {
       console.log(`Toggle Error =>`, err);
@@ -117,7 +122,9 @@ export default function Categories() {
   const deleteAll = async () => {
     if (!window.confirm(`سيتم حذف المنتجات نهائيا`)) return;
     try {
-      const res = await apiHttp.delete("/v1/categories/delete_all");
+      const res = await apiHttp.delete(
+        `${process.env.NEXT_PUBLIC_ADMIN_CATEGORIES}/delete_all`
+      );
       console.log(`Delete All Response =>`, res);
       if (res.data.type === "success") {
         setData({ data: [] });
@@ -202,10 +209,13 @@ function EditMenu({ currentCategory, setCurrentCategory }) {
 
     try {
       console.log(`Name =>`, nameProps.value);
-      const res = await apiHttp.put(`/v1/categories/${currentCategory.id}`, {
-        name: nameProps.value,
-        status: currentCategory.status,
-      });
+      const res = await apiHttp.put(
+        `${process.env.NEXT_PUBLIC_ADMIN_CATEGORIES}/${currentCategory.id}`,
+        {
+          name: nameProps.value,
+          status: currentCategory.status,
+        }
+      );
 
       console.log(`Response =>`, res);
 
@@ -282,7 +292,7 @@ function AddCategoryMenu({ addCategory, setAddCategory }) {
     }
 
     try {
-      const res = await apiHttp.post("/v1/categories", {
+      const res = await apiHttp.post(process.env.NEXT_PUBLIC_ADMIN_CATEGORIES, {
         name: nameProps.value,
         status: "1",
       });
@@ -337,17 +347,9 @@ function AddCategoryMenu({ addCategory, setAddCategory }) {
 }
 
 export async function getServerSideProps({ req }) {
-  try {
-    http.get("http://localhost:8000/api/admin/v1/categories", (res) => {
-      console.log(`Response =>`, res);
-    });
-  } catch (err) {
-    console.log(`Error occured =>`, err);
-  }
-
   const props = {
     admin: true,
-    url: process.env.ADMIN_CATEGORIES,
+    url: process.env.NEXT_PUBLIC_ADMIN_CATEGORIES,
     title: "الاقسام",
   };
   return {
