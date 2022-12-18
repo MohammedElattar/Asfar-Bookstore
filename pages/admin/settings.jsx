@@ -92,7 +92,10 @@ export default function Settings() {
       if (image) {
         formData.append("logo", image);
       }
-      const res = await apiHttp.post(`/v1/settings`, formData);
+      const res = await apiHttp.post(
+        process.env.NEXT_PUBLIC_ADMIN_SETTINGS,
+        formData
+      );
       console.log(`Settings Response =>`, res);
       setResultMsg("تم التعديل");
       next();
@@ -183,7 +186,8 @@ export async function getStaticProps() {
   const props = {
     admin: true,
     title: "الاعدادات",
-    url: process.env.ADMIN_SETTINGS,
+    url: process.env.NEXT_PUBLIC_ADMIN_SETTINGS,
+    checkAdmin: true,
   };
 
   return {

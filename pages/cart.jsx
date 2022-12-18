@@ -1,22 +1,29 @@
-import Head from "next/head";
 import { cls, getWebsiteInfo } from "../utils/utils";
 import s from "../styles/cart.module.scss";
 import { useState } from "react";
 import Message from "../components/Message";
-import { useEffect } from "react";
-import axios from "axios";
 import Loading from "../components/Loading";
 import Image from "next/image";
 import Link from "next/link";
+import { useCartContext } from "../context/CartContext";
+import { useMemo } from "react";
 export default function Cart({ websiteInfo }) {
   const [alerts, setAlerts] = useState([]);
-  const { products, loading } = useCart();
+  const { cart: products, loading } = useCartContext();
 
-  const insertAlert = ({ text, icon, button, color }) => {
-    if (!alerts.find((e) => e.text === text)) {
-      setAlerts((prev) => [...prev, { text, icon, button, color }]);
+  const insertAlert = (alert) => {
+    if (!alerts.find((e) => e.text === alert.text)) {
+      setAlerts((prev) => [...prev, ...alert]);
     }
   };
+
+  const cartTotal = useMemo(
+    () =>
+      products
+        .map((product) => parseInt(product.price))
+        .reduce((a, b) => a + b, 0),
+    [products]
+  );
 
   const notLoading = (
     <div className="container">
@@ -31,7 +38,7 @@ export default function Cart({ websiteInfo }) {
           <CouponArea />
         </div>
         <div className="col-4 ps-2">
-          <CartInfo />
+          <CartInfo {...{ cartTotal }} />
         </div>
       </div>
     </div>
@@ -39,9 +46,6 @@ export default function Cart({ websiteInfo }) {
 
   return (
     <>
-      <Head>
-        <title>{`${websiteInfo?.title} - السلة`}</title>
-      </Head>
       <main className={s.main}>
         <h2 className={"title fs-1 no-line"}>سلة المشتريات</h2>
         {loading ? <Loading size={60} borderWidth="4px" /> : notLoading}
@@ -72,8 +76,8 @@ function ProductsTable({ products }) {
   );
 }
 
-function Product({ price, quantity, title, img, slug, vendor }) {
-  const total = `${parseInt(price) * quantity} EGP`;
+function Product({ price, qty, book_name: title, img, id, vendor }) {
+  const total = `${parseInt(price) * qty} EGP`;
   return (
     <tr className={cls(s.product)}>
       <td className={cls(s.productInfo, "d-flex gap-3 align-items-center ")}>
@@ -82,27 +86,29 @@ function Product({ price, quantity, title, img, slug, vendor }) {
         </button>
         <Image width={55} height={75} alt={title} src={img} />
         <div style={{ fontSize: "15px" }}>
-          <Link href={`/product/${slug}`}>{title}</Link>
-          <p>
-            البائع:
-            {vendor}
-          </p>
+          <Link href={`/product/${id}`}>{title}</Link>
+          {vendor ? (
+            <p>
+              البائع:
+              {vendor}
+            </p>
+          ) : null}
         </div>
       </td>
       <td>{price}</td>
-      <td>{quantity}</td>
+      <td>{qty}</td>
       <td>{total}</td>
     </tr>
   );
 }
 
-function CartInfo() {
+function CartInfo({ cartTotal }) {
   return (
     <div className={cls(s.cartInfo, s.wrapper)}>
       <h3>إجمالي المشتريات</h3>
       <p className="d-flex align-items-center justify-content-between">
         <span>المجموع</span>
-        <span>340.00 EGP</span>
+        <span>{cartTotal} EGP</span>
       </p>
       <p className="d-flex align-items-center justify-content-between">
         <span>الشحن</span>
@@ -110,7 +116,7 @@ function CartInfo() {
       </p>
       <p className="d-flex align-items-center justify-content-between">
         <span>الإجمالي</span>
-        <span>340.00 EGP</span>
+        <span>{cartTotal} EGP</span>
       </p>
       <button className={s.submitOrder} type="button">
         انتقل إلى صفحة إتمام الطلب
@@ -122,34 +128,14 @@ function CartInfo() {
 function CouponArea() {
   return (
     <div className={cls(s.couponArea, s.wrapper, "d-flex gap-2")}>
-      <input type="text" />
-      <button>استخدم الكوبون</button>
+      <div className={cls("flex-grow-1", s.couponInput)}>
+        <input type="text" className="w-100 h-100" />
+      </div>
+      <button className={s.couponBtn} type="button">
+        استخدم الكوبون
+      </button>
     </div>
   );
-}
-
-function useCart() {
-  const [loading, setLoading] = useState(true);
-  const [products, setProducts] = useState(null);
-  const [error, setError] = useState(false);
-  const fetchProducts = async () => {
-    try {
-      const res = await axios.get("/api/cart");
-      if (res.data.type === "success") {
-        setProducts(res.data.data);
-      }
-    } catch (err) {
-      setError(true);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchProducts();
-  }, []);
-
-  return { loading, products, error };
 }
 
 export async function getStaticProps() {
@@ -157,7 +143,7 @@ export async function getStaticProps() {
 
   return {
     props: {
-      websiteInfo,
+      title: `${websiteInfo?.title} - السلة`,
     },
   };
 }

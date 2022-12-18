@@ -4,9 +4,8 @@ import ImageZoom from "../../components/ImageZoom";
 import global from "../../styles/pages/admin/global.module.scss";
 import s from "../../styles/pages/admin/products.module.scss";
 import { useAdminContext } from "../../context/AdminContext";
-import { apiHttp, cls, tableCustomStyles } from "../../utils/utils";
+import { apiHttp, cls, tableCustomStyles, defaultImg } from "../../utils/utils";
 import { useState } from "react";
-
 import Menu from "../../components/Admin/Menu";
 import InputControl, {
   SelectInput,
@@ -17,9 +16,7 @@ import ImagePreview from "../../components/Admin/ImagePreview";
 import Loading from "../../components/Loading";
 import { useRouter } from "next/router";
 import { useRef } from "react";
-import Select from "react-select";
-const defaultImg =
-  "https://assets.asfar.io/uploads/2022/01/19092920/woocommerce-placeholder-300x300.png";
+
 const columns = [
   {
     name: "الرقم التعريفي",
@@ -136,7 +133,9 @@ export default function Products() {
     setLoading(true);
 
     try {
-      const res = await apiHttp.get(`/v1/books?page=${page}&cnt=${newRows}`);
+      const res = await apiHttp.get(
+        `${process.env.NEXT_PUBLIC_ADMIN_PRODUCTS}?page=${page}&cnt=${newRows}`
+      );
       console.log(`Rows Per Page Change Response =>`, res);
       setData(res.data);
       setLoading(false);
@@ -149,7 +148,9 @@ export default function Products() {
   const fetchProducts = async (page) => {
     setLoading(true);
     try {
-      const res = await apiHttp.get(`/v1/books?page=${page}&cnt=${perPage}`);
+      const res = await apiHttp.get(
+        `${process.env.NEXT_PUBLIC_ADMIN_PRODUCTS}?page=${page}&cnt=${perPage}`
+      );
       console.log(`Page Change Response =>`, res);
       setData(res.data);
       setLoading(false);
@@ -163,7 +164,9 @@ export default function Products() {
     const confirmed = window.confirm(`سيتم مسح ${product.title} نهائيا`);
     if (confirmed) {
       try {
-        const res = await apiHttp.delete(`/v1/books/${product.id}`);
+        const res = await apiHttp.delete(
+          `${process.env.NEXT_PUBLIC_ADMIN_PRODUCTS}/${product.id}`
+        );
         console.log(`Delete Response =>`, res);
 
         if (res.data.type === "success") {
@@ -182,7 +185,7 @@ export default function Products() {
   const search = async (text) => {
     setLoading(true);
     try {
-      const url = `http://localhost:8000/api/search/books/${
+      const url = `${process.env.NEXT_PUBLIC_ADMIN_SEARCH_PRODUCTS}/${
         text || searchProps.value
       }?cnt=${perPage}`;
       console.log(`URL =>`, url);
@@ -220,7 +223,9 @@ export default function Products() {
     if (!window.confirm(`سيتم حذف المنتجات نهائيا`)) return;
     setLoading(true);
     try {
-      const res = await apiHttp.delete("/v1/books/delete_all");
+      const res = await apiHttp.delete(
+        `${process.env.NEXT_PUBLIC_ADMIN_PRODUCTS}/delete_all`
+      );
       console.log(`Delete All Response =>`, res);
       if (res.data.type === "success") {
         setData({ data: [] });
@@ -329,10 +334,10 @@ function AddProductMenu({
   const { setData } = useAdminContext();
 
   const handlePress = async (evt, next) => {
-    const check1 = nameProps.value.trim().length <= 4;
-    const check2 = writterProps.value.trim().length <= 4;
-    const check3 = publisherProps.value.trim().length <= 4;
-    const check4 = vendorProps.value.trim().length <= 4;
+    const check1 = nameProps.value.trim().length < 4;
+    const check2 = writterProps.value.trim().length < 4;
+    const check3 = publisherProps.value.trim().length < 4;
+    const check4 = vendorProps.value.trim().length < 4;
     const check5 = /^[\d.]{1,}$/.test(priceProps.value.trim());
     const check6 = /^\d{1,}$/.test(quantityProps.value.trim());
     const check7 = !!categoryProps.value;
@@ -385,7 +390,10 @@ function AddProductMenu({
         Object.fromEntries(formData.entries())
       );
 
-      const res = await apiHttp.post("/v1/books", formData);
+      const res = await apiHttp.post(
+        process.env.NEXT_PUBLIC_ADMIN_PRODUCTS,
+        formData
+      );
       console.log(`Create Book Response =>`, res);
 
       const [newBook] = res.data.data;
@@ -567,7 +575,7 @@ function EditProductMenu({ currentProduct, setCurrentProduct, categories }) {
       console.log(Object.fromEntries(formData.entries()));
 
       const res = await apiHttp.post(
-        `/v1/books/${currentProduct.id}`,
+        `${process.env.NEXT_PUBLIC_ADMIN_PRODUCTS}/${currentProduct.id}`,
         formData
       );
       console.log(`Edit Book Response =>`, res);
@@ -696,7 +704,9 @@ function useFetchCategories() {
   useEffect(() => {
     (async () => {
       try {
-        const res = await apiHttp.get(`/v1/books/categories`);
+        const res = await apiHttp.get(
+          process.env.NEXT_PUBLIC_ADMIN_PRODUCTS_CATEGORIES
+        );
         console.log(`Fetch Categories Response =>`, res);
         setData(res.data.data);
       } catch (err) {
@@ -781,7 +791,7 @@ export async function getStaticProps() {
   const props = {
     admin: true,
     title: "المنتجات",
-    url: process.env.ADMIN_PRODUCTS,
+    url: process.env.NEXT_PUBLIC_ADMIN_PRODUCTS,
   };
 
   return {

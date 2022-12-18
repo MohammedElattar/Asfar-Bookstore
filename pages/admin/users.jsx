@@ -221,7 +221,10 @@ function AddUserMenu({ addUserIsActive, setAddUserIsActive }) {
       formData.append("admin", isAdmin);
       console.log(`Object To Send =>`, Object.fromEntries(formData.entries()));
 
-      const res = await apiHttp.post("/v1/users", formData);
+      const res = await apiHttp.post(
+        process.env.NEXT_PUBLIC_ADMIN_USERS,
+        formData
+      );
       console.log(`Create User Response =>`, res);
 
       const newUser = res.data.data;
@@ -358,7 +361,10 @@ function EditUserMenu({ currentUser, setCurrentUser }) {
       }
       console.log(`Object To Send =>`, data);
 
-      const res = await apiHttp.put(`/v1/users/${currentUser.id}`, data);
+      const res = await apiHttp.put(
+        `${process.env.NEXT_PUBLIC_ADMIN_USERS}/${currentUser.id}`,
+        data
+      );
       console.log(`Edit Book Response =>`, res);
 
       const editedUser = res.data.data;
@@ -488,7 +494,9 @@ function useUsersPage() {
     setLoading(true);
 
     try {
-      const res = await apiHttp.get(`/v1/users?page=${page}&cnt=${newRows}`);
+      const res = await apiHttp.get(
+        `${process.env.NEXT_PUBLIC_ADMIN_USERS}?page=${page}&cnt=${newRows}`
+      );
       console.log(`Rows Per Page Change Response =>`, res);
       setData(res.data);
       setLoading(false);
@@ -501,7 +509,9 @@ function useUsersPage() {
   const fetchUsers = async (page) => {
     setLoading(true);
     try {
-      const res = await apiHttp.get(`/v1/users?page=${page}&cnt=${perPage}`);
+      const res = await apiHttp.get(
+        `${process.env.NEXT_PUBLIC_ADMIN_USERS}?page=${page}&cnt=${perPage}`
+      );
       console.log(`Page Change Response =>`, res);
       setData(res.data);
       setLoading(false);
@@ -514,7 +524,9 @@ function useUsersPage() {
     const confirmed = window.confirm(`سيتم مسح ${user.name} نهائيا`);
     if (confirmed) {
       try {
-        const res = await apiHttp.delete(`/v1/users/${user.id}`);
+        const res = await apiHttp.delete(
+          `${process.env.NEXT_PUBLIC_ADMIN_USERS}/${user.id}`
+        );
         console.log(`Delete Response =>`, res);
 
         if (res.data.type === "success") {
@@ -533,7 +545,7 @@ function useUsersPage() {
   const search = async (text) => {
     setLoading(true);
     try {
-      const url = `http://localhost:8000/api/search/users/${
+      const url = `${process.env.NEXT_PUBLIC_ADMIN_SEARCH_USERS}/${
         text || searchProps.value
       }?cnt=${perPage}`;
       console.log(`URL =>`, url);
@@ -570,7 +582,9 @@ function useUsersPage() {
     if (!window.confirm(`سيتم حذف المستخدمين نهائيا`)) return;
     setLoading(true);
     try {
-      const res = await apiHttp.delete("/v1/users/delete_all");
+      const res = await apiHttp.delete(
+        `${process.env.NEXT_PUBLIC_ADMIN_USERS}/delete_all`
+      );
       console.log(`Delete All Response =>`, res);
       if (res.data.type === "success") {
         setData({ data: [] });
@@ -602,9 +616,12 @@ function useUsersPage() {
 
     try {
       updateUser(user.id);
-      const res = await apiHttp.patch(`/v1/users/${user.id}`, {
-        active: isTrue(user.active) ? "false" : "true",
-      });
+      const res = await apiHttp.patch(
+        `${process.env.NEXT_PUBLIC_ADMIN_USERS}/${user.id}`,
+        {
+          active: isTrue(user.active) ? "false" : "true",
+        }
+      );
       console.log(`Toggle Response =>`, res);
     } catch (err) {
       console.log(`Toggle Error =>`, err);
@@ -634,7 +651,7 @@ export async function getStaticProps() {
   const props = {
     admin: true,
     title: "المستخدمين",
-    url: process.env.ADMIN_USERS,
+    url: process.env.NEXT_PUBLIC_ADMIN_USERS,
   };
 
   return {

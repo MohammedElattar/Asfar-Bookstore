@@ -10,7 +10,7 @@ import { getPublishers } from "../../json/publishers";
 import { getWritters } from "../../json/writters";
 import s from "../../styles/pages/products.module.scss";
 import useMediaQuery from "../../hooks/useMediaQuery";
-import { apiHttp } from "../../utils/utils";
+import { apiHttp, getWebsiteInfo } from "../../utils/utils";
 
 const Context = createContext();
 
@@ -49,9 +49,9 @@ export default function FindProduct({
 
   return (
     <>
-      <Head>
+      {/* <Head>
         <title>ابحث عن كتاب... – أسفار</title>
-      </Head>
+      </Head> */}
       <Context.Provider value={contextValue}>
         <Search />
         <div className={`container ${s["search-products-result"]} d-flex`}>
@@ -220,25 +220,25 @@ export async function getStaticPaths() {
   };
 }
 
-export async function getStaticProps({ params: { pageNumber } }) {
-  if (!pageNumber) {
-    return { notFound: true };
-  }
+export async function getStaticProps({ params: { pageNumber = 1 } }) {
   const res = await apiHttp.get(
-    `${process.env.PHP_SERVER_URL}/api/books?page=${pageNumber}`
+    `${process.env.NEXT_PUBLIC_PRODUCTS}?page=${pageNumber}`
   );
-  if (!res.data.data?.length) {
+  const products = res.data?.data;
+  if (!products?.length) {
     return { notFound: true };
   }
   const writters = getWritters();
   const publishers = getPublishers();
   const categories = getCategories();
+  const websiteInfo = await getWebsiteInfo();
   return {
     props: {
-      pageProducts: res.data.data,
+      pageProducts: products,
       writters,
       publishers,
       categories,
+      title: `${websiteInfo.title} - ${`كل كتبك عندنا...`}`,
     },
   };
 }

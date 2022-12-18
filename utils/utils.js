@@ -1,7 +1,7 @@
 import axios from "axios";
 
 export const apiHttp = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_DOMAIN,
+  baseURL: process.env.NEXT_PUBLIC_API,
   withCredentials: true,
   headers: {
     Accept: "application/vnd.api+json",
@@ -52,9 +52,7 @@ export const cls = (...classes) => {
 
 export const getWebsiteInfo = async () => {
   try {
-    const res = await apiHttp.get(
-      `${process.env.PHP_SERVER_URL}/api/admin/v1/settings`
-    );
+    const res = await apiHttp.get(process.env.GET_WEBSITE_INFO);
     return res.data.data;
   } catch (err) {
     console.log(err);

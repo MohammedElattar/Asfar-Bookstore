@@ -21,17 +21,12 @@ function Product({ slug, title, img, vendor, id }) {
     if (loading) return;
     setLoading(true);
     try {
-      await apiHttp.get(
-        `${process.env.NEXT_PUBLIC_API_DOMAIN_PURE}/sanctum/csrf-cookie`
-      );
-      const res = await apiHttp.post(
-        `${process.env.NEXT_PUBLIC_API_DOMAIN_PURE}/api/cart`,
-        {
-          [id]: {
-            qty: 1,
-          },
-        }
-      );
+      await apiHttp.get(process.env.NEXT_PUBLIC_CSRF);
+      const res = await apiHttp.post(process.env.NEXT_PUBLIC_CART, {
+        [id]: {
+          qty: 1,
+        },
+      });
       console.log(`Store Product To Cart Response =>`, res);
     } catch (err) {
       console.log(`Store Product To Cart Error =>`, err);

@@ -7,9 +7,7 @@ export default function AuthProvider({ children }) {
   useEffect(() => {
     (async () => {
       try {
-        const res = await apiHttp.get(
-          `${process.env.NEXT_PUBLIC_API_DOMAIN_PURE}/api/user`
-        );
+        const res = await apiHttp.get(process.env.NEXT_PUBLIC_GET_USER);
         console.log(`Get User Response =>`, res);
         if ("redirect_url" in res.data.data) {
           Router.push(res.data.data.redirect_url);

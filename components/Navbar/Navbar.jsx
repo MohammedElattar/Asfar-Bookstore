@@ -52,10 +52,11 @@ function Navbar({ logo }) {
 
 function MenuWithUser({ isOpen, user, close }) {
   const router = useRouter();
-
+  const {setUser} = useAuthContext()
   const signout = () => {
     close();
-    router.reload();
+    setUser(null);
+    router.push("/");
   };
 
   return (

@@ -54,12 +54,10 @@ function Login() {
         password: passwordProps.value,
       });
 
-      await axios.get("http://localhost:8000/sanctum/csrf-cookie", {
-        withCredentials: true,
-      });
-      const res = await apiHttp.post("/login", data);
+      await apiHttp.get(process.env.NEXT_PUBLIC_CSRF);
+      const res = await apiHttp.post(process.env.NEXT_PUBLIC_ADMIN_LOGIN, data);
       console.log(`Login Response =>`, res);
-      router.push("/admin/dashboard");
+      router.push(process.env.NEXT_PUBLIC_ADMIN_LOGIN_REDIRECT);
     } catch (err) {
       console.log(err);
       setError(true);
@@ -90,7 +88,11 @@ function Login() {
                   حدث خطأ اثناء محاولة تسجيل الدخول الرجاء اعادة المحاولة
                 </p>
               )}
-              <AwesomeButton type="secondary" size="medium">
+              <AwesomeButton
+                type="secondary"
+                size="medium"
+                style={{ marginTop: "20px" }}
+              >
                 تسجيل
                 {loading ? (
                   <Loading

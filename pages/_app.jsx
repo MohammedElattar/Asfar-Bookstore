@@ -6,6 +6,7 @@ import Layout from "../components/Layout/Layout";
 import Head from "next/head";
 import AdminProvider from "../context/AdminContext";
 import AuthProvider from "../context/AuthContext";
+import CartProvider from "../context/CartContext";
 export default function MyApp({ Component, pageProps }) {
   return (
     <>
@@ -17,9 +18,11 @@ export default function MyApp({ Component, pageProps }) {
 
       <AuthProvider>
         <AdminProvider>
-          <Layout {...pageProps}>
-            <Component {...pageProps} />
-          </Layout>
+          <CartProvider>
+            <Layout {...pageProps}>
+              <Component {...pageProps} />
+            </Layout>
+          </CartProvider>
         </AdminProvider>
       </AuthProvider>
     </>
