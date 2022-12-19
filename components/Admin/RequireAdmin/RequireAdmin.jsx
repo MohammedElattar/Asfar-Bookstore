@@ -15,14 +15,21 @@ function RequireAdmin({ children, ...props }) {
       console.log(`url => ${props.url}`);
       const res = await apiHttp.get(props.url);
       if (props.checkAdmin) {
-        console.log(`Check Admin =>`, await apiHttp.get(`/user`));
+        const res = await apiHttp.get(`/user`);
+        if (res.status === 200) {
+          if (res.data.data?.admin === false) {
+            throw new Error("not authorized");
+          }
+        } else {
+          throw new Error("not authorized");
+        }
       }
       console.log(`Success =>`, res);
       setData(res.data);
       setLoading(false);
       setAdminLoading(false);
     } catch (err) {
-      console.log(`Error =>`, err.response);
+      console.log(`Error =>`, err);
       Router.push("/admin/login");
     }
   };

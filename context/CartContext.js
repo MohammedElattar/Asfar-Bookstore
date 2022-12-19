@@ -19,6 +19,7 @@ export default function CartProvider({ children }) {
       setLoading(false);
     }
   };
+  console.log(`Cart =>`, cart);
 
   useEffect(() => {
     fetchCart();
