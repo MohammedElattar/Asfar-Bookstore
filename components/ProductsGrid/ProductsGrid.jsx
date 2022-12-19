@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
+import { useCartContext } from "../../context/CartContext";
 import { apiHttp } from "../../utils/utils";
 import Loading from "../Loading";
 import s from "./ProductsGrid.module.scss";
@@ -16,7 +17,7 @@ export default function ProductsGrid({ products }) {
 
 function Product({ slug, title, img, vendor, id }) {
   const [loading, setLoading] = useState(false);
-
+  const { reloadCart } = useCartContext();
   const handleClick = async () => {
     if (loading) return;
     setLoading(true);
@@ -27,6 +28,7 @@ function Product({ slug, title, img, vendor, id }) {
           qty: 1,
         },
       });
+      reloadCart();
       console.log(`Store Product To Cart Response =>`, res);
     } catch (err) {
       console.log(`Store Product To Cart Error =>`, err);

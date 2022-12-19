@@ -84,17 +84,12 @@ function Signup() {
         email: emailProps.value,
         password: passwordProps.value,
       };
-      await axios.get(
-        `${process.env.NEXT_PUBLIC_API_DOMAIN_PURE}/sanctum/csrf-cookie`,
-        {
-          withCredentials: true,
-        }
-      );
-      const url = `${process.env.NEXT_PUBLIC_API_DOMAIN_PURE}/api/register`;
+      await apiHttp.get(process.env.NEXT_PUBLIC_CSRF);
+      const url = process.env.NEXT_PUBLIC_REGISTER;
       console.log(`Register URL => `, url);
       const res = await apiHttp.post(url, data);
       console.log(`Register Response =>`, res);
-      if (res.data.type === "success") {
+      if (res.status === "200") {
         const { data: user } = res.data;
         setUser(user);
         console.log(`New User =>`, user);
@@ -102,7 +97,7 @@ function Signup() {
       setError(false);
     } catch (err) {
       console.log(`Login Error =>`, err);
-      const { errors } = err.response.data.data;
+      const { errors } = err.response?.data?.data;
       if (!handleErrors(errors)) {
         setError(true);
       }

@@ -62,14 +62,9 @@ export default function Login() {
         password: passwordProps.value,
       };
 
-      await axios.get(
-        `${process.env.NEXT_PUBLIC_API_DOMAIN_PURE}/sanctum/csrf-cookie`,
-        {
-          withCredentials: true,
-        }
-      );
+      await apiHttp.get(process.env.NEXT_PUBLIC_CSRF);
 
-      const url = `${process.env.NEXT_PUBLIC_API_DOMAIN_PURE}/api/login`;
+      const url = process.env.NEXT_PUBLIC_LOGIN;
       console.log(`Login URL => `, url);
       const res = await apiHttp.post(url, data);
       console.log(`Login Response =>`, res);

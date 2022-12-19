@@ -10,7 +10,7 @@ import { getPublishers } from "../../json/publishers";
 import { getWritters } from "../../json/writters";
 import s from "../../styles/pages/products.module.scss";
 import useMediaQuery from "../../hooks/useMediaQuery";
-import { apiHttp, getWebsiteInfo } from "../../utils/utils";
+import { apiHttp, cls, getWebsiteInfo } from "../../utils/utils";
 
 const Context = createContext();
 
@@ -169,7 +169,7 @@ function SortingTools({ publishers, writters, categories }) {
   const isSmallDevice = useMediaQuery("(max-width: 992px)");
   return (
     <>
-      <div className={`${s["sort-wrapper"]} ${isActive ? s.active : ""}`}>
+      <div className={cls(isActive ? s.active : "", s["sort-wrapper"])}>
         <SortSection
           data={writters}
           title="الكتّاب"

@@ -40,13 +40,8 @@ function ProductText({ product }) {
     if (loading) return;
     setLoading(true);
     try {
-      await axios.get(
-        `${process.env.NEXT_PUBLIC_API_DOMAIN_PURE}/sanctum/csrf-cookie`,
-        {
-          withCredentials: true,
-        }
-      );
-      const url = `${process.env.NEXT_PUBLIC_API_DOMAIN_PURE}/api/cart`;
+      await apiHttp.get(process.env.NEXT_PUBLIC_CSRF);
+      const url = process.env.NEXT_PUBLIC_CART;
       console.log(`URL =>`, url);
       const res = await apiHttp.post(url, { [product.id]: { qty } });
 
@@ -142,11 +137,9 @@ export async function getStaticProps(context) {
   if (!id) return notFound;
 
   try {
-    const res = await apiHttp.get(
-      `${process.env.PHP_SERVER_URL}/api/books/${id}`
-    );
-    const { data } = res.data;
-    if ("id" in data) return { props: { product: data } };
+    const res = await apiHttp.get(`${process.env.NEXT_PUBLIC_PRODUCTS}/${id}`);
+    const { data: product } = res.data;
+    if ("id" in product) return { props: { product } };
   } catch (err) {
     console.log(`Fetch Product Error =>`, err);
     return notFound;

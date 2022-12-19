@@ -24,7 +24,6 @@ function RequireAdmin({ children, ...props }) {
     } catch (err) {
       console.log(`Error =>`, err.response);
       Router.push("/admin/login");
-      // push("/admin/login");
     }
   };
 
