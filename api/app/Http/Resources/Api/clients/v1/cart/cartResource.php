@@ -16,11 +16,12 @@ class cartResource extends JsonResource
     public function toArray($request)
     {
         return [
+            'book_id' => $this->book_id,
             'book_name' => $this->book_name,
             'qty' => $this->qty,
             'price' => $this->price,
             'img' => filter_var($this->img, FILTER_VALIDATE_URL) ? $this->img : ($this->img ? env('APP_URL', 'http://localhost:8000').("/api/storage/books/{$this->img}") : null),
-            'vendor' => $this->vendor
+            'vendor' => $this->vendor,
         ];
     }
 }

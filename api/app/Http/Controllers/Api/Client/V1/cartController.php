@@ -28,7 +28,7 @@ class cartController extends Controller
                                         ->where('users.id', $this->user_id());
                                 })
                                 ->join('books', 'books.id', '=', 'carts.book_id')
-                                ->select('carts.quantity as qty', 'books.title as book_name', 'books.img as img', 'books.price as price', 'books.vendor as vendor')
+                                ->select('carts.quantity as qty', 'books.title as book_name', 'books.img as img', 'books.price as price', 'books.vendor as vendor', 'books.id as book_id')
                                 ->get());
     }
 
@@ -47,7 +47,7 @@ class cartController extends Controller
         $cart->quantity = $data['qty'];
         $cart->save();
 
-        return $this->success(['book_id' => $cart->book_id], msg: 'Book inserted into cart');
+        return $this->success(msg: 'Book inserted into cart');
     }
 
     /**
@@ -60,7 +60,6 @@ class cartController extends Controller
     private function update(array $data)
     {
         $cnt = 0;
-        $book_ids = [];
         foreach ($data as $key => $value) {
             $cartItem = Cart::where('user_id', $this->user_id())->where('book_id', $key)->first();
             if ($cartItem) {
@@ -68,7 +67,6 @@ class cartController extends Controller
                     $cartItem->quantity = $value['qty'];
                     $cartItem->update();
                     ++$cnt;
-                    $book_ids[] = $key;
                 }
             } else {
                 return $this->error('Book is not exists in your cart', 422, [$key]);
@@ -78,7 +76,7 @@ class cartController extends Controller
             return $this->success(code: 204);
         }
 
-        return $this->success(["books'ids" => $book_ids], msg: "$cnt book".($cnt > 1 ? 's' : '').' have been updated successfully');
+        return $this->success(msg: "$cnt book".($cnt > 1 ? 's' : '').' have been updated successfully');
     }
 
     /**
@@ -90,16 +88,14 @@ class cartController extends Controller
      */
     public function destroy(Request $req)
     {
-        $req = $req->all();
         $cnt = 0;
-        $book_ids = [];
+        $req = $req->all();
         foreach ($req as $book_id) {
             if (is_numeric($book_id)) {
                 $cartItem = Cart::where('user_id', $this->user_id())->where('book_id', $book_id)->first('id');
                 if ($cartItem) {
                     $cartItem->delete();
                     ++$cnt;
-                    $book_ids[] = $book_id;
                 }
             }
         }
@@ -107,7 +103,7 @@ class cartController extends Controller
             return $this->success(code: 204);
         }
 
-        return $this->success(["books'ids" => $book_ids], msg: "$cnt ".' book'.($cnt > 1 ? 's' : '').' deleted successfully');
+        return $this->success(msg: "$cnt ".' book'.($cnt > 1 ? 's' : '').' deleted successfully');
     }
 
     private function validate_books($data)
