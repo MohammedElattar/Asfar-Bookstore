@@ -6,8 +6,8 @@ export default function CartProvider({ children }) {
   const [cart, setCart] = useState([]);
   const [loading, setLoading] = useState(true);
   const fetchCart = async () => {
+    setLoading(true);
     try {
-      setLoading(true);
       const res = await apiHttp.get(process.env.NEXT_PUBLIC_CART);
       console.log(`Cart Response =>`, res);
       if (res.status === 200) {

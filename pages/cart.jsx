@@ -7,13 +7,11 @@ import Link from "next/link";
 import { useCartContext } from "../context/CartContext";
 import { useEffect } from "react";
 import ImageZoom from "../components/ImageZoom";
-export default function Cart({ websiteInfo }) {
+export default function Cart() {
   const { cart: products, cartLoading } = useCartContext();
   const [loading, setLoading] = useState(false);
-  const cartTotal = products
-    .map((product) => parseInt(product.price))
-    .reduce((a, b) => a + b, 0);
 
+  console.log(products);
   const notLoading = (
     <div className="container">
       <div className="row">
@@ -22,7 +20,7 @@ export default function Cart({ websiteInfo }) {
           <CouponArea {...{ loading, setLoading }} />
         </div>
         <div className="col-4 ps-2">
-          <CartInfo {...{ cartTotal, loading, setLoading }} />
+          <CartInfo {...{ loading, setLoading }} />
         </div>
       </div>
     </div>
@@ -53,7 +51,7 @@ function ProductsTable({ products, loading, setLoading }) {
         <tbody>
           {products.map((product) => (
             <Product
-              key={product.slug}
+              key={product.book_id || product.slug}
               {...{ ...product, loading, setLoading }}
             />
           ))}
@@ -79,9 +77,7 @@ function Product({
     if (loading) return;
     setLoading(true);
     try {
-      const res = await apiHttp.delete(process.env.NEXT_PUBLIC_CART, [
-        id.toString(),
-      ]);
+      const res = await apiHttp.delete(process.env.NEXT_PUBLIC_CART, [id]);
       console.log(`Delete Response =>`, res);
       if (res.status === 200) {
         setCart((prev) => prev.filter((product) => product.book_id !== id));
@@ -136,7 +132,12 @@ function LoadingWrapper({ loading }) {
   );
 }
 
-function CartInfo({ cartTotal, loading, setLoading }) {
+function CartInfo({ loading, setLoading }) {
+  const { cart } = useCartContext();
+  const cartTotal = cart
+    .map((product) => parseInt(product.price) * product.qty)
+    .reduce((a, b) => a + b, 0);
+  const shippingFee = 50;
   return (
     <div className={cls(s.cartInfo, s.wrapper)}>
       <h3>إجمالي المشتريات</h3>
@@ -146,11 +147,11 @@ function CartInfo({ cartTotal, loading, setLoading }) {
       </p>
       <p className="d-flex align-items-center justify-content-between">
         <span>الشحن</span>
-        <span></span>
+        <span>{shippingFee} EGP</span>
       </p>
       <p className="d-flex align-items-center justify-content-between">
         <span>الإجمالي</span>
-        <span>{cartTotal} EGP</span>
+        <span>{cartTotal + shippingFee} EGP</span>
       </p>
       <button className={s.submitOrder} type="button">
         انتقل إلى صفحة إتمام الطلب

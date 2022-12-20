@@ -20,10 +20,12 @@ export default function Cart({ cartOpen, setCartOpen }) {
       .reduce((prev, current) => prev + current, 0);
   };
 
+  const close = () => setCartOpen(false);
+
   return (
     <div className={cls(s.cart, cartOpen ? s.cartActive : "")}>
       <header>
-        <button onClick={() => setCartOpen(false)}>
+        <button onClick={close}>
           <IoCloseSharp />
         </button>
       </header>
@@ -34,14 +36,18 @@ export default function Cart({ cartOpen, setCartOpen }) {
           <div className={s.body}>
             <div className={s.products}>
               {products.map((product) => (
-                <CartItem key={product.id} {...product} />
+                <CartItem key={product.book_id} {...product} />
               ))}
             </div>
           </div>
           <div className={s.total}>المجموع: {calcTotal()} EGP</div>
           <div className={s.btns}>
-            <Link href={`/cart`}>عرض السلة</Link>
-            <Link href={`/cart/checkout`}>إتمام الطلب</Link>
+            <Link href={`/cart`} onClick={close}>
+              عرض السلة
+            </Link>
+            <Link href={`/cart/checkout`} onClick={close}>
+              إتمام الطلب
+            </Link>
           </div>
         </>
       )}

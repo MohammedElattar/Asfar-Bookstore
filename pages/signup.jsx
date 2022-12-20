@@ -97,8 +97,8 @@ function Signup() {
       setError(false);
     } catch (err) {
       console.log(`Login Error =>`, err);
-      const { errors } = err.response?.data?.data;
-      if (!handleErrors(errors)) {
+      const errors = err.response?.data?.data?.errors;
+      if (!errors || !handleErrors(errors)) {
         setError(true);
       }
     } finally {
