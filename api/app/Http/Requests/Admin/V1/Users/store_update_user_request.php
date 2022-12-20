@@ -29,7 +29,7 @@ class store_update_user_request extends FormRequest
      */
     public function rules()
     {
-        $reg = config('app.ar_en_reg');
+        $reg = config('regex.ar_en_reg');
         $id = $this->route('user');
         $id = $id ? $id->id : null;
 

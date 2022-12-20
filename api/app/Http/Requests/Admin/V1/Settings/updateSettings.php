@@ -31,7 +31,7 @@ class updateSettings extends FormRequest
     public function rules()
     {
         $validation = [
-            'title' => 'required|regex:'.config('app.ar_en_reg'),
+            'title' => 'required|regex:'.config('regex.ar_en_reg'),
             'email' => 'required|email',
             'phone' => ['required', 'regex:/^(\d{11}|(([+]{0,1})?(20)\d{10}))$/'],
             'logo' => 'sometimes|bail|required|image|mimes:png,jpeg,jpg|max:3072',

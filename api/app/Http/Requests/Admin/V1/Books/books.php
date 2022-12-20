@@ -30,7 +30,7 @@ class books extends FormRequest
     {
         $route = $this->route('book');
         $id = $route ? $route->id : null;
-        $ar_en_reg = config('app.ar_en_reg');
+        $ar_en_reg = config('regex.ar_en_reg');
         $mx = 150;
 
         return [

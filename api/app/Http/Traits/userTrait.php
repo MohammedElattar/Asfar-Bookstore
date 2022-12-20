@@ -11,7 +11,6 @@ trait userTrait
     public function user_id()
     {
         return Auth::guard('web')->user()->id;
-        // return 1;
     }
 
     /**

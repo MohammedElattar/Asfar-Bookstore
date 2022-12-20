@@ -4,7 +4,7 @@ use App\Http\Controllers\Api\Admin\V1\usersController;
 use Illuminate\Support\Facades\Route;
 
 /************************************************************ Admin ***************************************************/
-Route::group([/* 'middleware' => ['web'] */], function () {
+Route::group(['middleware' => ['web']], function () {
     Route::group(['prefix' => 'admin', 'namespace' => '\App\Http\Controllers\Api\Admin'], function () {
         // v1
         Route::group(['prefix' => 'v1', 'namespace' => 'V1', 'middleware' => ['auth:sanctum', 'isAdmin']], function () {
@@ -42,15 +42,25 @@ Route::group([/* 'middleware' => ['web'] */], function () {
                                             ->withoutMiddleware('web');
             Route::post('/settings', 'settingsController@update');
             /*
-                   ************************************ Dashboard **********************************************
-                */
+                ************************************ Dashboard **********************************************
+            */
             Route::get('/', 'dashboardController@index');
             Route::get('/dashboard', 'dashboardController@index');
+            /*
+                ************************************ Orders **********************************************
+            */
+            Route::group(
+                ['prefix' => 'orders'],
+                function () {
+                    Route::get('/', 'ordersController@index');
+                    Route::delete('/{user}/{order}', 'ordersController@destroy');
+                    Route::post('/', 'ordersController@delete_all');
+                    Route::put('/{user}/{order}', 'ordersController@approveOrder');
+                }
+            );
         });
         Route::post('/login', 'adminAuthController@login');
-        Route::post('/logout', 'adminAuthController@logout')
-            ->middleware('auth:sanctum')
-            ->middleware('isAdmin');
+        Route::post('/logout', 'adminAuthController@logout')->middleware(['auth:sanctum', 'isAdmin']);
         Route::get('/user', [usersController::class, 'get_user'])->middleware('auth:sanctum');
     });
 
@@ -95,7 +105,7 @@ Route::group([/* 'middleware' => ['web'] */], function () {
                     );
                 }
             );
-            Route::group(['namespace' => 'V1'/* 'middleware' => 'auth:sanctum' */], function () {
+            Route::group(['namespace' => 'V1', 'middleware' => 'auth:sanctum'], function () {
                 // Books
                 Route::get('/books', 'clientBooks@index')->withoutMiddleware('auth:sanctum');
                 Route::get('/books/{book}', 'clientBooks@show')->withoutMiddleware('auth:sanctum');
@@ -103,14 +113,13 @@ Route::group([/* 'middleware' => ['web'] */], function () {
                 Route::get('/cart', 'cartController@index');
                 Route::match(['post', 'put'], '/cart', 'cartController@validate_books_response');
                 Route::delete('/cart', 'cartController@destroy');
-                // Checkout
-                // Route::post('/checkout', 'checkoutController@index');
-                Route::get(
-                    '/test',
-                    function () {
-                        return 'This is test';
-                    }
-                );
+                Route::post('/checkout', 'checkoutController@index');
+                // Orders
+                Route::group(['namespace' => '\App\Http\Controllers\Api\Admin\V1', 'prefix' => 'orders'], function () {
+                    Route::get('/', 'ordersController@showClientOrders');
+                    Route::delete('/{order}', 'ordersController@destroyClientOrder');
+                    Route::post('/delete_all', 'ordersController@deleteAllClientOrders');
+                });
             });
         }
     );

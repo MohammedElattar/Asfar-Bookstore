@@ -30,7 +30,7 @@ class categoryRequest extends FormRequest
     {
         $route = $this->route('category');
         $id = $route ? $route->id : null;
-        $ar_en_reg = config('app.ar_en_reg');
+        $ar_en_reg = config('regex.ar_en_reg');
 
         return [
             'name' => "required|string|regex:$ar_en_reg|not_regex:/^\d+$/|unique:categories,name".($id ? ",$id,id" : ''),

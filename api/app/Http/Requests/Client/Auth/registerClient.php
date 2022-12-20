@@ -28,7 +28,7 @@ class registerClient extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required|regex:'.config('app.ar_en_reg')."|not_regex:/^\d+$/",
+            'name' => 'required|regex:'.config('regex.ar_en_reg')."|not_regex:/^\d+$/",
             'email' => 'bail|required|email|unique:users,email',
             'password' => 'required|min:8',
         ];
