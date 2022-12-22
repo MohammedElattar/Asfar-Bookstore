@@ -15,6 +15,11 @@ class cartController extends Controller
     use HttpResponse;
     use userTrait;
 
+    public function __construct()
+    {
+        // $this->middleware('auth:sanctum', ['except' => ['index']]);
+    }
+
     /**
      * Fetch all cart items of authenticated user.
      *
