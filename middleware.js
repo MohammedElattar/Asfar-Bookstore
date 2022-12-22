@@ -1,12 +1,14 @@
 // middleware.ts
 import { NextResponse } from "next/server";
-import { apiHttp } from "./utils/utils";
+
+export const config = {
+  matcher: ["/", "/products/[1-50]"],
+};
 
 export function middleware(request) {
   const response = NextResponse.next();
 
-  const { cookies } = request;
-  console.log(`Middleware Cookies =>`, cookies);
+  console.log(`Hello From Middleware 👋`, request.url);
 
   return response;
 }

@@ -4,9 +4,11 @@ const Context = createContext();
 
 export default function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
   useEffect(() => {
     (async () => {
       try {
+        setLoading(true);
         const res = await apiHttp.get(process.env.NEXT_PUBLIC_GET_USER);
         console.log(`Get User Response =>`, res);
         if ("redirect_url" in res.data.data) {
@@ -18,6 +20,8 @@ export default function AuthProvider({ children }) {
         }
       } catch (err) {
         console.log(`Get User Error =>`, err);
+      } finally {
+        setLoading(false);
       }
     })();
   }, []);
@@ -25,7 +29,9 @@ export default function AuthProvider({ children }) {
     console.log(`User =>`, user);
   }, [user]);
   return (
-    <Context.Provider value={{ user, setUser }}>{children}</Context.Provider>
+    <Context.Provider value={{ user, setUser, loading }}>
+      {children}
+    </Context.Provider>
   );
 }
 

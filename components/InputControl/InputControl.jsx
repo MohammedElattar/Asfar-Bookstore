@@ -1,3 +1,4 @@
+import { useId } from "react";
 import Select from "react-select";
 import { cls } from "../../utils/utils";
 import s from "./InputControl.module.scss";
@@ -14,8 +15,10 @@ export default function InputControl({
   className = "",
   inputStyle = {},
   defaultValue = "",
+  textarea = false,
   ...otherProps
 }) {
+  const id = useId();
   return (
     <div
       className={[s.inputControl, props.error ? s.error : "", className]
@@ -24,7 +27,7 @@ export default function InputControl({
       {...otherProps}
     >
       {!!label && (
-        <label htmlFor="nameInput">
+        <label htmlFor={id}>
           {label}
           {required ? (
             <span style={{ color: "red", marginRight: "5px" }}>*</span>
@@ -33,15 +36,26 @@ export default function InputControl({
           )}
         </label>
       )}
-      <input
-        type={type}
-        id="nameInput"
-        onChange={props.onChange}
-        value={props.value}
-        placeholder={placeholder}
-        style={{ fontSize: "18px", ...inputStyle }}
-        onKeyUp={onKeyUp}
-      />
+      {textarea ? (
+        <textarea
+          id={id}
+          onChange={props.onChange}
+          value={props.value}
+          placeholder={placeholder}
+          style={{ fontSize: "18px", ...inputStyle }}
+          onKeyUp={onKeyUp}
+        />
+      ) : (
+        <input
+          type={type}
+          id={id}
+          onChange={props.onChange}
+          value={props.value}
+          placeholder={placeholder}
+          style={{ fontSize: "18px", ...inputStyle }}
+          onKeyUp={onKeyUp}
+        />
+      )}
       {props.error ? <p className={s.helperText}>{props.helperText}</p> : null}
     </div>
   );
@@ -78,7 +92,7 @@ export function SelectInput({
       {...other}
     >
       {!!label && (
-        <label htmlFor="nameInput">
+        <label>
           {label}
           {required ? (
             <span style={{ color: "red", marginRight: "5px" }}>*</span>
@@ -100,6 +114,7 @@ export function SelectInput({
             value: option,
           }))
         }
+        noOptionsMessage={() => "لا يوجد خيارات"}
         styles={customStyles}
         value={props.value}
       />

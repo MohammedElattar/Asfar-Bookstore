@@ -1,17 +1,12 @@
 import Link from "next/link";
-import { useState } from "react";
-import { useEffect } from "react";
 import { IoCloseSharp } from "react-icons/io5";
-import { useAuthContext } from "../../context/AuthContext";
 import { useCartContext } from "../../context/CartContext";
-import { apiHttp, cls } from "../../utils/utils";
+import { cls } from "../../utils/utils";
 import s from "./Cart.module.scss";
 import CartItem from "./CartItem";
 
 export default function Cart({ cartOpen, setCartOpen }) {
-  const { user } = useAuthContext();
-  const { cart: products } = useCartContext();
-
+  const { cart: products, setCart } = useCartContext();
   const calcTotal = () => {
     return products
       .map((product) => {
@@ -45,7 +40,7 @@ export default function Cart({ cartOpen, setCartOpen }) {
             <Link href={`/cart`} onClick={close}>
               عرض السلة
             </Link>
-            <Link href={`/cart/checkout`} onClick={close}>
+            <Link href={`/checkout`} onClick={close}>
               إتمام الطلب
             </Link>
           </div>

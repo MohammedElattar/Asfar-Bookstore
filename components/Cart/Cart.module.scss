@@ -12,7 +12,7 @@
   opacity: 0;
   &.cartActive {
     opacity: 1;
-    right: calc(100vw - 400px);
+    right: calc(100vw - 410px);
   }
   header {
     display: flex;
@@ -24,6 +24,8 @@
     }
   }
   .body {
+    overflow: auto;
+    max-height: 70%;
     .product {
       display: flex;
       gap: 10px;

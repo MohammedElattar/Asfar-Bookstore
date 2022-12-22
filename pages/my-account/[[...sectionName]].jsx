@@ -1,6 +1,5 @@
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { useSelector } from "react-redux";
 import Dashboard from "../../components/MyAccount/Dashboard/Dashboard";
 import Downloads from "../../components/MyAccount/Downloads/Downloads";
 import EditAccount from "../../components/MyAccount/EditAccount/EditAccount";
@@ -8,18 +7,19 @@ import EditAddress from "../../components/MyAccount/EditAddress/EditAddress";
 import Orders from "../../components/MyAccount/Orders/Orders";
 import PayMethods from "../../components/MyAccount/PayMethods/PayMethods";
 import MyAccountNavigationBar from "../../components/MyAccountNavigationBar/MyAccountNavigationBar";
+import { useAuthContext } from "../../context/AuthContext";
 import s from "../../styles/my-account.module.scss";
 
 function MyAccount() {
   const router = useRouter();
   const page = router.query.sectionName?.at(0);
   let outlet = null;
-
+  const { user, loading } = useAuthContext();
   const signout = () => {
     router.reload();
   };
 
-  if (true) {
+  if (user) {
     switch (page) {
       case "orders":
         outlet = <Orders />;
@@ -39,7 +39,7 @@ function MyAccount() {
       default:
         outlet = <Dashboard user={null} signout={signout} />;
     }
-  } else if (typeof window !== "undefined") {
+  } else if (typeof window !== "undefined" && !loading) {
     router.push("/");
   }
 

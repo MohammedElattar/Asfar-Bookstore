@@ -8,6 +8,7 @@ const MessageWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
+  width: 100%;
   .wrapper {
     display: flex;
     align-items: center;

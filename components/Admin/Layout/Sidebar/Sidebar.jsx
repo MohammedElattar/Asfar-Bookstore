@@ -7,6 +7,7 @@ import { SiBookstack } from "react-icons/si";
 import { BiCategoryAlt } from "react-icons/bi";
 import { IoPower } from "react-icons/io5";
 import { FiSettings } from "react-icons/fi";
+import { GiBuyCard } from "react-icons/gi";
 import ActiveLink from "../../../ActiveLink";
 import s from "./Sidebar.module.scss";
 import { apiHttp } from "../../../../utils/utils";
@@ -94,6 +95,14 @@ function Sidebar() {
         >
           <FiSettings />
           <span>الاعدادات</span>
+        </ActiveLink>
+        <ActiveLink
+          href="/admin/orders"
+          activeClassName={s.activeLink}
+          onClick={loading}
+        >
+          <GiBuyCard />
+          <span>الطلبات</span>
         </ActiveLink>
       </div>
       <div className={s.btnContainer}>

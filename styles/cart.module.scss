@@ -34,6 +34,8 @@
     width: 100%;
     margin-top: 30px;
     transition: 0.3s;
+    display: block;
+    text-align: center;
     &:hover {
       background-color: #077975;
     }
@@ -105,6 +107,24 @@
     height: 100%;
     font-size: 16px;
     padding: 0 5px;
+  }
+}
+.alerts {
+  display: flex;
+  gap: 20px;
+  flex-direction: column;
+  margin-bottom: 20px;
+}
+.returnToShopBtn {
+  color: #515151;
+  background-color: #ebe9eb;
+  padding: 8px 20px;
+  border-radius: 5px;
+  margin-top: 20px;
+  font-weight: bold;
+  display: inline-block;
+  &:hover {
+    background-color: #dadada;
   }
 }
 

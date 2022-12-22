@@ -33,10 +33,10 @@ export default function Login() {
       valid = false;
       setEmailError(true, "برجاء ادخال بريد الكتروني صالح");
     }
-    if (passwordProps.value?.length < 8) {
+    /*if (passwordProps.value?.length < 8) {
       valid = false;
       setPasswordError(true, "كلمة السر يجب ان تحتوي علي 8 رموز علي الاقل.");
-    } else if (passwordProps.value?.length > 25) {
+    } else*/ if (passwordProps.value?.length > 25) {
       setPasswordError(true, "كلمة السر طويلة جدا.");
     }
     if (!valid) {

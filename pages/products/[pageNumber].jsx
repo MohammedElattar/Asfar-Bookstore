@@ -20,7 +20,6 @@ export default function FindProduct({
   categories,
   pageProducts,
 }) {
-  console.log(pageProducts);
   const [searchText, setSearchText] = useState("");
   const router = useRouter();
   const [products, setProducts] = useState(pageProducts);

@@ -7,24 +7,26 @@
       border-color: red !important;
     }
   }
-  // &.select.error {
-  //   & > div > div:first-of-type {
-  //     border-color: red !important;
-  //     // display: none;
-  //   }
-  // }
   label {
     display: block;
     margin-bottom: 5px;
     font-size: 16px;
   }
   input,
-  select {
+  select,
+  textarea {
     width: 100%;
     padding: 10px;
     border-radius: 5px;
     border: 1px solid #ccc;
     outline: none;
+    &::placeholder {
+      font-size: 14px;
+    }
+  }
+  textarea {
+    min-height: 100px;
+    resize: vertical;
   }
   .helperText {
     color: red;

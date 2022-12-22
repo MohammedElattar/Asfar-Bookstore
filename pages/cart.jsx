@@ -7,36 +7,66 @@ import Link from "next/link";
 import { useCartContext } from "../context/CartContext";
 import { useEffect } from "react";
 import ImageZoom from "../components/ImageZoom";
-export default function Cart() {
-  const { cart: products, cartLoading } = useCartContext();
-  const [loading, setLoading] = useState(false);
+import Message from "../components/Message";
+import { BiWindow } from "react-icons/bi";
+import { BsCheck } from "react-icons/bs";
+import useAlerts from "../hooks/useAlerts";
 
-  console.log(products);
-  const notLoading = (
-    <div className="container">
-      <div className="row">
-        <div className="col-8 pe-2 d-flex flex-column gap-4">
-          <ProductsTable {...{ products, loading, setLoading }} />
-          <CouponArea {...{ loading, setLoading }} />
-        </div>
-        <div className="col-4 ps-2">
-          <CartInfo {...{ loading, setLoading }} />
-        </div>
-      </div>
-    </div>
-  );
+//
+
+//
+
+//
+
+export default function Cart() {
+  const { cart: products, loading: cartLoading } = useCartContext();
+  const [loading, setLoading] = useState(false);
+  const { alerts, insertAlert } = useAlerts();
 
   return (
     <>
       <main className={s.main}>
         <h2 className={"title fs-1 no-line"}>سلة المشتريات</h2>
-        {cartLoading ? <Loading size={60} borderWidth="4px" /> : notLoading}
+        <div className="container">
+          <div className={s.alerts}>
+            {alerts.map((alert) => (
+              <Message {...alert} key={alert.text} />
+            ))}
+          </div>
+          {cartLoading ? (
+            <Loading size={60} borderWidth="4px" />
+          ) : products.length === 0 ? (
+            <>
+              <Message
+                icon={
+                  <BiWindow style={{ color: "#1e85be", fontSize: "20px" }} />
+                }
+                text={`سلة مشترياتك فارغة حاليًا.`}
+              />
+              <Link href={`/products/1`} className={s.returnToShopBtn}>
+                العودة إلى المتجر
+              </Link>
+            </>
+          ) : (
+            <div className="row">
+              <div className="col-8 pe-2 d-flex flex-column gap-4">
+                <ProductsTable
+                  {...{ products, loading, setLoading, insertAlert }}
+                />
+                <CouponArea {...{ loading, setLoading }} />
+              </div>
+              <div className="col-4 ps-2">
+                <CartInfo {...{ loading, setLoading }} />
+              </div>
+            </div>
+          )}
+        </div>
       </main>
     </>
   );
 }
 
-function ProductsTable({ products, loading, setLoading }) {
+function ProductsTable({ products, loading, setLoading, insertAlert }) {
   return (
     <div className={cls(s.wrapper, s.productsTable)}>
       <table>
@@ -52,7 +82,7 @@ function ProductsTable({ products, loading, setLoading }) {
           {products.map((product) => (
             <Product
               key={product.book_id || product.slug}
-              {...{ ...product, loading, setLoading }}
+              {...{ ...product, loading, setLoading, insertAlert }}
             />
           ))}
         </tbody>
@@ -71,13 +101,17 @@ function Product({
   vendor,
   setLoading,
   loading,
+  insertAlert,
 }) {
   const { setCart } = useCartContext();
   const handleDelete = async () => {
     if (loading) return;
     setLoading(true);
     try {
-      const res = await apiHttp.delete(process.env.NEXT_PUBLIC_CART, [id]);
+      const res = await apiHttp.delete(process.env.NEXT_PUBLIC_CART, {
+        data: [id],
+      });
+
       console.log(`Delete Response =>`, res);
       if (res.status === 200) {
         setCart((prev) => prev.filter((product) => product.book_id !== id));
@@ -113,7 +147,7 @@ function Product({
       </td>
       <td>{price}</td>
       <td>
-        <QtyInput {...{ setLoading, loading, qty, id }} />
+        <QtyInput {...{ setLoading, loading, qty, id, insertAlert }} />
       </td>
       <td>{total}</td>
     </tr>
@@ -153,15 +187,15 @@ function CartInfo({ loading, setLoading }) {
         <span>الإجمالي</span>
         <span>{cartTotal + shippingFee} EGP</span>
       </p>
-      <button className={s.submitOrder} type="button">
+      <Link href="/checkout" className={s.submitOrder} type="button">
         انتقل إلى صفحة إتمام الطلب
-      </button>
+      </Link>
       <LoadingWrapper loading={loading} />
     </div>
   );
 }
 
-function QtyInput({ qty: productQty, id, loading, setLoading }) {
+function QtyInput({ qty: productQty, id, loading, setLoading, insertAlert }) {
   const { setCart } = useCartContext();
   const [qty, setQty] = useState(productQty);
   const maxQty = 20;
@@ -183,6 +217,7 @@ function QtyInput({ qty: productQty, id, loading, setLoading }) {
             return product;
           })
         );
+        insertAlert.success("تم تحديث سلة المشتريات.", { overwrite: true });
       }
     } catch (err) {
       console.log(`Update Qty Error =>`, err);
