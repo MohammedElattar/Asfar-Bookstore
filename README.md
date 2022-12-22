@@ -78,6 +78,6 @@ http://localhost:8000/api
     - email     `admin@admin.com`
     - password  `admin`
  - client
-    - email     `uer@user.com`
+    - email     `user@user.com`
     - password  `user`
 ## If you like our project Make ❤
