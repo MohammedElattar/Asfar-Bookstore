@@ -73,4 +73,11 @@ php artisan serve
 http://localhost:8000/api
 ```
 
+## Default credentials
+- admin
+    - email => `admin@admin.com`
+    - password => `admin`
+ - client
+    - email => `uer@user.com`
+    - password => `user`
 If you like our project Make ❤
