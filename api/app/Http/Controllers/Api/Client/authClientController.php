@@ -40,7 +40,6 @@ class authClientController extends Controller
      */
     public function register(registerClient $req)
     {
-        $user = new User();
         $user = $this->create_user([
             'name' => $req->name,
             'email' => $req->email,
@@ -63,7 +62,7 @@ class authClientController extends Controller
         $credentials = $req->only('email', 'password');
         $user = User::where('email', $credentials['email'])->first();
         if ($user) {
-            if (Hash::check($credentials['password'], $user->password) && $user->user_role == '0') {
+            if (Hash::check($credentials['password'], $user->password) && $user->user_role == '0' && $user->active == '1') {
                 Auth::loginUsingId($user->id, true);
 
                 return $this->success(new userResource($user), 'Client logged in successfully');

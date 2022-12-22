@@ -77,9 +77,11 @@ class ordersController extends Controller
 
     public function approveOrder(User $user , Order $order){
         if($order->status == '0'){
-            $order->status = '1';
-            $order->update();
-            return $this->success(msg: 'Order approved successfully');
+            if ($order->user_id == $user->id) {
+                $order->status = '1';
+                $order->update();
+                return $this->success(msg: 'Order approved successfully');
+            }
         }
         return $this->success(code: 204);
     }
@@ -188,7 +190,8 @@ class ordersController extends Controller
         return new ordersCollection($orders);
     }
 
-    /** Delete One Order for the client.
+    /**
+     *  Delete One Order for the client.
      * @return \Symfony\Component\HttpFoundation\JsonResponse
      */
     public function destroyClientOrder(Order $order)

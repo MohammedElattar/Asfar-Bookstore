@@ -120,6 +120,27 @@ Route::group(['middleware' => ['web']], function () {
                     Route::delete('/{order}', 'ordersController@destroyClientOrder');
                     Route::post('/delete_all', 'ordersController@deleteAllClientOrders');
                 });
+                // Client Account
+                Route::group(
+                    ['prefix' => 'account'],
+                    function () {
+                        // Client Info
+                        Route::group(['prefix' => 'client_info'], function () {
+                            Route::get('/', 'clientInfoController@index');
+                            Route::post('/', 'clientInfoController@createOrUpdateClientInfo');
+                        }
+                        );
+                        // My account
+                        Route::group(
+                            ['prefix' => 'my_account'],
+                            function () {
+                                Route::get('/', 'myAccountController@index');
+                                Route::put('/', 'myAccountController@update');
+                                Route::delete('/', 'myAccountController@destroy');
+                            }
+                        );
+                    }
+                );
             });
         }
     );
