@@ -29,7 +29,7 @@ class ordersResource extends JsonResource
             $ar['client_id'] = $this->user_id;
             $ar['client_name'] = $this->client_name;
         }
-        $ar['details'] = $this->order_details;
+        $ar['details'] = $this->details;
 
         return $ar;
     }

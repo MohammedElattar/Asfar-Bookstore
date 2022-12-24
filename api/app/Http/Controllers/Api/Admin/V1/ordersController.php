@@ -28,7 +28,7 @@ class ordersController extends Controller
      *
      * @return ordersCollection
      */
-    public function index($Client = false)
+    public function index()
     {
         $orders = DB::table('orders')
             ->join('users', 'users.id', 'orders.user_id')
@@ -45,30 +45,28 @@ class ordersController extends Controller
                 'orders.second_phone as second phone',
                 'orders.more_info as more_info',
                 'orders.status as status',
+                'orders.order_details as details',
                 'orders.created_at as created_at'
             )
             ->paginate($this->paginateCnt);
 
         // Get order details for user
-        $orders_details = [];
-        foreach (Order::all(['order_details as det', 'id']) as $i) {
-            // Add order details to response
-            $id = $i->id;
-            $i = json_decode($i['det'], true);
-            $book_ids = @array_keys($i) or null;
-            foreach ($book_ids as $book_id) {
-                if ($book_id) {
-                    $book_info = Book::where('id', $book_id)->first(['title', 'price', 'img']);
-                    $book_info->id = $book_id;
-                    $book_info->qty = $i[$book_id];
-                    $book_info->img = filter_var($book_info->img, FILTER_VALIDATE_URL) ? $book_info->img : env('FRONTEND_URL', 'http://localhost:3000').("/storage/books/{$book_info->img}");
-                    $orders_details[(int) $id][] = $book_info;
-                }
-            }
-        }
         foreach ($orders as $order) {
-            if (isset($orders_details[$order->id])) {
-                $order->order_details = $orders_details[$order->id];
+            $order_detail = $order->details;
+            if ($order_detail) {
+                $res = [];
+                $order_detail = json_decode($order_detail, true);
+
+                // Add order details to response
+                $book_ids = @array_keys($order_detail) or null;
+                if ($book_ids) {
+                    $books_info = Book::whereIn("id", $book_ids)->get(['title', 'price', 'img', 'id']);
+                    foreach ($books_info as $book_info) {
+                        $book_info->img = filter_var($book_info->img, FILTER_VALIDATE_URL) ? $book_info->img : env('FRONTEND_URL', 'http://localhost:3000') . ("/storage/books/{$book_info->img}");
+                        $res[] = $book_info;
+                    }
+                }
+                $order->details = $res;
             }
         }
         return new ordersCollection($orders);
@@ -106,7 +104,7 @@ class ordersController extends Controller
 
     /*
     ******************************************************************
-    ******* Client
+    ** Client
     ******************************************************************
     */
 
@@ -147,8 +145,11 @@ class ordersController extends Controller
     {
         $orders = DB::table('orders')
             ->join('users', 'users.id', 'orders.user_id')
+            ->where('user_id' , $this->user_id())
             ->select(
                 'orders.id',
+                'users.id as user_id',
+                'users.name as client_name',
                 'orders.email as email',
                 'orders.first_name as first_name',
                 'orders.last_name as last_name',
@@ -158,34 +159,30 @@ class ordersController extends Controller
                 'orders.second_phone as second phone',
                 'orders.more_info as more_info',
                 'orders.status as status',
+                'orders.order_details as details',
                 'orders.created_at as created_at'
             )
-            ->where('orders.user_id', $this->user_id())
             ->paginate($this->paginateCnt);
 
         // Get order details for user
-        $orders_details = [];
-        foreach (Order::where('user_id', $this->user_id())->get(['order_details as det', 'id']) as $i) {
-            // Add order details to response using BST
-            $id = $i->id;
-            $i = json_decode($i['det'], true);
-            $book_ids = @array_keys($i) or null;
-            foreach ($book_ids as $book_id) {
-                if ($book_id) {
-                    $book_info = Book::where('id', $book_id)->first(['title', 'price', 'img']);
-                    $book_info->id = $book_id;
-                    $book_info->qty = $i[$book_id];
-                    $book_info->img = filter_var($book_info->img, FILTER_VALIDATE_URL) ? $book_info->img : env('FRONTEND_URL', 'http://localhost:3000').("/storage/books/{$book_info->img}");
-                    $orders_details[$id][] = $book_info;
-                }
-            }
-        }
         foreach ($orders as $order) {
-            if (isset($orders_details[$order->id])) {
-                $order->order_details = $orders_details[$order->id];
+            $order_detail = $order->details;
+            if ($order_detail) {
+                $res = [];
+                $order_detail = json_decode($order_detail, true);
+
+                // Add order details to response
+                $book_ids = @array_keys($order_detail) or null;
+                if ($book_ids) {
+                    $books_info = Book::whereIn("id", $book_ids)->get(['title', 'price', 'img', 'id']);
+                    foreach ($books_info as $book_info) {
+                        $book_info->img = filter_var($book_info->img, FILTER_VALIDATE_URL) ? $book_info->img : env('FRONTEND_URL', 'http://localhost:3000') . ("/storage/books/{$book_info->img}");
+                        $res[] = $book_info;
+                    }
+                }
+                $order->details = $res;
             }
         }
-
         return new ordersCollection($orders);
     }
 
