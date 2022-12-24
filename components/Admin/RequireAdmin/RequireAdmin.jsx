@@ -30,7 +30,7 @@ function RequireAdmin({ children, ...props }) {
       setAdminLoading(false);
     } catch (err) {
       console.log(`Error =>`, err);
-      Router.push("/admin/login");
+     // Router.push("/admin/login");
     }
   };
 
