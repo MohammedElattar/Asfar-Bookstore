@@ -35,6 +35,7 @@ class checkoutController extends Controller
                         ->where('carts.user_id', $this->user_id())
                         ->get();
         foreach ($cartItems as $item) {
+            $item = is_object($item) ? $item : (object) $item;
             if ($item->cart_qty > $item->book_qty) {
                 $er[$item->book_id] = 'qty-big';
             }
@@ -50,6 +51,7 @@ class checkoutController extends Controller
         // Order inforamtion is valid , so add it
         $order_details = [];
         foreach ($cartItems as $item) {
+            $item = is_object($item) ? $item : (object) $item;
             $order_details[$item->book_id] = $item->cart_qty;
         }
         $order = new ordersController();

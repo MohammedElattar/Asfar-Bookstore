@@ -23,7 +23,7 @@ class ordersResource extends JsonResource
             'city' => $this->city,
             'address' => $this->address,
             'more_info' => $this->more_info,
-            'status' => $this->status,
+            'approved' => $this->status,
             'created_at' => date('Y-m-d H:i:s', strtotime($this->created_at)),        ];
         if (isset($this->user_id)) {
             $ar['client_id'] = $this->user_id;
