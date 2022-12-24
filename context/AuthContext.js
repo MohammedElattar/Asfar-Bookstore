@@ -11,12 +11,8 @@ export default function AuthProvider({ children }) {
         setLoading(true);
         const res = await apiHttp.get(process.env.NEXT_PUBLIC_GET_USER);
         console.log(`Get User Response =>`, res);
-        if ("redirect_url" in res.data.data) {
-          Router.push(res.data.data.redirect_url);
-        } else if ("id" in res.data.data) {
-          setUser(res.data.data);
-        } else {
-          console.log(`Unknown Response =>`, res);
+        if (res.status === 200) {
+          setUser(res.data);
         }
       } catch (err) {
         console.log(`Get User Error =>`, err);

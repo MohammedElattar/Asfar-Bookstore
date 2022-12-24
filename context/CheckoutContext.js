@@ -5,11 +5,39 @@ import useInput from "../hooks/useInput";
 import { useAuthContext } from "./AuthContext";
 import { apiHttp } from "../utils/utils";
 import { isValid } from "email-regexp";
+import Router from "next/router";
 const Context = createContext();
 
+const STATES = [
+  "أسوان",
+  "أسيوط",
+  "الأقصر",
+  "الإسكندرية",
+  "الإسماعيلية",
+  "البحر الأحمر",
+  "البحيرة",
+  "الجيزة",
+  "الدقهلية",
+  "السويس",
+  "الشرقية",
+  "الغربية",
+  "الفيوم",
+  "القاهرة",
+  "القليوبية",
+  "المنوفية",
+  "المنيا",
+  "بني سويف",
+  "بورسعيد",
+  "دمياط",
+  "سوهاج",
+  "قنا",
+  "كفر الشيخ",
+  "مرسى مطروح",
+  "الساحل الشمالي",
+].map((e) => ({ label: e, value: e }));
+
 export default function CheckoutProvider({ children }) {
-  const { cart: products, cartLoading } = useCartContext();
-  const { alerts, insertAlert } = useAlerts();
+  const { cart: products, loading: cartLoading } = useCartContext();
   const [textProps, setTextError, setTextProps] = useInput();
   const { user } = useAuthContext();
   const [firstNameProps, setFirstNameError, setFirstNameProps] = useInput();
@@ -21,6 +49,7 @@ export default function CheckoutProvider({ children }) {
   const [cityProps, setCityError, setCityProps] = useInput();
   const [stateProps, setStateError, setStateProps] = useInput();
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
   const validateInputs = () => {
     let valid = true;
     if (!firstNameProps.value.trim()) {
@@ -62,7 +91,7 @@ export default function CheckoutProvider({ children }) {
       last_name: lastNameProps.value,
       email: emailProps.value,
       city: cityProps.value,
-      address: `${address1Props.value} | ${address2Props.value}`,
+      address: [address1Props.value, address2Props.value].join(" | "),
       main_phone: phoneProps.value,
       more_info: textProps.value,
     };
@@ -70,7 +99,16 @@ export default function CheckoutProvider({ children }) {
       setLoading(true);
       const res = await apiHttp.post(process.env.NEXT_PUBLIC_CHECKOUT, data);
       console.log(`Checkout Response =>`, res);
+      if (res.status === 200) {
+        Router.push(`/my-account/orders`);
+      } else if (res.status === 204) {
+        setError("لا يوجد منتجات في السلة!");
+      }
+      setError(null);
     } catch (err) {
+      if (err.status === 422) {
+        setError("يرجي التأكد من الحقول");
+      }
       console.log(`Checkout Error =>`, err);
     } finally {
       setLoading(false);
@@ -80,8 +118,6 @@ export default function CheckoutProvider({ children }) {
   return (
     <Context.Provider
       value={{
-        alerts,
-        insertAlert,
         products,
         textProps,
         setTextError,
@@ -115,6 +151,9 @@ export default function CheckoutProvider({ children }) {
         cartLoading,
         loading,
         setLoading,
+        error,
+        setError,
+        STATES,
       }}
     >
       {children}

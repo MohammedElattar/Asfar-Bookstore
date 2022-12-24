@@ -10,7 +10,6 @@ import { getPage, getProduct } from "../json/products";
 import { getWebsiteInfo } from "../utils/utils";
 
 export default function Home({ products, websiteInfo }) {
-  console.log(websiteInfo);
   return (
     <>
       <Head>

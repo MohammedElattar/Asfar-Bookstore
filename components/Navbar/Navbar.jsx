@@ -5,6 +5,7 @@ import styles from "./Navbar.module.scss";
 import { IoClose } from "react-icons/io5";
 import { useRouter } from "next/router";
 import { useAuthContext } from "../../context/AuthContext";
+import { apiHttp } from "../../utils/utils";
 
 function Navbar({ logo }) {
   const { user } = useAuthContext();
@@ -52,9 +53,11 @@ function Navbar({ logo }) {
 
 function MenuWithUser({ isOpen, user, close }) {
   const router = useRouter();
-  const {setUser} = useAuthContext()
-  const signout = () => {
+  const { setUser } = useAuthContext();
+  const signout = async () => {
     close();
+    const res = await apiHttp.post(process.env.NEXT_PUBLIC_LOGOUT);
+    console.log(`Logout Response =>`, res);
     setUser(null);
     router.push("/");
   };

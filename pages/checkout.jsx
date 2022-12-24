@@ -1,83 +1,58 @@
-import { createContext, useContext } from "react";
 import { cls, getWebsiteInfo } from "../utils/utils";
 import s from "../styles/checkout.module.scss";
-import { useCartContext } from "../context/CartContext";
 import Message from "../components/Message";
-import useAlerts from "../hooks/useAlerts";
 import InputControl, {
   SelectInput,
 } from "../components/InputControl/InputControl";
-import useInput from "../hooks/useInput";
-import { useAuthContext } from "../context/AuthContext";
 import CheckoutProvider, {
   useCheckoutContext,
 } from "../context/CheckoutContext";
 import FormLoadingButton from "../components/FormLoadingButton/FormLoadingButton";
-
-const STATES = [
-  "أسوان",
-  "أسيوط",
-  "الأقصر",
-  "الإسكندرية",
-  "الإسماعيلية",
-  "البحر الأحمر",
-  "البحيرة",
-  "الجيزة",
-  "الدقهلية",
-  "السويس",
-  "الشرقية",
-  "الغربية",
-  "الفيوم",
-  "القاهرة",
-  "القليوبية",
-  "المنوفية",
-  "المنيا",
-  "بني سويف",
-  "بورسعيد",
-  "دمياط",
-  "سوهاج",
-  "قنا",
-  "كفر الشيخ",
-  "مرسى مطروح",
-  "الساحل الشمالي",
-].map((e) => ({ label: e, value: e }));
-
-const Context = createContext();
-
+import Loading from "../components/Loading";
+import Router from "next/router";
 export default function Checkout() {
   return (
     <CheckoutProvider>
-      <main className={s.main}>
-        <h2 className={"title fs-1 no-line"}>سجل بياناتك لإتمام الطلب</h2>
-        <div className="container">
-          <div className={s.alerts}>
-            <Alerts />
-          </div>
-          <div className="row">
-            <div className="col-7 p-0 ps-1 d-flex flex-column gap-2">
-              <Form />
-              <AdditionalInfo />
+      <WaitLoading>
+        <main className={s.main}>
+          <h2 className={"title fs-1 no-line"}>سجل بياناتك لإتمام الطلب</h2>
+          <div className="container">
+            <div className="row m-0">
+              <div className="col-12 col-md-7 p-0 ps-0 ps-md-1 mb-2 mb-md-0 d-flex flex-column gap-2">
+                <Form />
+                <AdditionalInfo />
+              </div>
+              <div className="col-12 col-md-5 p-0 pe-0 pe-md-1 d-flex flex-column gap-2">
+                <Info />
+                <ConfirmOrder />
+              </div>
             </div>
-            <div className="col-5 p-0 pe-1 d-flex flex-column gap-2">
-              <Info />
-              <ConfirmOrder />
-            </div>
           </div>
-        </div>
-      </main>
+        </main>
+      </WaitLoading>
     </CheckoutProvider>
   );
 }
 
-function Alerts() {
-  const { alerts } = useCheckoutContext();
-  return (
-    <>
-      {alerts.map((alert) => (
-        <Message {...alert} key={alert.text} />
-      ))}
-    </>
+function WaitLoading({ children }) {
+  const { cartLoading, products } = useCheckoutContext();
+
+  const loadingJSX = (
+    <main className={s.main}>
+      <div className="d-flex justify-content-center">
+        <Loading size={60} borderWidth="5px" />
+      </div>
+    </main>
   );
+
+  if (cartLoading) {
+    return loadingJSX;
+  } else if (products.length === 0 && !cartLoading) {
+    Router.push(`/products/1`);
+    return loadingJSX;
+  } else if (!cartLoading && products.length > 0) {
+    return children;
+  }
 }
 
 function AdditionalInfo() {
@@ -87,7 +62,7 @@ function AdditionalInfo() {
       <h3>معلومات إضافية</h3>
       <InputControl
         props={textProps}
-        label={"ملاحظات الطلب (اختياري)"}
+        label="ملاحظات الطلب (اختياري)"
         placeholder="ملاحظات خاصة تود إبلاغنا بها إن شئت."
         textarea
       />
@@ -96,13 +71,14 @@ function AdditionalInfo() {
 }
 
 function ConfirmOrder() {
-  const { handleConfirm, loading } = useCheckoutContext();
+  const { handleConfirm, loading, error } = useCheckoutContext();
   return (
     <div className={cls(s.wrapper, s.confirmOrder)}>
       <div className={s.payOption}>
         <label htmlFor="pay1">الدفع نقدًا عند الاستلام</label>
         <input type="radio" name="payment" required defaultChecked id="pay1" />
       </div>
+      {error ? <p className={s.error}>{error}</p> : null}
       <FormLoadingButton
         text={`تأكيد الطلب`}
         className={s.confirmOrderBtn}
@@ -116,7 +92,9 @@ function ConfirmOrder() {
 function Info() {
   const { products } = useCheckoutContext();
   const shipping = 50;
-  const total = products.map((e) => e.price * e.qty).reduce((a, b) => a + b, 0);
+  const total = Math.round(
+    products.map((e) => e.price * e.qty).reduce((a, b) => a + b, 0)
+  );
   return (
     <div className={cls(s.wrapper, s.info)}>
       <h3>طلبك</h3>
@@ -161,6 +139,7 @@ function Form() {
     address2Props,
     cityProps,
     stateProps,
+    STATES,
   } = useCheckoutContext();
   return (
     <div className={cls(s.form, s.wrapper)}>
