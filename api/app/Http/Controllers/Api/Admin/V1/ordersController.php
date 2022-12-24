@@ -51,8 +51,8 @@ class ordersController extends Controller
 
         // Get order details for user
         $orders_details = [];
-        foreach (Order::where('user_id', $this->user_id())->get(['order_details as det', 'id']) as $i) {
-            // Add order details to response using BST
+        foreach (Order::all(['order_details as det', 'id']) as $i) {
+            // Add order details to response
             $id = $i->id;
             $i = json_decode($i['det'], true);
             $book_ids = @array_keys($i) or null;
@@ -71,7 +71,6 @@ class ordersController extends Controller
                 $order->order_details = $orders_details[$order->id];
             }
         }
-
         return new ordersCollection($orders);
     }
 
