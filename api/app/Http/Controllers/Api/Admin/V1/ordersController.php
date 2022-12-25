@@ -48,6 +48,7 @@ class ordersController extends Controller
                 'orders.order_details as details',
                 'orders.created_at as created_at'
             )
+            ->orderByDesc('created_at')
             ->paginate($this->paginateCnt);
 
         // Get order details for user
@@ -62,7 +63,7 @@ class ordersController extends Controller
                 if ($book_ids) {
                     $books_info = Book::whereIn("id", $book_ids)->get(['title', 'price', 'img', 'id']);
                     foreach ($books_info as $book_info) {
-                        $book_info->img = filter_var($book_info->img, FILTER_VALIDATE_URL) ? $book_info->img : env('FRONTEND_URL', 'http://localhost:3000') . ("/storage/books/{$book_info->img}");
+                        $book_info->img = filter_var($book_info->img, FILTER_VALIDATE_URL) ? $book_info->img : ($book_info->img ? env('BOOKS')."/{$book_info->img}" : null);
                         $res[] = $book_info;
                     }
                 }
@@ -74,7 +75,21 @@ class ordersController extends Controller
 
     public function approveOrder(User $user , Order $order){
         if($order->status == '0'){
+            // return $order_details;
             if ($order->user_id == $user->id) {
+                $order_details = json_decode($order->order_details);
+                $errors = [];
+                $books_ids = array_keys((array)$order_details);
+                $books = Book::whereIn('id', $books_ids)->get(['id', 'quantity as qty']);
+                // return $books;
+                foreach($books as $book){
+                    if ($book->qty >= $order_details->{$book->id}){
+                        DB::update('UPDATE books SET quantity = quantity-? WHERE id =?', [$order_details->{$book->id}, $book->id]);
+                    } else
+                        $errors[$book->id] = 'qty-big';
+                }
+                if ($errors)
+                    return $this->validation_errors($errors);
                 $order->status = '1';
                 $order->update();
                 return $this->success(msg: 'Order approved successfully');
@@ -176,7 +191,7 @@ class ordersController extends Controller
                 if ($book_ids) {
                     $books_info = Book::whereIn("id", $book_ids)->get(['title', 'price', 'img', 'id']);
                     foreach ($books_info as $book_info) {
-                        $book_info->img = filter_var($book_info->img, FILTER_VALIDATE_URL) ? $book_info->img : env('FRONTEND_URL', 'http://localhost:3000') . ("/storage/books/{$book_info->img}");
+                        $book_info->img = filter_var($book_info->img, FILTER_VALIDATE_URL) ? $book_info->img : ($book_info->img ? env('BOOKS')."/{$book_info->img}" : null);
                         $res[] = $book_info;
                     }
                 }

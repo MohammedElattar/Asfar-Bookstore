@@ -19,7 +19,7 @@ class settingResource extends JsonResource
     {
         $data = [
             'title' => $this->title,
-            'logo' => $this->logo ? (env('APP_URL', 'http://localhost:8000')."/storage/setting/{$this->logo}") : null,
+            'logo' => $this->logo ? env('SETTINGS') : null,
             'email' => $this->email,
             'phone' => $this->phone_number,
         ];

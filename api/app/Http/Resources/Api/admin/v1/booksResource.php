@@ -24,7 +24,7 @@ class booksResource extends JsonResource
             'vendor' => $this->vendor,
             'quantity' => $this->quantity,
             'price' => $this->price,
-            'img' => filter_var($this->img, FILTER_VALIDATE_URL) ? $this->img : ($this->img ? env('APP_URL', 'http://localhost:8000')."/storage/books/{$this->img}" : null),
+            'img' => filter_var($this->img, FILTER_VALIDATE_URL) ? $this->img : ($this->img ? env('BOOKS')."/{$this->img}" : null),
             'created_at' => date('Y-m-d', strtotime($this->created_at)),
         ];
     }
