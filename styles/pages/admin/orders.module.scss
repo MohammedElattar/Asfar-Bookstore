@@ -1,0 +1,38 @@
+.orderInfo {
+  width: 600px !important;
+  max-width: calc(100% - 20px);
+  .productsTable {
+    width: 100%;
+    margin: 20px 0;
+    thead {
+      td {
+        color: #fff;
+        background-color: rgb(94, 94, 94);
+        padding: 5px 0;
+      }
+    }
+    tbody {
+      tr {
+        padding: 10px 0;
+      }
+    }
+    tr {
+      display: grid;
+      grid-template-columns: 15% 15% 1fr 15%;
+      td {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+    }
+  }
+}
+
+.approved {
+  color: green;
+  font-weight: bold;
+}
+.rejected {
+  color: red;
+  font-weight: bold;
+}
